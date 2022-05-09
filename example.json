@@ -1,0 +1,15 @@
+{
+    "left": -39.0210,
+    "bottom": -12.3252,
+    "right": -38.8686,
+    "top": -12.1316,
+    "grid_x": 500,
+    "grid_y": 1000,
+    "classes": 3,
+    "edus": 300,
+    "geojson": "geojson/feira.geojson",
+    "pois": "osm/feira.osm",
+    "amenities": ["hospital", "fire_station", "police"],
+    "output": "csv/feira.csv",
+    "output_edus": "csv/feira_edus.csv"
+}

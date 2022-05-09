@@ -1,0 +1,15 @@
+{
+    "left": -8.6926,
+    "bottom": 41.1352,
+    "right": -8.5405,
+    "top": 41.1939,
+    "grid_x": 500,
+    "grid_y": 200,
+    "classes": 3,
+    "edus": 300,
+    "geojson": "geojson/porto.geojson",
+    "pois": "osm/porto.osm",
+    "amenities": ["hospital", "fire_station", "police"],
+    "output": "csv/porto.csv",
+    "output_edus": "csv/porto_edus.csv"
+}

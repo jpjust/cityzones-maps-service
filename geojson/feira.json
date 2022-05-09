@@ -1,0 +1,12 @@
+{
+    "extracts": [
+        {
+            "output": "osm/feira.osm",
+            "description": "Feira de Santana, Brazil",
+            "polygon": {
+                "file_name": "feira.geojson",
+                "file_type": "geojson"
+            }
+        }
+    ]
+}

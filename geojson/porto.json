@@ -1,0 +1,12 @@
+{
+    "extracts": [
+        {
+            "output": "osm/porto.osm",
+            "description": "Porto, Portugal",
+            "polygon": {
+                "file_name": "porto.geojson",
+                "file_type": "geojson"
+            }
+        }
+    ]
+}
