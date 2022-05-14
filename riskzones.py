@@ -35,7 +35,7 @@ zone risks:
                                by 'list'
 - calculate_risk_from_pois(pois): calculate the risk level for each zone
                                   considering every POI in 'pois'
-- set_edus_positions: calculate EDUs positiong from risks
+- set_edus_positions_random: calculate EDUs positiong from risks
 '''
 class RiskZonesGrid:
 
@@ -245,41 +245,22 @@ class RiskZonesGrid:
         nzones = self.__get_number_of_zones_by_class()
 
         nedus = []
-        nz = []
         for i in range(self.classes):
-            nz.append((self.classes - i) * nzones[i])
+            nedus.append((i + 1) * nzones[i])
         
-        norm = self.__normalize_vector(nzones)
         sum = 0
-        for i in norm:
+        for i in nedus:
             sum += i
         
-        rel = int(n / sum)
-
-        for i in norm:
-            nedus.append(int(i * rel))
-        
+        rel = n / sum
+        nedus = list(map(lambda x: int(x * rel), nedus))
+       
         return nedus
 
     '''
-    Normalize a vector v.
-    '''
-    def __normalize_vector(self, v: list) -> list:
-        max = 0
-        for i in v:
-            if i > max: max = i
-        
-        norm = []
-        if max > 0:
-            for i in v:
-                norm.append(i / max)
-        
-        return norm
-    
-    '''
     Randomly select zones for EDUs positioning.
     '''
-    def set_edus_positions(self):
+    def set_edus_positions_random(self):
         random.seed()
         zones_by_class = {}
         for i in range(self.classes):
@@ -291,6 +272,7 @@ class RiskZonesGrid:
 
         self.edus = {}
         edus = self.__get_number_of_edus_by_class(self.n_edus)
+        
         for i in range(self.classes):
             self.edus[i] = random.choices(zones_by_class[i], k=edus[i])
 
@@ -340,7 +322,7 @@ if __name__ == '__main__':
     fp.close()
     
     # Write a CSV file with EDUs positioning
-    grid.set_edus_positions()
+    grid.set_edus_positions_random()
     row = 0
     data = ''
     data += 'system:index,.geo\n'
