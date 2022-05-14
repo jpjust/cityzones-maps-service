@@ -62,9 +62,10 @@ class RiskZonesGrid:
     Initialize every zone.
     '''
     def __init_zones(self):
-        for i in range(self.grid_x):
-            for j in range(self.grid_y):
+        for j in range(self.grid_y):
+            for i in range(self.grid_x):
                 zone = {
+                    'id': j * self.grid_x + i,
                     'lat': (j / self.grid_y * abs(self.top - self.bottom)) + self.bottom,
                     'lon': (i / self.grid_x * abs(self.right - self.left)) + self.left,
                     'risk': 1.0,
@@ -258,10 +259,9 @@ class RiskZonesGrid:
         return nedus
 
     '''
-    Randomly select zones for EDUs positioning.
+    Get a dict of zones by class.
     '''
-    def set_edus_positions_random(self):
-        random.seed()
+    def __get_zones_by_class(self) -> dict:
         zones_by_class = {}
         for i in range(self.classes):
             zones_by_class[i] = []
@@ -269,12 +269,35 @@ class RiskZonesGrid:
         for zone in grid.zones:
             if zone['inside']:
                 zones_by_class[zone['class']].append(zone)
+        
+        return zones_by_class
 
+    '''
+    Randomly select zones for EDUs positioning.
+    '''
+    def set_edus_positions_random(self):
+        random.seed()
+        zones_by_class = self.__get_zones_by_class()
         self.edus = {}
         edus = self.__get_number_of_edus_by_class(self.n_edus)
         
         for i in range(self.classes):
             self.edus[i] = random.choices(zones_by_class[i], k=edus[i])
+
+    '''
+    Uniformly select zones for EDUs positioning.
+    '''
+    def set_edus_positions_uniform(self):
+        zones_by_class = self.__get_zones_by_class()
+        self.edus = {}
+        edus = self.__get_number_of_edus_by_class(self.n_edus)
+        
+        for i in range(self.classes):
+            zones_by_class[i].sort(key=lambda zone : zone['id'])
+            step = int(len(zones_by_class[i]) / edus[i])
+            self.edus[i] = []
+            for j in range(0, len(zones_by_class[i]), step):
+                self.edus[i].append(zones_by_class[i][j])
 
 '''
 Main program.
