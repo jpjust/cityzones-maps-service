@@ -66,10 +66,9 @@ class RiskZonesGrid:
             for i in range(self.grid_x):
                 zone = {
                     'id': j * self.grid_x + i,
-                    'lat': (j / self.grid_y * abs(self.top - self.bottom)) + self.bottom,
-                    'lon': (i / self.grid_x * abs(self.right - self.left)) + self.left,
+                    'lat': (j / self.grid_y * self.height) + self.bottom,
+                    'lon': (i / self.grid_x * self.width) + self.left,
                     'risk': 1.0,
-                    'sum': 0.0,
                     'class': 0,
                     'inside': False
                 }
