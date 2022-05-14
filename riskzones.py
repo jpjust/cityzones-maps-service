@@ -70,7 +70,7 @@ class RiskZonesGrid:
                     'lon': (i / self.grid_x * self.width) + self.left,
                     'risk': 1.0,
                     'class': 0,
-                    'inside': False
+                    'inside': True
                 }
 
                 self.zones.append(zone)
