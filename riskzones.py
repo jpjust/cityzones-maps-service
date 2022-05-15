@@ -237,7 +237,7 @@ class RiskZonesGrid:
     
     '''
     Calculate the number of EDUs that must be positioned in each class so it
-    obeys the proportion of ni = (C - i) * ai
+    obeys the proportion of ni = (i + 1) * ai
     
     See paper.
     '''
@@ -245,15 +245,13 @@ class RiskZonesGrid:
         nzones = self.__get_number_of_zones_by_class()
 
         nedus = []
+        total = 0
         for i in range(self.classes):
             nedus.append((i + 1) * nzones[i])
+            total += nedus[i]
         
-        sum = 0
-        for i in nedus:
-            sum += i
-        
-        rel = n / sum
-        nedus = list(map(lambda x: int(x * rel), nedus))
+        proportion = n / total
+        nedus = list(map(lambda x: int(x * proportion), nedus))
        
         return nedus
 
