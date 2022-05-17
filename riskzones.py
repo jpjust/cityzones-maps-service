@@ -18,7 +18,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import osmpois
-import math
 import json
 import sys
 import random
@@ -42,13 +41,11 @@ class RiskZonesGrid:
     min_num = 10 ** (-10)
     max_num = 10 ** 10
 
-    def __init__(self, left: float, bottom: float, right: float, top: float, grid_x: int, grid_y: int, classes: int, n_edus:int):
+    def __init__(self, left: float, bottom: float, right: float, top: float, zone_size: int, classes: int, n_edus:int):
         self.left = left
         self.bottom = bottom
         self.right = right
         self.top = top
-        self.grid_x = grid_x
-        self.grid_y = grid_y
         self.width = abs(right - left)
         self.height = abs(top - bottom)
         self.classes = classes
@@ -56,6 +53,15 @@ class RiskZonesGrid:
         self.edus = {}
         self.zones = []
         self.polygons = []
+
+        # Grid setup
+        w = self.__calculate_distance({'lat': top, 'lon': left}, {'lat': top, 'lon': right})
+        h = self.__calculate_distance({'lat': top, 'lon': left}, {'lat': bottom, 'lon': left})
+        self.zone_size = zone_size
+        self.grid_x = int(w / zone_size)
+        self.grid_y = int(h / zone_size)
+        self.zone_center = {'x': self.width / self.grid_x / 2, 'y': self.height / self.grid_y / 2}
+        print(f"Grid size: {self.grid_x}x{self.grid_y}")
         self.__init_zones()
     
     '''
@@ -66,8 +72,8 @@ class RiskZonesGrid:
             for i in range(self.grid_x):
                 zone = {
                     'id': j * self.grid_x + i,
-                    'lat': (j / self.grid_y * self.height) + self.bottom,
-                    'lon': (i / self.grid_x * self.width) + self.left,
+                    'lat': (j / self.grid_y * self.height) + self.bottom + self.zone_center['y'],
+                    'lon': (i / self.grid_x * self.width) + self.left + self.zone_center['x'],
                     'risk': 1.0,
                     'class': 0,
                     'inside': True
@@ -83,6 +89,7 @@ class RiskZonesGrid:
         i = 0
         total = len(self.zones)
         print(f'Checking zones inside the polygon... {prog:.2f}%', end='\r')
+        zones_inside = 0
 
         for coord in polygon:
             self.polygons.append(coord[0])
@@ -93,11 +100,12 @@ class RiskZonesGrid:
             for pol in self.polygons:
                 if self.__check_zone_in_polygon(zone, pol):
                     zone['inside'] = True
+                    zones_inside += 1
                     break
             prog = (i / total) * 100
             print(f'Checking zones inside the polygon... {prog:.2f}%', end='\r')
         
-        print('')
+        print(f'\n{zones_inside} zones inside the polygon.')
 
     '''
     Check if a zone is inside a polygon.
@@ -184,10 +192,15 @@ class RiskZonesGrid:
         print('')
 
     '''
-    Calculate the distance from a to b.
+    Calculate the distance from a to b using haversine formula.
     '''
     def __calculate_distance(self, a: dict, b: dict) -> float:
-        return math.sqrt((a['lat'] - b['lat']) ** 2 + (a['lon'] - b['lon']) ** 2)
+        lat1 = numpy.radians(a['lat'])
+        lat2 = numpy.radians(b['lat'])
+        lon1 = numpy.radians(a['lon'])
+        lon2 = numpy.radians(b['lon'])
+        r = 6378137
+        return 2 * r * numpy.arcsin(numpy.sqrt(numpy.sin((lat2 - lat1) / 2) ** 2 + numpy.cos(lat1) * numpy.cos(lat2) * numpy.sin((lon2 - lon1) / 2) ** 2))
 
     '''
     Normalize the risk levels.
@@ -312,7 +325,7 @@ if __name__ == '__main__':
 
     grid = RiskZonesGrid(
         conf['left'], conf['bottom'], conf['right'], conf['top'],
-        conf['grid_x'], conf['grid_y'], conf['classes'], conf['edus']
+        conf['zone_size'], conf['classes'], conf['edus']
     )
 
     pois = osmpois.extract_pois(conf['pois'], conf['amenities'])
