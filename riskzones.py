@@ -24,16 +24,16 @@ import random
 import numpy
 
 '''
-This class contains the methods for calculating zone risks from POIs
+This class contains the methods for calculating zone risks from PoIs
 inside a bbox region.
 
 After instantiating an object, use the following methods to calculate
 zone risks:
 
-- init_zones_by_polygon(list): select only zones inside the polygon delimited
-                               by 'list'
+- init_zones_by_polygon(list): select only zones inside the AoI delimited
+                               by the polygon in 'list'
 - calculate_risk_from_pois(pois): calculate the risk level for each zone
-                                  considering every POI in 'pois'
+                                  considering every PoI in 'pois'
 - set_edus_positions_random: calculate EDUs positiong from risks
 '''
 class RiskZonesGrid:
@@ -41,14 +41,14 @@ class RiskZonesGrid:
     min_num = 10 ** (-10)
     max_num = 10 ** 10
 
-    def __init__(self, left: float, bottom: float, right: float, top: float, zone_size: int, classes: int, n_edus:int):
+    def __init__(self, left: float, bottom: float, right: float, top: float, zone_size: int, M: int, n_edus:int):
         self.left = left
         self.bottom = bottom
         self.right = right
         self.top = top
         self.width = abs(right - left)
         self.height = abs(top - bottom)
-        self.classes = classes
+        self.M = M
         self.n_edus = n_edus
         self.edus = {}
         self.zones = []
@@ -75,7 +75,7 @@ class RiskZonesGrid:
                     'lat': (j / self.grid_y * self.height) + self.bottom + self.zone_center['y'],
                     'lon': (i / self.grid_x * self.width) + self.left + self.zone_center['x'],
                     'risk': 1.0,
-                    'class': 0,
+                    'RL': 0,
                     'inside': True
                 }
 
@@ -169,26 +169,26 @@ class RiskZonesGrid:
         return f1_1 != f1_2 and f2_1 != f2_2
 
     '''
-    Calculate the risk level considering all POIs.
+    Calculate the risk perception considering all PoIs.
     '''
     def calculate_risk_from_pois(self, pois: dict):
         prog = 0.0
         i = 0
         total = len(self.zones)
-        print(f'Calculating risk levels... {prog:.2f}%', end='\r')
+        print(f'Calculating risk perception... {prog:.2f}%', end='\r')
 
         for zone in self.zones:
             i += 1
             sum = 0
             for poi in pois:
-                sum += 1 / (self.__calculate_distance(zone, poi) ** 2)
+                sum += poi['weight'] / (self.__calculate_distance(zone, poi) ** 2)
             zone['risk'] = 1 / sum
 
             prog = (i / total) * 100
-            print(f'Calculating risk levels... {prog:.2f}%', end='\r')
+            print(f'Calculating risk perception... {prog:.2f}%', end='\r')
         
         self.__normalize_risks()
-        self.__calculate_classes()
+        self.__calculate_RL()
         print('')
 
     '''
@@ -203,7 +203,7 @@ class RiskZonesGrid:
         return 2 * r * numpy.arcsin(numpy.sqrt(numpy.sin((lat2 - lat1) / 2) ** 2 + numpy.cos(lat1) * numpy.cos(lat2) * numpy.sin((lon2 - lon1) / 2) ** 2))
 
     '''
-    Normalize the risk levels.
+    Normalize the risk perception values.
     '''
     def __normalize_risks(self):
         min = max = self.zones[0]['risk']
@@ -218,15 +218,15 @@ class RiskZonesGrid:
             zone['risk'] = (zone['risk'] - min) / amplitude
     
     '''
-    Calculate the classes according to risk levels.
+    Calculate the RL according to risk perception.
     '''
-    def __calculate_classes(self):
-        step = 1 / self.classes
-
+    def __calculate_RL(self):
         for zone in self.zones:
-            for i in range(self.classes):
-                if zone['risk'] <= 10 ** (-i):
-                    zone['class'] = self.classes - 1 - i
+            if zone['risk'] == 0:
+                zone['RL'] = 0
+            else:
+                rl = self.M - numpy.minimum(abs(int(numpy.log10(zone['risk']))), self.M - 1)
+                zone['RL'] = rl
 
     '''
     Sort zones by its risk levels.
@@ -235,31 +235,31 @@ class RiskZonesGrid:
         self.zones.sort(key=lambda zone : zone['risk'])
     
     '''
-    Calculate the number of zones by class.
+    Calculate the number of zones by RL.
     '''
-    def __get_number_of_zones_by_class(self) -> list:
+    def __get_number_of_zones_by_RL(self) -> list:
         nzones = []
-        for i in range(self.classes):
+        for i in range(self.M + 1):
             nzones.append(0)
         
         for zone in self.zones:
             if zone['inside']:
-                nzones[zone['class']] += 1
+                nzones[zone['RL']] += 1
         
         return nzones
     
     '''
-    Calculate the number of EDUs that must be positioned in each class so it
+    Calculate the number of EDUs that must be positioned in each RL so it
     obeys the proportion of ni = (i + 1) * ai
     
     See paper.
     '''
-    def __get_number_of_edus_by_class(self, n: int) -> list:
-        nzones = self.__get_number_of_zones_by_class()
+    def __get_number_of_edus_by_RL(self, n: int) -> list:
+        nzones = self.__get_number_of_zones_by_RL()
 
         nedus = []
         total = 0
-        for i in range(self.classes):
+        for i in range(self.M + 1):
             nedus.append((i + 1) * nzones[i])
             total += nedus[i]
         
@@ -269,45 +269,45 @@ class RiskZonesGrid:
         return nedus
 
     '''
-    Get a dict of zones by class.
+    Get a dict of zones by RL.
     '''
-    def __get_zones_by_class(self) -> dict:
-        zones_by_class = {}
-        for i in range(self.classes):
-            zones_by_class[i] = []
+    def __get_zones_by_RL(self) -> dict:
+        zones_by_RL = {}
+        for i in range(self.M + 1):
+            zones_by_RL[i] = []
 
         for zone in grid.zones:
             if zone['inside']:
-                zones_by_class[zone['class']].append(zone)
+                zones_by_RL[zone['RL']].append(zone)
         
-        return zones_by_class
+        return zones_by_RL
 
     '''
     Randomly select zones for EDUs positioning.
     '''
     def set_edus_positions_random(self):
         random.seed()
-        zones_by_class = self.__get_zones_by_class()
+        zones_by_RL = self.__get_zones_by_RL()
         self.edus = {}
-        edus = self.__get_number_of_edus_by_class(self.n_edus)
+        edus = self.__get_number_of_edus_by_RL(self.n_edus)
         
-        for i in range(self.classes):
-            self.edus[i] = random.choices(zones_by_class[i], k=edus[i])
+        for i in range(self.M + 1):
+            self.edus[i] = random.choices(zones_by_RL[i], k=edus[i])
 
     '''
     Uniformly select zones for EDUs positioning.
     '''
     def set_edus_positions_uniform(self):
-        zones_by_class = self.__get_zones_by_class()
+        zones_by_RL = self.__get_zones_by_RL()
         self.edus = {}
-        edus = self.__get_number_of_edus_by_class(self.n_edus)
+        edus = self.__get_number_of_edus_by_RL(self.n_edus)
         
-        for i in range(self.classes):
-            zones_by_class[i].sort(key=lambda zone : zone['id'])
-            step = int(len(zones_by_class[i]) / edus[i])
+        for i in range(self.M + 1):
+            zones_by_RL[i].sort(key=lambda zone : zone['id'])
+            step = int(len(zones_by_RL[i]) / edus[i])
             self.edus[i] = []
-            for j in range(0, len(zones_by_class[i]), step):
-                self.edus[i].append(zones_by_class[i][j])
+            for j in range(0, len(zones_by_RL[i]), step):
+                self.edus[i].append(zones_by_RL[i][j])
 
 '''
 Main program.
@@ -325,7 +325,7 @@ if __name__ == '__main__':
 
     grid = RiskZonesGrid(
         conf['left'], conf['bottom'], conf['right'], conf['top'],
-        conf['zone_size'], conf['classes'], conf['edus']
+        conf['zone_size'], conf['M'], conf['edus']
     )
 
     pois = osmpois.extract_pois(conf['pois'], conf['amenities'])
@@ -347,7 +347,7 @@ if __name__ == '__main__':
     for zone in grid.zones:
         if zone['inside']:
             coordinates = f"[{zone['lon']},{zone['lat']}]"
-            data += f'{row:020},{zone["class"]},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
+            data += f'{row:020},{zone["RL"]},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
             row += 1
 
     fp = open(conf['output'], 'w')
@@ -360,7 +360,7 @@ if __name__ == '__main__':
     data = ''
     data += 'system:index,.geo\n'
 
-    for i in range(grid.classes):
+    for i in range(1, grid.M + 1):
         for zone in grid.edus[i]:
             coordinates = f"[{zone['lon']},{zone['lat']}]"
             data += f'{row:020},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
