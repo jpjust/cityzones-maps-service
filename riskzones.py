@@ -52,6 +52,7 @@ class RiskZonesGrid:
         self.n_edus = n_edus
         self.edus = {}
         self.zones = []
+        self.n_zones_inside = 0
         self.polygons = []
 
         # Grid setup
@@ -80,6 +81,8 @@ class RiskZonesGrid:
                 }
 
                 self.zones.append(zone)
+
+        self.n_zones_inside = len(self.zones)
     
     '''
     Check every zone if it is inside the polygon area.
@@ -106,6 +109,7 @@ class RiskZonesGrid:
             print(f'Checking zones inside the polygon... {prog:.2f}%', end='\r')
         
         print(f'\n{zones_inside} zones inside the polygon.')
+        self.n_zones_inside = zones_inside
 
     '''
     Check if a zone is inside a polygon.
@@ -223,7 +227,7 @@ class RiskZonesGrid:
     def __calculate_RL(self):
         for zone in self.zones:
             if zone['risk'] == 0:
-                zone['RL'] = 0
+                zone['RL'] = 1
             else:
                 rl = self.M - numpy.minimum(abs(int(numpy.log10(zone['risk']))), self.M - 1)
                 zone['RL'] = rl
@@ -238,9 +242,9 @@ class RiskZonesGrid:
     Calculate the number of zones by RL.
     '''
     def __get_number_of_zones_by_RL(self) -> list:
-        nzones = []
-        for i in range(self.M + 1):
-            nzones.append(0)
+        nzones = {}
+        for i in range(1, self.M + 1):
+            nzones[i] = 0
         
         for zone in self.zones:
             if zone['inside']:
@@ -249,23 +253,22 @@ class RiskZonesGrid:
         return nzones
     
     '''
-    Calculate the number of EDUs that must be positioned in each RL so it
-    obeys the proportion of ni = (i + 1) * ai
+    Calculate the number of EDUs that must be positioned in each RL.
     
     See paper.
     '''
-    def __get_number_of_edus_by_RL(self, n: int) -> list:
+    def __get_number_of_edus_by_RL(self) -> dict:
         nzones = self.__get_number_of_zones_by_RL()
-
-        nedus = []
-        total = 0
-        for i in range(self.M + 1):
-            nedus.append((i + 1) * nzones[i])
-            total += nedus[i]
         
-        proportion = n / total
-        nedus = list(map(lambda x: int(x * proportion), nedus))
-       
+        sum = 0
+        for i in range(1, self.M + 1):
+            sum += i * nzones[i]
+
+        nedus = {}
+        for i in range(1, self.M + 1):
+            ni = (self.n_edus * i * nzones[i]) / sum
+            nedus[i] = int(ni)
+
         return nedus
 
     '''
@@ -289,9 +292,9 @@ class RiskZonesGrid:
         random.seed()
         zones_by_RL = self.__get_zones_by_RL()
         self.edus = {}
-        edus = self.__get_number_of_edus_by_RL(self.n_edus)
+        edus = self.__get_number_of_edus_by_RL()
         
-        for i in range(self.M + 1):
+        for i in range(1, self.M + 1):
             self.edus[i] = random.choices(zones_by_RL[i], k=edus[i])
 
     '''
