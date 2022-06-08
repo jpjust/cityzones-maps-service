@@ -20,7 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import xml.etree.ElementTree as ET
 
 '''
-Extract POIs of type amenity from OSM file.
+Extract PoIs of type amenity from OSM file.
 '''
 def extract_pois(file, amenity):
     tree = ET.parse(file)
@@ -36,7 +36,8 @@ def extract_pois(file, amenity):
 
         node_data = {
             'lat': float(node.get('lat')),
-            'lon': float(node.get('lon'))
+            'lon': float(node.get('lon')),
+            'weight': 1
         }
 
         for tag in node.iter('tag'):
@@ -73,6 +74,7 @@ def extract_pois(file, amenity):
             if node in nodes:
                 way_data['lat'] = float(nodes[node]['lat'])
                 way_data['lon'] = float(nodes[node]['lon'])
+                way_data['weight'] = float(nodes[node]['weight'])
                 break
 
         ways[id] = way_data
@@ -93,7 +95,6 @@ def extract_pois(file, amenity):
 
         for tag in relation.iter('tag'):
             relation_data[tag.get('k')] = tag.get('v')
-        
 
         # Relations contain a set of ways, so we must gather them
         relation_ways = []
@@ -108,6 +109,7 @@ def extract_pois(file, amenity):
             if way in ways:
                 relation_data['lat'] = float(ways[way]['lat'])
                 relation_data['lon'] = float(ways[way]['lon'])
+                relation_data['weight'] = float(ways[way]['weight'])
                 break
 
         relations[id] = relation_data
@@ -130,7 +132,7 @@ if __name__ == '__main__':
     amenity = input('Input amenity type (hospital, police, fire_station): ')
     pois = extract_pois(file, amenity)
     
-    message = f"{len(pois)} POIs found:"
+    message = f"{len(pois)} PoIs found:"
     print(f"\n{message}")
     print('-' * len(message))
 
