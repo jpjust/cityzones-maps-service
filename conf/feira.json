@@ -4,7 +4,7 @@
     "right": -38.8686,
     "top": -12.1316,
     "zone_size": 30,
-    "M": 2,
+    "M": 3,
     "edus": 300,
     "geojson": "geojson/feira.geojson",
     "pois": "osm/feira.osm",
