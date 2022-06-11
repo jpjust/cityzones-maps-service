@@ -20,6 +20,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import osmpois
 import json
 import sys
+import os
 import random
 import numpy
 
@@ -230,7 +231,7 @@ class RiskZonesGrid:
                 zone['RL'] = 1
             else:
                 rl = self.M - numpy.minimum(abs(int(numpy.log10(zone['risk']))), self.M - 1)
-                zone['RL'] = rl
+                zone['RL'] = int(rl)
 
     '''
     Sort zones by its risk levels.
@@ -303,14 +304,27 @@ class RiskZonesGrid:
     def set_edus_positions_uniform(self):
         zones_by_RL = self.__get_zones_by_RL()
         self.edus = {}
-        edus = self.__get_number_of_edus_by_RL(self.n_edus)
-        
-        for i in range(self.M + 1):
+        edus = self.__get_number_of_edus_by_RL()
+        At = Ax = radius = step = start = {}
+
+        for i in range(1, self.M + 1):
             zones_by_RL[i].sort(key=lambda zone : zone['id'])
-            step = int(len(zones_by_RL[i]) / edus[i])
-            self.edus[i] = []
-            for j in range(0, len(zones_by_RL[i]), step):
-                self.edus[i].append(zones_by_RL[i][j])
+            At[i] = self.__get_number_of_zones_by_RL()[i]  # Area of the whole RL
+            Ax[i] = numpy.ceil(At[i] / edus[i])            # Coverage area of an EDU
+            radius[i] = numpy.ceil(numpy.sqrt(Ax[i]) / 2)  # Radius of an EDU
+            step[i] = 2 * radius[i] - 1                    # Step distance on x and y directions
+            start[i] = int(radius[i] / 2)                  # Start coordinate
+            self.edus[i] = []                              # Final list of EDUs in zone i
+        
+        for x in range(self.grid_x):
+            for y in range(self.grid_y):
+                id = x * y + x
+                zone = self.zones[id]
+                if not zone['inside']: continue
+
+                for i in range(1, self.M + 1):
+                    if x == y == start[i] or (x % step[i] == 0 and y % step[i] == 0):
+                        self.edus[i].append(zone)
 
 '''
 Main program.
@@ -331,16 +345,39 @@ if __name__ == '__main__':
         conf['zone_size'], conf['M'], conf['edus']
     )
 
-    pois = osmpois.extract_pois(conf['pois'], conf['amenities'])
+    # Load cache file if enabled
+    cache_filename = f"{os.path.splitext(sys.argv[1])[0]}.cache"
+    if conf['cache_zones'] == True and os.path.isfile(cache_filename):
+        try:
+            print(f"Loading cache file {cache_filename}...")
+            fp = open(cache_filename, 'r')
+            grid.zones = json.load(fp)
+            fp.close()
+        except json.JSONDecodeError:
+            print("The cache file is corrupted. Delete it and run the program again.")
+            sys.exit()
 
-    # GeoJSON file
-    fp = open(conf['geojson'], 'r')
-    geojson = json.load(fp)
-    fp.close()
-    grid.init_zones_by_polygon(geojson['features'][0]['geometry']['coordinates'])
-    
-    # Calculate risks
-    grid.calculate_risk_from_pois(pois)
+        zones_inside = 0
+        for zone in grid.zones:
+            if zone['inside']: zones_inside += 1
+        grid.n_zones_inside = zones_inside
+    else:
+        pois = osmpois.extract_pois(conf['pois'], conf['amenities'])
+
+        # GeoJSON file
+        fp = open(conf['geojson'], 'r')
+        geojson = json.load(fp)
+        fp.close()
+        grid.init_zones_by_polygon(geojson['features'][0]['geometry']['coordinates'])
+        
+        # Calculate risks
+        grid.calculate_risk_from_pois(pois)
+
+    # Write cache file
+    if conf['cache_zones'] == True:
+        fp = open(cache_filename, 'w')
+        json.dump(grid.zones, fp)
+        fp.close()
 
     # Write a CSV file with risk zones
     row = 0
@@ -358,7 +395,8 @@ if __name__ == '__main__':
     fp.close()
     
     # Write a CSV file with EDUs positioning
-    grid.set_edus_positions_random()
+    #grid.set_edus_positions_random()
+    grid.set_edus_positions_uniform()
     row = 0
     data = ''
     data += 'system:index,.geo\n'
@@ -372,3 +410,5 @@ if __name__ == '__main__':
     fp = open(conf['output_edus'], 'w')
     fp.write(data)
     fp.close()
+
+    print("Done.")

@@ -4,6 +4,7 @@
     "right": -38.8686,
     "top": -12.1316,
     "zone_size": 30,
+    "cache_zones": true,
     "M": 3,
     "edus": 300,
     "geojson": "geojson/feira.geojson",
