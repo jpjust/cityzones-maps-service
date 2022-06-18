@@ -302,35 +302,51 @@ class RiskZonesGrid:
     Uniformly select zones for EDUs positioning.
     '''
     def set_edus_positions_uniform(self):
-        zones_by_RL = self.__get_zones_by_RL()
         edus = self.__get_number_of_edus_by_RL()
         self.edus = {}
         At = {}
         Ax = {}
         radius = {}
         step = {}
+        step_x = {}
+        step_y = {}
+        zone_in_y = {}
         start = {}
 
         for i in range(1, self.M + 1):
-            zones_by_RL[i].sort(key=lambda zone : zone['id'])
             At[i] = self.__get_number_of_zones_by_RL()[i]  # Area of the whole RL
             Ax[i] = numpy.ceil(At[i] / edus[i])            # Coverage area of an EDU
             radius[i] = numpy.ceil(numpy.sqrt(Ax[i]) / 2)  # Radius of an EDU
             step[i] = 2 * radius[i]                        # Step distance on x and y directions
             start[i] = radius[i]                           # Start coordinate
             self.edus[i] = []                              # Final list of EDUs in zone i
+            step_x[i] = step_y[i] = 0                      # The steps are accounted individually for each RL
+            zone_in_y[i] = False                           # To check if there was any zone for a RL in any y
         
         self.zones.sort(key=lambda zone : zone['id'])
-        for x in range(self.grid_x):
-            for y in range(self.grid_y):
+        for y in range(self.grid_y):
+            # First, reset step for every RL in x direction and check if there was any zone in y
+            for i in range(1, self.M + 1):
+                step_x[i] = 0
+                if zone_in_y[i]:
+                    step_y[i] += 1
+                    zone_in_y[i] = False
+
+            # For each zone in this coordinate, check if it is inside AoI and check if it is time to
+            # put an EDU in it
+            for x in range(self.grid_x):
                 id = self.grid_x * y + x
                 zone = self.zones[id]
                 if not zone['inside']: continue
 
                 for i in range(1, self.M + 1):
                     if zone['RL'] != i: continue
-                    if x == y == start[i] or (x % step[i] == 0 and y % step[i] == 0):
+                    zone_in_y[i] = True # If there was any zone for this RL in this y, we can increment step_y later
+
+                    if step_x[i] % step[i] == 0 and step_y[i] % step[i] == 0:
                         self.edus[i].append(zone)
+                        
+                    step_x[i] += 1
 
 '''
 Main program.
