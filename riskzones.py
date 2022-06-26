@@ -329,9 +329,13 @@ class RiskZonesGrid:
         step_x = {}
         step_y = {}
         zone_in_y = {}
-        start = {}
         total = len(self.zones)
-        print('\nPositioning EDUs...', end='\r')
+
+        if mode == UniformPositioningMode.UNBALANCED:
+            print("Chosen positioning method: uniform unbalanced.")
+        elif mode == UniformPositioningMode.BALANCED:
+            print("Chosen positioning method: uniform balanced.")
+        print('Positioning EDUs...', end='\r')
 
         # Reset zones EDUs flag
         for zone in self.zones:
@@ -340,9 +344,8 @@ class RiskZonesGrid:
         for i in range(1, self.M + 1):
             At[i] = self.__get_number_of_zones_by_RL()[i]        # Area of the whole RL
             Ax[i] = numpy.ceil(At[i] / edus[i])                  # Coverage area of an EDU
-            radius[i] = numpy.ceil(numpy.sqrt(Ax[i]) / numpy.pi) # Radius of an EDU
+            radius[i] = numpy.ceil(numpy.sqrt(Ax[i] / numpy.pi)) # Radius of an EDU
             step[i] = 2 * radius[i]                              # Step distance on x and y directions
-            start[i] = radius[i]                                 # Start coordinate
             self.edus[i] = []                                    # Final list of EDUs in zone i
             step_x[i] = step_y[i] = 0                            # The steps are accounted individually for each RL
             zone_in_y[i] = False                                 # To check if there was any zone for a RL in any y
@@ -392,8 +395,11 @@ class RiskZonesGrid:
                 try:
                     while x < self.grid_x:
                         while True:
+                            # Get the zone in this coordinate by its ID
                             id = self.grid_x * y + x
                             zone = self.zones[id]
+
+                            # The zone must be inside the AoI, otherwise, check the next zone
                             if zone['inside']:
                                 break
                             elif x >= self.grid_x:
