@@ -129,4 +129,4 @@ dmypy.json
 .pyre/
 
 # Riskzone cache files
-.cache
+*.cache
