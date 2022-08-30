@@ -20,12 +20,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import xml.etree.ElementTree as ET
 
 '''
-Extract PoIs of type amenity from OSM file.
+Extract roads and PoIs of type amenity from OSM file.
 '''
 def extract_pois(file, amenity):
     tree = ET.parse(file)
     root = tree.getroot()
     pois = []
+    roads = []
     nodes = {}
     ways = {}
     relations = {}
@@ -59,13 +60,28 @@ def extract_pois(file, amenity):
 
         way_data = {}
 
-        for tag in way.iter('tag'):
-            way_data[tag.get('k')] = tag.get('v')
-
         # Ways contain a set of nodes, so we must gather them
         way_nodes = []
+        way_roads = []
         for node in way.iter('nd'):
             way_nodes.append(int(node.get('ref')))
+
+            # Combine nodes in a way to make roads
+            if len(way_nodes) < 2: continue
+            road = {}
+            road['start'] = {}
+            road['end'] = {}
+            road['start']['lat'] = nodes[way_nodes[-2]]['lat']
+            road['start']['lon'] = nodes[way_nodes[-2]]['lon']
+            road['end']['lat'] = nodes[way_nodes[-1]]['lat']
+            road['end']['lon'] = nodes[way_nodes[-1]]['lon']
+            way_roads.append(road)
+        
+        # Check if this way is a highway (roads, streets, etc.)
+        for tag in way.iter('tag'):
+            way_data[tag.get('k')] = tag.get('v')
+            if tag.get('k') == 'highway':
+                roads += way_roads
 
         # Get the first available node to copy its coordinates
         # (depending on the boundaries of the exported OSM file, some
@@ -122,7 +138,7 @@ def extract_pois(file, amenity):
         except KeyError:
             pass
 
-    return pois
+    return pois, roads
 
 '''
 Main program.

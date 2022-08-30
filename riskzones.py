@@ -70,6 +70,7 @@ class RiskZonesGrid:
         self.n_edus = n_edus
         self.edus = {}
         self.zones = []
+        self.roads = []
         self.n_zones_inside = 0
         self.polygons = []
 
@@ -94,15 +95,105 @@ class RiskZonesGrid:
                     'lat': (j / self.grid_y * self.height) + self.bottom + self.zone_center['y'],
                     'lon': (i / self.grid_x * self.width) + self.left + self.zone_center['x'],
                     'risk': 1.0,
-                    'RL': 0,
+                    'RL': self.M,
                     'inside': True,
-                    'has_edu': False
+                    'has_edu': False,
+                    'is_road': False
                 }
 
                 self.zones.append(zone)
 
         self.n_zones_inside = len(self.zones)
     
+    '''
+    Add roads to zones list.
+    '''
+    def add_roads(self, roads: list):
+        for road in roads:
+            a = self.__coordinates_to_id(road['start']['lat'], road['start']['lon'])
+            b = self.__coordinates_to_id(road['end']['lat'], road['end']['lon'])
+
+            if a < 0 or b < 0 or a >= len(self.zones) or b >= len(self.zones):
+                continue
+            
+            dist_x = b % self.grid_x - a % self.grid_x
+            dist_y = int(b / self.grid_x) - int(a / self.grid_x)
+
+            if abs(dist_x) >= abs(dist_y):
+                self.__move_zones_x(a, b, dist_x, dist_y)
+            else:
+                self.__move_zones_y(a, b, dist_x, dist_y)
+
+            self.zones[a]['is_road'] = self.zones[b]['is_road'] = True
+    
+    '''
+    Move through road in X axis
+    '''
+    def __move_zones_x(self, a: dict, b: dict, dist_x: int, dist_y: int):
+        if dist_x == 0:
+            return
+
+        # Calculate movement steps
+        if dist_y > 0:
+            step_y = (dist_y + 1) / (abs(dist_x) + 1)
+        else:
+            step_y = (dist_y - 1) / (abs(dist_x) + 1)
+        delta_y = 0.0
+        id = a
+        num_x = int(dist_x / abs(dist_x))
+        if dist_y != 0:
+            num_y = self.grid_x * (int(dist_y / abs(dist_y)))
+        else:
+            num_y = 0
+        
+        # While far from the destination zone, keep moving
+        while self.__calculate_distance(self.zones[id], self.zones[b]) > self.zone_size * 2:
+            id += num_x
+            delta_y = delta_y + step_y
+            if abs(delta_y) >= 1:
+                id += num_y
+                delta_y -= int(delta_y / abs(delta_y))
+            self.zones[id]['is_road'] = True
+    
+    '''
+    Move through road in Y axis
+    '''
+    def __move_zones_y(self, a: dict, b: dict, dist_x: int, dist_y: int):
+        if dist_y == 0:
+            return
+
+        # Calculate movement steps
+        if dist_x > 0:
+            step_x = (dist_x + 1) / (abs(dist_y) + 1)
+        else:
+            step_x = (dist_x - 1) / (abs(dist_y) + 1)
+        delta_x = 0.0
+        id = a
+        if dist_x != 0:
+            num_x = int(dist_x / abs(dist_x))
+        else:
+            num_x = 0
+        num_y = self.grid_x * (int(dist_y / abs(dist_y)))
+
+        # While far from the destination zone, keep moving
+        while self.__calculate_distance(self.zones[id], self.zones[b]) > self.zone_size * 2:
+            id += num_y
+            delta_x = delta_x + step_x
+            if abs(delta_x) >= 1:
+                id += num_x
+                delta_x -= int(delta_x / abs(delta_x))
+            self.zones[id]['is_road'] = True
+    
+    '''
+    Calculate the zone ID from its coordinates.
+    '''
+    def __coordinates_to_id(self, lat, lon):
+        prop_x = (lon - self.left) / abs(self.width)
+        prop_y = (lat - self.bottom) / abs(self.height)
+        pos_x = int(prop_x * self.grid_x)
+        pos_y = int(prop_y * self.grid_y)
+        return pos_y * self.grid_x + pos_x
+
     '''
     Check every zone if it is inside the polygon area.
     '''
@@ -195,6 +286,9 @@ class RiskZonesGrid:
     Calculate the risk perception considering all PoIs.
     '''
     def calculate_risk_from_pois(self, pois: dict):
+        if len(pois) == 0:
+            return
+
         prog = 0.0
         i = 0
         total = len(self.zones)
@@ -236,6 +330,8 @@ class RiskZonesGrid:
             if zone['risk'] < min: min = zone['risk']
         
         amplitude = max - min
+        if amplitude == 0:
+            amplitude = 1
 
         for zone in self.zones:
             zone['risk'] = (zone['risk'] - min) / amplitude
@@ -342,6 +438,8 @@ class RiskZonesGrid:
             zone['has_edu'] = False
 
         for i in range(1, self.M + 1):
+            if edus[i] == 0:
+                edus[i] = 1
             At[i] = self.__get_number_of_zones_by_RL()[i]        # Area of the whole RL
             Ax[i] = numpy.ceil(At[i] / edus[i])                  # Coverage area of an EDU
             radius[i] = numpy.ceil(numpy.sqrt(Ax[i] / numpy.pi)) # Radius of an EDU
@@ -469,6 +567,9 @@ if __name__ == '__main__':
         conf['zone_size'], conf['M'], conf['edus']
     )
 
+    # Get PoIs and roads from OSM file
+    pois, roads = osmpois.extract_pois(conf['pois'], conf['amenities'])
+
     # Load cache file if enabled
     cache_filename = f"{os.path.splitext(sys.argv[1])[0]}.cache"
     if conf['cache_zones'] == True and os.path.isfile(cache_filename):
@@ -486,13 +587,18 @@ if __name__ == '__main__':
             if zone['inside']: zones_inside += 1
         grid.n_zones_inside = zones_inside
     else:
-        pois = osmpois.extract_pois(conf['pois'], conf['amenities'])
-
         # GeoJSON file
-        fp = open(conf['geojson'], 'r')
-        geojson = json.load(fp)
-        fp.close()
-        grid.init_zones_by_polygon(geojson['features'][0]['geometry']['coordinates'])
+        try:
+            fp = open(conf['geojson'], 'r')
+            geojson = json.load(fp)
+            fp.close()
+            grid.init_zones_by_polygon(geojson['features'][0]['geometry']['coordinates'])
+        except KeyError:
+            print("WARNING: No GeoJSON file specified. Not filtering by AoI polygon.")
+        except FileNotFoundError:
+            print(f"WARNING: GeoJSON file '{conf['geojson']}' not found. Not filtering by AoI polygon.")
+
+        grid.add_roads(roads)
         
         # Calculate risks
         grid.calculate_risk_from_pois(pois)
@@ -505,8 +611,7 @@ if __name__ == '__main__':
 
     # Write a CSV file with risk zones
     row = 0
-    data = ''
-    data += 'system:index,class,.geo\n'
+    data = 'system:index,class,.geo\n'
 
     for zone in grid.zones:
         if zone['inside']:
@@ -521,8 +626,7 @@ if __name__ == '__main__':
     # Write a CSV file with EDUs positioning
     grid.set_edus_positions_uniform(UniformPositioningMode.UNBALANCED)
     row = 0
-    data = ''
-    data += 'system:index,.geo\n'
+    data = 'system:index,.geo\n'
 
     for i in range(1, grid.M + 1):
         for zone in grid.edus[i]:
@@ -531,6 +635,20 @@ if __name__ == '__main__':
             row += 1
 
     fp = open(conf['output_edus'], 'w')
+    fp.write(data)
+    fp.close()
+
+    # Write a CSV file with forbidden zones
+    row = 0
+    data = 'system:index,.geo\n'
+
+    for zone in grid.zones:
+        if zone['is_road']:
+            coordinates = f"[{zone['lon']},{zone['lat']}]"
+            data += f'{row:020},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
+            row += 1
+
+    fp = open(conf['output_roads'], 'w')
     fp.write(data)
     fp.close()
 
