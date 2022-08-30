@@ -25,6 +25,17 @@
             "args": [
                 "conf/feira.json"
             ]
+        },
+        {
+            "name": "Python: Risk Zones in Test Area",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/riskzones.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "conf/test.json"
+            ]
         }
     ]
 }

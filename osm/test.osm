@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="CGImap 0.8.8 (3297878 spike-08.openstreetmap.org)" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">
+ <bounds minlat="-12.2070000" minlon="-38.9189000" maxlat="-12.2006000" maxlon="-38.9114000"/>
+ <node id="412200986" visible="true" version="4" changeset="80116534" timestamp="2020-01-27T04:01:18Z" user="LavenderBay" uid="10409666" lat="-12.2073003" lon="-38.9133503"/>
+ <node id="412507959" visible="true" version="2" changeset="80114261" timestamp="2020-01-27T02:42:18Z" user="LavenderBay" uid="10409666" lat="-12.2144313" lon="-38.9098520"/>
+ <node id="415408120" visible="true" version="3" changeset="80183780" timestamp="2020-01-28T08:37:18Z" user="LavenderBay" uid="10409666" lat="-12.1929594" lon="-38.9202936"/>
+ <node id="415408121" visible="true" version="3" changeset="80063062" timestamp="2020-01-25T08:29:45Z" user="LavenderBay" uid="10409666" lat="-12.1954596" lon="-38.9190735"/>
+ <node id="5122964557" visible="true" version="3" changeset="80115679" timestamp="2020-01-27T03:33:00Z" user="LavenderBay" uid="10409666" lat="-12.1997632" lon="-38.9170383"/>
+ <node id="7158052273" visible="true" version="1" changeset="80063062" timestamp="2020-01-25T08:29:45Z" user="LavenderBay" uid="10409666" lat="-12.1956970" lon="-38.9189614"/>
+ <node id="7158052274" visible="true" version="1" changeset="80063062" timestamp="2020-01-25T08:29:45Z" user="LavenderBay" uid="10409666" lat="-12.1962764" lon="-38.9186771"/>
+ <node id="7161550608" visible="true" version="1" changeset="80114261" timestamp="2020-01-27T02:42:18Z" user="LavenderBay" uid="10409666" lat="-12.2143771" lon="-38.9098728"/>
+ <node id="7161550609" visible="true" version="1" changeset="80114261" timestamp="2020-01-27T02:42:18Z" user="LavenderBay" uid="10409666" lat="-12.2141006" lon="-38.9100055"/>
+ <node id="7161550610" visible="true" version="1" changeset="80114261" timestamp="2020-01-27T02:42:18Z" user="LavenderBay" uid="10409666" lat="-12.2142867" lon="-38.9099090"/>
+ <node id="7161550611" visible="true" version="1" changeset="80114261" timestamp="2020-01-27T02:42:18Z" user="LavenderBay" uid="10409666" lat="-12.2139983" lon="-38.9100565"/>
+ <node id="7161550612" visible="true" version="1" changeset="80114261" timestamp="2020-01-27T02:42:18Z" user="LavenderBay" uid="10409666" lat="-12.2133049" lon="-38.9103851"/>
+ <node id="7161550613" visible="true" version="1" changeset="80114261" timestamp="2020-01-27T02:42:18Z" user="LavenderBay" uid="10409666" lat="-12.2123428" lon="-38.9108585"/>
+ <node id="7161550614" visible="true" version="1" changeset="80114261" timestamp="2020-01-27T02:42:18Z" user="LavenderBay" uid="10409666" lat="-12.2118644" lon="-38.9110851"/>
+ <node id="7161550615" visible="true" version="1" changeset="80114261" timestamp="2020-01-27T02:42:18Z" user="LavenderBay" uid="10409666" lat="-12.2111500" lon="-38.9114325"/>
+ <node id="7161550616" visible="true" version="1" changeset="80114261" timestamp="2020-01-27T02:42:18Z" user="LavenderBay" uid="10409666" lat="-12.2102902" lon="-38.9118589"/>
+ <node id="7161550617" visible="true" version="1" changeset="80114261" timestamp="2020-01-27T02:42:18Z" user="LavenderBay" uid="10409666" lat="-12.2088641" lon="-38.9125684"/>
+ <node id="7161550618" visible="true" version="1" changeset="80114261" timestamp="2020-01-27T02:42:18Z" user="LavenderBay" uid="10409666" lat="-12.2077434" lon="-38.9131129"/>
+ <node id="7161550645" visible="true" version="2" changeset="80115679" timestamp="2020-01-27T03:33:00Z" user="LavenderBay" uid="10409666" lat="-12.2069988" lon="-38.9134938"/>
+ <node id="7161550646" visible="true" version="2" changeset="80115679" timestamp="2020-01-27T03:33:00Z" user="LavenderBay" uid="10409666" lat="-12.2064863" lon="-38.9137432"/>
+ <node id="7161550647" visible="true" version="2" changeset="80115679" timestamp="2020-01-27T03:33:00Z" user="LavenderBay" uid="10409666" lat="-12.2058650" lon="-38.9140624"/>
+ <node id="7161550648" visible="true" version="2" changeset="80115679" timestamp="2020-01-27T03:33:00Z" user="LavenderBay" uid="10409666" lat="-12.2051598" lon="-38.9144044"/>
+ <node id="7161550649" visible="true" version="2" changeset="80115679" timestamp="2020-01-27T03:33:00Z" user="LavenderBay" uid="10409666" lat="-12.2047207" lon="-38.9146163"/>
+ <node id="7161550650" visible="true" version="2" changeset="80115679" timestamp="2020-01-27T03:33:00Z" user="LavenderBay" uid="10409666" lat="-12.2039486" lon="-38.9149877"/>
+ <node id="7161550651" visible="true" version="2" changeset="80115679" timestamp="2020-01-27T03:33:00Z" user="LavenderBay" uid="10409666" lat="-12.2030914" lon="-38.9154115"/>
+ <node id="7161550652" visible="true" version="2" changeset="80115679" timestamp="2020-01-27T03:33:00Z" user="LavenderBay" uid="10409666" lat="-12.2020244" lon="-38.9159600"/>
+ <node id="7161550653" visible="true" version="2" changeset="80115679" timestamp="2020-01-27T03:33:00Z" user="LavenderBay" uid="10409666" lat="-12.2014738" lon="-38.9162403"/>
+ <node id="7161550654" visible="true" version="2" changeset="80115679" timestamp="2020-01-27T03:33:00Z" user="LavenderBay" uid="10409666" lat="-12.2008918" lon="-38.9165086"/>
+ <node id="7161550655" visible="true" version="2" changeset="80115679" timestamp="2020-01-27T03:33:00Z" user="LavenderBay" uid="10409666" lat="-12.2001230" lon="-38.9168747"/>
+ <node id="7161550656" visible="true" version="2" changeset="80115679" timestamp="2020-01-27T03:33:00Z" user="LavenderBay" uid="10409666" lat="-12.1995181" lon="-38.9171536"/>
+ <node id="7161550657" visible="true" version="2" changeset="80115679" timestamp="2020-01-27T03:33:00Z" user="LavenderBay" uid="10409666" lat="-12.1984629" lon="-38.9176485"/>
+ <node id="7161550658" visible="true" version="2" changeset="80115679" timestamp="2020-01-27T03:33:00Z" user="LavenderBay" uid="10409666" lat="-12.1978625" lon="-38.9179328"/>
+ <node id="7161550659" visible="true" version="2" changeset="80115679" timestamp="2020-01-27T03:33:00Z" user="LavenderBay" uid="10409666" lat="-12.1967549" lon="-38.9184545"/>
+ <node id="7161565574" visible="true" version="1" changeset="80115679" timestamp="2020-01-27T03:33:00Z" user="LavenderBay" uid="10409666" lat="-12.2071705" lon="-38.9134160"/>
+ <node id="7161565575" visible="true" version="1" changeset="80115679" timestamp="2020-01-27T03:33:00Z" user="LavenderBay" uid="10409666" lat="-12.2056343" lon="-38.9141750"/>
+ <node id="7161565576" visible="true" version="1" changeset="80115679" timestamp="2020-01-27T03:33:00Z" user="LavenderBay" uid="10409666" lat="-12.2049068" lon="-38.9145291"/>
+ <node id="7161565577" visible="true" version="1" changeset="80115679" timestamp="2020-01-27T03:33:00Z" user="LavenderBay" uid="10409666" lat="-12.2044795" lon="-38.9147356"/>
+ <node id="7161565578" visible="true" version="1" changeset="80115679" timestamp="2020-01-27T03:33:00Z" user="LavenderBay" uid="10409666" lat="-12.2037363" lon="-38.9150991"/>
+ <node id="7161565579" visible="true" version="1" changeset="80115679" timestamp="2020-01-27T03:33:00Z" user="LavenderBay" uid="10409666" lat="-12.2035331" lon="-38.9151956"/>
+ <node id="7161565580" visible="true" version="1" changeset="80115679" timestamp="2020-01-27T03:33:00Z" user="LavenderBay" uid="10409666" lat="-12.2024936" lon="-38.9157146"/>
+ <node id="7161565581" visible="true" version="1" changeset="80115679" timestamp="2020-01-27T03:33:00Z" user="LavenderBay" uid="10409666" lat="-12.2005720" lon="-38.9166614"/>
+ <node id="7161620737" visible="true" version="1" changeset="80116534" timestamp="2020-01-27T04:01:18Z" user="LavenderBay" uid="10409666" lat="-12.2074408" lon="-38.9132750"/>
+ <node id="7165781777" visible="true" version="1" changeset="80183780" timestamp="2020-01-28T08:37:18Z" user="LavenderBay" uid="10409666" lat="-12.1930203" lon="-38.9202516"/>
+ <node id="7165781778" visible="true" version="1" changeset="80183780" timestamp="2020-01-28T08:37:18Z" user="LavenderBay" uid="10409666" lat="-12.1952644" lon="-38.9191572"/>
+ <node id="7165781779" visible="true" version="1" changeset="80183780" timestamp="2020-01-28T08:37:18Z" user="LavenderBay" uid="10409666" lat="-12.1949262" lon="-38.9193182"/>
+ <node id="7165781780" visible="true" version="1" changeset="80183780" timestamp="2020-01-28T08:37:18Z" user="LavenderBay" uid="10409666" lat="-12.1943652" lon="-38.9195918"/>
+ <node id="7165781781" visible="true" version="1" changeset="80183780" timestamp="2020-01-28T08:37:18Z" user="LavenderBay" uid="10409666" lat="-12.1935014" lon="-38.9200115"/>
+ <node id="7165781782" visible="true" version="1" changeset="80183780" timestamp="2020-01-28T08:37:18Z" user="LavenderBay" uid="10409666" lat="-12.1930884" lon="-38.9202113"/>
+ <node id="7165781783" visible="true" version="1" changeset="80183780" timestamp="2020-01-28T08:37:18Z" user="LavenderBay" uid="10409666" lat="-12.1938094" lon="-38.9198734"/>
+ <way id="35413955" visible="true" version="8" changeset="80183780" timestamp="2020-01-28T08:37:18Z" user="LavenderBay" uid="10409666">
+  <nd ref="415408120"/>
+  <nd ref="7165781777"/>
+  <nd ref="7165781782"/>
+  <nd ref="7165781781"/>
+  <nd ref="7165781783"/>
+  <nd ref="7165781780"/>
+  <nd ref="7165781779"/>
+  <nd ref="7165781778"/>
+  <nd ref="415408121"/>
+  <nd ref="7158052273"/>
+  <nd ref="7158052274"/>
+  <nd ref="7161550659"/>
+  <nd ref="7161550658"/>
+  <nd ref="7161550657"/>
+  <nd ref="7161550656"/>
+  <nd ref="5122964557"/>
+  <nd ref="7161550655"/>
+  <nd ref="7161565581"/>
+  <nd ref="7161550654"/>
+  <nd ref="7161550653"/>
+  <nd ref="7161550652"/>
+  <nd ref="7161565580"/>
+  <nd ref="7161550651"/>
+  <nd ref="7161565579"/>
+  <nd ref="7161565578"/>
+  <nd ref="7161550650"/>
+  <nd ref="7161565577"/>
+  <nd ref="7161550649"/>
+  <nd ref="7161565576"/>
+  <nd ref="7161550648"/>
+  <nd ref="7161565575"/>
+  <nd ref="7161550647"/>
+  <nd ref="7161550646"/>
+  <nd ref="7161550645"/>
+  <nd ref="7161565574"/>
+  <nd ref="412200986"/>
+  <nd ref="7161620737"/>
+  <nd ref="7161550618"/>
+  <nd ref="7161550617"/>
+  <nd ref="7161550616"/>
+  <nd ref="7161550615"/>
+  <nd ref="7161550614"/>
+  <nd ref="7161550613"/>
+  <nd ref="7161550612"/>
+  <nd ref="7161550611"/>
+  <nd ref="7161550609"/>
+  <nd ref="7161550610"/>
+  <nd ref="7161550608"/>
+  <nd ref="412507959"/>
+  <tag k="highway" v="unclassified"/>
+  <tag k="source" v="Yahoo"/>
+ </way>
+</osm>
