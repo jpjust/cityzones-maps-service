@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+from datetime import datetime
 from enum import Enum
 import osmpois
 import json
@@ -40,6 +41,7 @@ Positioning modes.
 class UniformPositioningMode(Enum):
     UNBALANCED = 1
     BALANCED = 2
+    RESTRICTED = 3
 
 '''
 This class contains the methods for calculating zone risks from PoIs
@@ -413,125 +415,165 @@ class RiskZonesGrid:
             self.edus[i] = random.choices(zones_by_RL[i], k=edus[i])
 
     '''
-    Uniformly select zones for EDUs positioning.
+    Reset EDUs flag
     '''
-    def set_edus_positions_uniform(self, mode: UniformPositioningMode):
+    def __reset_edus_flag(self):
         edus = self.__get_number_of_edus_by_RL()
         self.edus = {}
-        At = {}
-        Ax = {}
-        radius = {}
-        step = {}
-        step_x = {}
-        step_y = {}
-        zone_in_y = {}
-        total = len(self.zones)
+        self.At = {}
+        self.Ax = {}
+        self.radius = {}
+        self.step = {}
+        self.step_x = {}
+        self.step_y = {}
+        self.zone_in_y = {}
 
-        if mode == UniformPositioningMode.UNBALANCED:
-            print("Chosen positioning method: uniform unbalanced.")
-        elif mode == UniformPositioningMode.BALANCED:
-            print("Chosen positioning method: uniform balanced.")
-        print('Positioning EDUs...', end='\r')
-
-        # Reset zones EDUs flag
         for zone in self.zones:
             zone['has_edu'] = False
 
         for i in range(1, self.M + 1):
             if edus[i] == 0:
                 edus[i] = 1
-            At[i] = self.__get_number_of_zones_by_RL()[i]        # Area of the whole RL
-            Ax[i] = numpy.ceil(At[i] / edus[i])                  # Coverage area of an EDU
-            radius[i] = numpy.ceil(numpy.sqrt(Ax[i] / numpy.pi)) # Radius of an EDU
-            step[i] = 2 * radius[i]                              # Step distance on x and y directions
+            self.At[i] = self.__get_number_of_zones_by_RL()[i]        # Area of the whole RL
+            self.Ax[i] = numpy.ceil(self.At[i] / edus[i])                  # Coverage area of an EDU
+            self.radius[i] = numpy.ceil(numpy.sqrt(self.Ax[i] / numpy.pi)) # Radius of an EDU
+            self.step[i] = 2 * self.radius[i]                              # Step distance on x and y directions
             self.edus[i] = []                                    # Final list of EDUs in zone i
-            step_x[i] = step_y[i] = 0                            # The steps are accounted individually for each RL
-            zone_in_y[i] = False                                 # To check if there was any zone for a RL in any y
-        smallest_radius = int(radius[self.M])                    # Radius of the highest level
-        highest_radius = int(radius[1])                          # Radius of the lowest level
+            self.step_x[i] = self.step_y[i] = 0                            # The steps are accounted individually for each RL
+            self.zone_in_y[i] = False                                 # To check if there was any zone for a RL in any y
+        self.smallest_radius = int(self.radius[self.M])                    # Radius of the highest level
+        self.highest_radius = int(self.radius[1])                          # Radius of the lowest level
         
         self.zones.sort(key=lambda zone : zone['id'])
 
-        #
-        # Unbalanced positioning mode.
-        #
-        if mode == UniformPositioningMode.UNBALANCED:
-            for y in range(self.grid_y):
-                # First, reset step for every RL in x direction and check if there was any zone in y
-                for i in range(1, self.M + 1):
-                    step_x[i] = 0
-                    if zone_in_y[i]:
-                        step_y[i] += 1
-                        zone_in_y[i] = False
-
-                # For each zone in this coordinate, check if it is inside AoI and check if it is time to
-                # put an EDU in it
-                for x in range(self.grid_x):
-                    id = self.grid_x * y + x
-                    zone = self.zones[id]
-                    if not zone['inside']: continue
-
-                    for i in range(1, self.M + 1):
-                        if zone['RL'] != i: continue
-                        zone_in_y[i] = True # If there was any zone for this RL in this y, we can increment step_y later
-
-                        if step_x[i] % step[i] == 0 and step_y[i] % step[i] == 0:
-                            self.edus[i].append(zone)
-                            
-                        step_x[i] += 1
-
-                        prog = (id / total) * 100
-                        print(f'Positioning EDUs... {prog:.2f}%', end='\r')
+    '''
+    Uniformly select zones for EDUs positioning.
+    '''
+    def set_edus_positions_uniform(self, mode: UniformPositioningMode):
+        self.__reset_edus_flag()
         
-        #
-        # Balanced positioning mode.
-        #
+        print('Positioning EDUs...', end='\r')
+
+        if mode == UniformPositioningMode.UNBALANCED:
+            self.set_edus_positions_uniform_unbalanced()
         elif mode == UniformPositioningMode.BALANCED:
-            y = 0
-            while y < self.grid_y:
-                x = 0
-                try:
-                    while x < self.grid_x:
-                        while True:
-                            # Get the zone in this coordinate by its ID
-                            id = self.grid_x * y + x
-                            zone = self.zones[id]
+            self.set_edus_positions_uniform_balanced()
+        elif mode == UniformPositioningMode.RESTRICTED:
+            self.set_edus_positions_uniform_restricted()
+        
+        print('Positioning EDUs... 100.00%')
+        
+    '''
+    Unbalanced positioning mode.
+    '''
+    def set_edus_positions_uniform_unbalanced(self):
+        print("Chosen positioning method: uniform unbalanced.")
+        for y in range(self.grid_y):
+            # First, reset step for every RL in x direction and check if there was any zone in y
+            for i in range(1, self.M + 1):
+                self.step_x[i] = 0
+                if self.zone_in_y[i]:
+                    self.step_y[i] += 1
+                    self.zone_in_y[i] = False
 
-                            # The zone must be inside the AoI, otherwise, check the next zone
-                            if zone['inside']:
-                                break
-                            elif x >= self.grid_x:
-                                raise OutOfBounds
-                            else:
-                                x += 1
+            # For each zone in this coordinate, check if it is inside AoI and check if it is time to
+            # put an EDU in it
+            for x in range(self.grid_x):
+                id = self.grid_x * y + x
+                zone = self.zones[id]
+                if not zone['inside']: continue
 
-                        try:
-                            # Don't even try if we are still within the range of another EDU
-                            nearby_zones = self.__get_zones_in_area(id, 2 * highest_radius + 1)
-                            for nearby_zone in nearby_zones:
-                                if not nearby_zone['has_edu']: continue
-                                calc_radius = 2 * radius[zone['RL']] * self.zone_size
-                                if self.__calculate_distance(zone, nearby_zone) <= (calc_radius):
-                                    raise SkipZone
+                for i in range(1, self.M + 1):
+                    if zone['RL'] != i: continue
+                    self.zone_in_y[i] = True # If there was any zone for this RL in this y, we can increment step_y later
 
-                            self.edus[zone['RL']].append(zone)
-                            zone['has_edu'] = True
-                            x += smallest_radius
+                    if self.step_x[i] % self.step[i] == 0 and self.step_y[i] % self.step[i] == 0:
+                        self.edus[i].append(zone)
                         
-                        except SkipZone:
+                    self.step_x[i] += 1
+
+                    prog = (id / len(self.zones)) * 100
+                    print(f'Positioning EDUs... {prog:.2f}%', end='\r')
+    
+    '''
+    Balanced positioning mode.
+    '''
+    def set_edus_positions_uniform_balanced(self):
+        print("Chosen positioning method: uniform balanced.")
+        y = 0
+        while y < self.grid_y:
+            x = 0
+            try:
+                while x < self.grid_x:
+                    while True:
+                        # Get the zone in this coordinate by its ID
+                        id = self.grid_x * y + x
+                        zone = self.zones[id]
+
+                        # The zone must be inside the AoI, otherwise, check the next zone
+                        if zone['inside']:
+                            break
+                        elif x >= self.grid_x:
+                            raise OutOfBounds
+                        else:
                             x += 1
+
+                    try:
+                        # Don't even try if we are still within the range of another EDU
+                        nearby_zones = self.__get_zones_in_area(id, 2 * self.highest_radius + 1)
+                        for nearby_zone in nearby_zones:
+                            if not nearby_zone['has_edu']: continue
+                            calc_radius = 2 * self.radius[zone['RL']] * self.zone_size
+                            if self.__calculate_distance(zone, nearby_zone) <= (calc_radius):
+                                raise SkipZone
+
+                        self.edus[zone['RL']].append(zone)
+                        zone['has_edu'] = True
+                        x += self.smallest_radius
                     
-                        prog = (id / total) * 100
-                        print(f'Positioning EDUs... {prog:.2f}%', end='\r')
-
-                except IndexError:
-                    pass
-                except OutOfBounds:
-                    pass
+                    except SkipZone:
+                        x += 1
                 
-                y += smallest_radius
+                    prog = (id / len(self.zones)) * 100
+                    print(f'Positioning EDUs... {prog:.2f}%', end='\r')
 
-        print(f'Positioning EDUs... 100.00%')
+            except IndexError:
+                pass
+            except OutOfBounds:
+                pass
+            
+            y += self.smallest_radius
+
+    '''
+    Restricted positioning mode.
+    '''
+    def set_edus_positions_uniform_restricted(self):
+        self.set_edus_positions_uniform_balanced()
+        print("Moving EDUs to permitted zones...")
+
+        # For each EDU check if it is in a permitted zone (only roads for now).
+        # If not, move it to the nearest permitted zone.
+        for i in range(1, self.M + 1):
+            zones_removal = []
+
+            for zone in self.edus[i]:
+                if zone['is_road']: continue
+
+                nearby_zones = self.__get_zones_in_area(zone['id'], int(self.radius[i] / 2))
+                for nearby_zone in nearby_zones:
+                    if not nearby_zone['is_road']: continue
+                    if nearby_zone['has_edu']: continue
+
+                    nearby_zone['has_edu'] = True
+                    self.edus[i].append(nearby_zone)
+                    break
+                
+                zone['has_edu'] = False
+                zones_removal.append(zone)
+        
+            # Remove from self.edus all zones that have not an EDU anymore
+            for zone in zones_removal:
+                self.edus[i].remove(zone)
 
     '''
     Get all zones within a squared area.
@@ -556,6 +598,8 @@ if __name__ == '__main__':
         print(f"Use: {sys.argv[0]} config.json\n")
         print("config.json is a configuration file in JSON format. See examples in conf folder.")
         sys.exit()
+    
+    time_begin = datetime.now()
 
     # Config file
     fp = open(sys.argv[1], 'r')
@@ -624,7 +668,7 @@ if __name__ == '__main__':
     fp.close()
     
     # Write a CSV file with EDUs positioning
-    grid.set_edus_positions_uniform(UniformPositioningMode.UNBALANCED)
+    grid.set_edus_positions_uniform(UniformPositioningMode.RESTRICTED)
     row = 0
     data = 'system:index,.geo\n'
 
@@ -653,3 +697,6 @@ if __name__ == '__main__':
     fp.close()
 
     print("Done.")
+
+    time_diff = datetime.now() - time_begin
+    print(f"Elapsed time: {time_diff}")
