@@ -434,15 +434,15 @@ class RiskZonesGrid:
         for i in range(1, self.M + 1):
             if edus[i] == 0:
                 edus[i] = 1
-            self.At[i] = self.__get_number_of_zones_by_RL()[i]        # Area of the whole RL
-            self.Ax[i] = numpy.ceil(self.At[i] / edus[i])                  # Coverage area of an EDU
-            self.radius[i] = numpy.ceil(numpy.sqrt(self.Ax[i] / numpy.pi)) # Radius of an EDU
-            self.step[i] = 2 * self.radius[i]                              # Step distance on x and y directions
-            self.edus[i] = []                                    # Final list of EDUs in zone i
-            self.step_x[i] = self.step_y[i] = 0                            # The steps are accounted individually for each RL
-            self.zone_in_y[i] = False                                 # To check if there was any zone for a RL in any y
-        self.smallest_radius = int(self.radius[self.M])                    # Radius of the highest level
-        self.highest_radius = int(self.radius[1])                          # Radius of the lowest level
+            self.At[i] = self.__get_number_of_zones_by_RL()[i]              # Area of the whole RL
+            self.Ax[i] = numpy.round(self.At[i] / edus[i])                  # Coverage area of an EDU
+            self.radius[i] = numpy.floor(numpy.sqrt(self.Ax[i] / numpy.pi)) # Radius of an EDU
+            self.step[i] = 2 * self.radius[i]                               # Step distance on x and y directions
+            self.edus[i] = []                                               # Final list of EDUs in zone i
+            self.step_x[i] = self.step_y[i] = 0                             # The steps are accounted individually for each RL
+            self.zone_in_y[i] = False                                       # To check if there was any zone for a RL in any y
+        self.smallest_radius = int(self.radius[self.M])                     # Radius of the highest level
+        self.highest_radius = int(self.radius[1])                           # Radius of the lowest level
         
         self.zones.sort(key=lambda zone : zone['id'])
 
@@ -559,10 +559,13 @@ class RiskZonesGrid:
             for zone in self.edus[i]:
                 if zone['is_road']: continue
 
-                nearby_zones = self.__get_zones_in_area(zone['id'], int(self.radius[i] / 2))
-                for nearby_zone in nearby_zones:
+                zone_id = zone['id']
+                spiral_path = self.__get_spiral_path(zone_id, self.radius[i])
+                for step in spiral_path:
+                    zone_id += step
+                    nearby_zone = self.zones[zone_id]
                     if not nearby_zone['is_road']: continue
-                    if nearby_zone['has_edu']: continue
+                    if nearby_zone['has_edu']: break
 
                     nearby_zone['has_edu'] = True
                     self.edus[i].append(nearby_zone)
@@ -574,6 +577,26 @@ class RiskZonesGrid:
             # Remove from self.edus all zones that have not an EDU anymore
             for zone in zones_removal:
                 self.edus[i].remove(zone)
+
+    '''
+    Compute a spiral path for zone search whithin a range.
+    '''
+    def __get_spiral_path(self, center_id: int, range_radius: int) -> list:
+        steps = []
+        step = -1
+
+        while True:
+            step_signal = int(step / abs(step))
+            for s in range(0, step, step_signal):
+                steps.append(step_signal * self.grid_x)
+            for s in range(0, step, step_signal):
+                steps.append(step_signal)
+            step += step_signal
+            step *= -1
+            if abs(step) > range_radius:
+                break
+
+        return steps
 
     '''
     Get all zones within a squared area.
