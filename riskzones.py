@@ -436,7 +436,7 @@ class RiskZonesGrid:
                 edus[i] = 1
             self.At[i] = self.__get_number_of_zones_by_RL()[i]              # Area of the whole RL
             self.Ax[i] = numpy.round(self.At[i] / edus[i])                  # Coverage area of an EDU
-            self.radius[i] = numpy.floor(numpy.sqrt(self.Ax[i] / numpy.pi)) # Radius of an EDU
+            self.radius[i] = numpy.floor(numpy.sqrt(self.Ax[i]) / 2)        # Radius of an EDU
             self.step[i] = 2 * self.radius[i]                               # Step distance on x and y directions
             self.edus[i] = []                                               # Final list of EDUs in zone i
             self.step_x[i] = self.step_y[i] = 0                             # The steps are accounted individually for each RL
