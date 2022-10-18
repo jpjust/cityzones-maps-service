@@ -38,7 +38,7 @@
 ##########
 
 # Feira de Santana, Bahia, Brazil
-osmium extract --config geojson/feira,json --progress /home/just/Downloads/openstreetmap/nordeste-latest.osm
+osmium extract --config geojson/feira.json --progress /home/just/Downloads/openstreetmap/nordeste-latest.osm
 
 # Porto, Portugal
 osmium extract --config geojson/porto.json --progress /home/just/Downloads/openstreetmap/portugal-latest.osm
