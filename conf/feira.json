@@ -9,7 +9,9 @@
     "edus": 300,
     "geojson": "geojson/feira.geojson",
     "pois": "osm/feira.osm",
-    "amenities": ["hospital", "fire_station", "police"],
+    "pois_types": {
+        "amenity": ["hospital", "fire_station", "police"]
+    },
     "output": "csv/feira.csv",
     "output_edus": "csv/feira_edus.csv",
     "output_roads": "csv/feira_roads.csv"

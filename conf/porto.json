@@ -5,11 +5,14 @@
     "top": 41.1939,
     "zone_size": 10,
     "cache_zones": true,
-    "M": 3,
+    "M": 5,
     "edus": 300,
     "geojson": "geojson/porto.geojson",
     "pois": "osm/porto.osm",
-    "amenities": ["hospital", "fire_station", "police"],
+    "pois_types": {
+        "amenity": ["hospital", "fire_station", "police"],
+        "railway": ["station"]
+    },
     "output": "csv/porto.csv",
     "output_edus": "csv/porto_edus.csv",
     "output_roads": "csv/porto_roads.csv"

@@ -20,9 +20,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 import xml.etree.ElementTree as ET
 
 '''
-Extract roads and PoIs of type amenity from OSM file.
+Extract roads and PoIs of types pois_types from OSM file.
 '''
-def extract_pois(file, amenity):
+def extract_pois(file: str, pois_types: dict) -> tuple[list, list]:
     tree = ET.parse(file)
     root = tree.getroot()
     pois = []
@@ -46,13 +46,14 @@ def extract_pois(file, amenity):
         
         nodes[id] = node_data
 
-        # If this node already represents the requested amenity, just add it to
+        # If this node already represents the requested pois_types, just add it to
         # the list of POIs
-        try:
-            if node_data['amenity'] in amenity:
-                pois.append(node_data)
-        except KeyError:
-            pass
+        for node_key in node_data.keys():
+            try:
+                if node_data[node_key] in pois_types[node_key]:
+                    pois.append(node_data)
+            except KeyError:
+                pass
     
     # Collect ways from OSM
     for way in root.iter('way'):
@@ -95,13 +96,14 @@ def extract_pois(file, amenity):
 
         ways[id] = way_data
 
-        # If this way already represents the requested amenity, just add it to
+        # If this way already represents the requested pois_types, just add it to
         # the list of POIs
-        try:
-            if way_data['amenity'] in amenity:
-                pois.append(way_data)
-        except KeyError:
-            pass
+        for way_key in way_data.keys():
+            try:
+                if way_data[way_key] in pois_types[way_key]:
+                    pois.append(way_data)
+            except KeyError:
+                pass
 
     # Collect relations from OSM
     for relation in root.iter('relation'):
@@ -130,13 +132,14 @@ def extract_pois(file, amenity):
 
         relations[id] = relation_data
 
-        # If this relation represents the requested amenity, just add it to
+        # If this relation represents the requested pois_types, just add it to
         # the list of POIs
-        try:
-            if relation_data['amenity'] in amenity:
-                pois.append(relation_data)
-        except KeyError:
-            pass
+        for relation_key in relation_data.keys():
+            try:
+                if relation_data[relation_key] in pois_types[relation_key]:
+                    pois.append(relation_data)
+            except KeyError:
+                pass
 
     return pois, roads
 
@@ -145,13 +148,13 @@ Main program.
 '''
 if __name__ == '__main__':
     file = input('Input OSM filename: ')
-    amenity = input('Input amenity type (hospital, police, fire_station): ')
-    pois = extract_pois(file, amenity)
+    pois_type = input('Input pois type (hospital, police, fire_station): ')
+    pois = extract_pois(file, {'amenity': pois_type})
     
     message = f"{len(pois)} PoIs found:"
     print(f"\n{message}")
     print('-' * len(message))
 
-    for hospital in pois:
-        print(f"Name: {hospital['name']}")
-        print(f"Coordinates: {hospital['lon']},{hospital['lat']}\n")
+    for poi in pois:
+        print(f"Name: {poi['name']}")
+        print(f"Coordinates: {poi['lon']},{poi['lat']}\n")

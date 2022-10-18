@@ -8,7 +8,9 @@
     "M": 3,
     "edus": 300,
     "pois": "osm/test.osm",
-    "amenities": ["hospital", "fire_station", "police"],
+    "pois_types": {
+        "amenity": ["hospital", "fire_station", "police"]
+    },
     "output": "csv/test.csv",
     "output_edus": "csv/test_edus.csv",
     "output_roads": "csv/test_roads.csv"

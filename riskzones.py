@@ -635,7 +635,7 @@ if __name__ == '__main__':
     )
 
     # Get PoIs and roads from OSM file
-    pois, roads = osmpois.extract_pois(conf['pois'], conf['amenities'])
+    pois, roads = osmpois.extract_pois(conf['pois'], conf['pois_types'])
 
     # Load cache file if enabled
     cache_filename = f"{os.path.splitext(sys.argv[1])[0]}.cache"
