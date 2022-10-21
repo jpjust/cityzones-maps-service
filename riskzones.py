@@ -691,33 +691,43 @@ if __name__ == '__main__':
     fp.close()
     
     # Write a CSV file with EDUs positioning
-    grid.set_edus_positions_uniform(UniformPositioningMode.RESTRICTED)
-    row = 0
-    data = 'system:index,.geo\n'
+    if conf['edu_alg'] == 'random':
+        grid.set_edus_positions_random()
+    elif conf['edu_alg'] == 'balanced':
+        grid.set_edus_positions_uniform(UniformPositioningMode.UNBALANCED)
+    elif conf['edu_alg'] == 'enhanced':
+        grid.set_edus_positions_uniform(UniformPositioningMode.BALANCED)
+    elif conf['edu_alg'] == 'restricted':
+        grid.set_edus_positions_uniform(UniformPositioningMode.RESTRICTED)
+    
+    if 'output_edus' in conf.keys():
+        row = 0
+        data = 'system:index,.geo\n'
 
-    for i in range(1, grid.M + 1):
-        for zone in grid.edus[i]:
-            coordinates = f"[{zone['lon']},{zone['lat']}]"
-            data += f'{row:020},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
-            row += 1
+        for i in range(1, grid.M + 1):
+            for zone in grid.edus[i]:
+                coordinates = f"[{zone['lon']},{zone['lat']}]"
+                data += f'{row:020},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
+                row += 1
 
-    fp = open(conf['output_edus'], 'w')
-    fp.write(data)
-    fp.close()
+        fp = open(conf['output_edus'], 'w')
+        fp.write(data)
+        fp.close()
 
     # Write a CSV file with forbidden zones
-    row = 0
-    data = 'system:index,.geo\n'
+    if 'output_roads' in conf.keys():
+        row = 0
+        data = 'system:index,.geo\n'
 
-    for zone in grid.zones:
-        if zone['is_road']:
-            coordinates = f"[{zone['lon']},{zone['lat']}]"
-            data += f'{row:020},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
-            row += 1
+        for zone in grid.zones:
+            if zone['is_road']:
+                coordinates = f"[{zone['lon']},{zone['lat']}]"
+                data += f'{row:020},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
+                row += 1
 
-    fp = open(conf['output_roads'], 'w')
-    fp.write(data)
-    fp.close()
+        fp = open(conf['output_roads'], 'w')
+        fp.write(data)
+        fp.close()
 
     print("Done.")
 

@@ -13,6 +13,7 @@
         "amenity": ["hospital", "fire_station", "police"],
         "railway": ["station"]
     },
+    "edu_alg": "restricted",
     "output": "csv/porto.csv",
     "output_edus": "csv/porto_edus.csv",
     "output_roads": "csv/porto_roads.csv"
