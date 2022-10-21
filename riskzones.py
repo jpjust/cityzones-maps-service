@@ -71,6 +71,8 @@ class RiskZonesGrid:
         self.M = M
         self.n_edus = n_edus
         self.edus = {}
+        for m in range(1, M + 1):
+            self.edus[m] = []
         self.zones = []
         self.roads = []
         self.n_zones_inside = 0
