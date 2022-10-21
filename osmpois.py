@@ -38,12 +38,14 @@ def extract_pois(file: str, pois_types: dict) -> tuple[list, list]:
         node_data = {
             'lat': float(node.get('lat')),
             'lon': float(node.get('lon')),
-            'weight': 1
+            'weight': 1.0
         }
 
         for tag in node.iter('tag'):
             node_data[tag.get('k')] = tag.get('v')
         
+        if 'poi_weight' in node_data.keys():
+            node_data['weight'] = float(node_data['poi_weight'])
         nodes[id] = node_data
 
         # If this node already represents the requested pois_types, just add it to
