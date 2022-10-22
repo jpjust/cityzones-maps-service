@@ -16,6 +16,17 @@
             ]
         },
         {
+            "name": "Python: Risk Zones in Paris",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/riskzones.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "conf/paris.json"
+            ]
+        },
+        {
             "name": "Python: Risk Zones in Feira",
             "type": "python",
             "request": "launch",

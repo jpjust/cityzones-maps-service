@@ -43,6 +43,9 @@ osmium extract --config geojson/feira.json --progress /home/just/Downloads/opens
 # Porto, Portugal
 osmium extract --config geojson/porto.json --progress /home/just/Downloads/openstreetmap/portugal-latest.osm
 
+# Paris, France using osmosis and a PBF file
+osmosis --read-pbf file=france.osm.pbf --bounding-box top=48.9281 left=2.1842 bottom=48.7897 right=2.5097 --write-xml file=paris.osm
+
 ##########
 # Step 2: filtering (optional)
 # 

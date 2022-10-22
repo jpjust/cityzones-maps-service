@@ -1,0 +1,20 @@
+{
+    "left": 2.1842,
+    "bottom": 48.7897,
+    "right": 2.5097,
+    "top": 48.9281,
+    "zone_size": 10,
+    "cache_zones": true,
+    "M": 5,
+    "edus": 300,
+    "geojson": "geojson/paris.geojson",
+    "pois": "osm/paris.osm",
+    "pois_types": {
+        "amenity": ["hospital", "fire_station", "police"],
+        "railway": ["station"]
+    },
+    "edu_alg": "none",
+    "output": "csv/paris_M5.csv",
+    "output_edus": "csv/paris_edus.csv",
+    "output_roads": "csv/paris_roads.csv"
+}
