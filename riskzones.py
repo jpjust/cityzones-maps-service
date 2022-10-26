@@ -74,8 +74,8 @@ class RiskZonesGrid:
         for m in range(1, M + 1):
             self.edus[m] = []
         self.zones = []
+        self.zones_inside = []
         self.roads = []
-        self.n_zones_inside = 0
         self.polygons = []
 
         # Grid setup
@@ -92,6 +92,9 @@ class RiskZonesGrid:
     Initialize every zone.
     '''
     def __init_zones(self):
+        self.zones.clear()
+        self.zones_inside.clear()
+
         for j in range(self.grid_y):
             for i in range(self.grid_x):
                 zone = {
@@ -106,9 +109,21 @@ class RiskZonesGrid:
                 }
 
                 self.zones.append(zone)
-
-        self.n_zones_inside = len(self.zones)
+                self.zones_inside.append(zone)
     
+    '''
+    Load zones from JSON data.
+    '''
+    def load_zones(self, zones: list):
+        self.zones.clear()
+        self.zones_inside.clear()
+
+        self.zones = zones
+
+        for zone in self.zones:
+            if zone['inside']: 
+                grid.zones_inside.append(zone)
+
     '''
     Add roads to zones list.
     '''
@@ -206,7 +221,7 @@ class RiskZonesGrid:
         i = 0
         total = len(self.zones)
         print(f'Checking zones inside the polygon... {prog:.2f}%', end='\r')
-        zones_inside = 0
+        self.zones_inside.clear()
 
         for coord in polygon:
             self.polygons.append(coord[0])
@@ -217,13 +232,12 @@ class RiskZonesGrid:
             for pol in self.polygons:
                 if self.__check_zone_in_polygon(zone, pol):
                     zone['inside'] = True
-                    zones_inside += 1
+                    self.zones_inside.append(zone)
                     break
             prog = (i / total) * 100
             print(f'Checking zones inside the polygon... {prog:.2f}%', end='\r')
         
-        print(f'\n{zones_inside} zones inside the polygon.')
-        self.n_zones_inside = zones_inside
+        print(f'\n{len(self.zones_inside)} zones inside the polygon.')
 
     '''
     Check if a zone is inside a polygon.
@@ -295,10 +309,10 @@ class RiskZonesGrid:
 
         prog = 0.0
         i = 0
-        total = len(self.zones)
+        total = len(self.zones_inside)
         print(f'Calculating risk perception... {prog:.2f}%', end='\r')
 
-        for zone in self.zones:
+        for zone in self.zones_inside:
             i += 1
             sum = 0
             for poi in pois:
@@ -329,7 +343,7 @@ class RiskZonesGrid:
     def __normalize_risks(self):
         min = max = self.zones[0]['risk']
 
-        for zone in self.zones:
+        for zone in self.zones_inside:
             if zone['risk'] > max: max = zone['risk']
             if zone['risk'] < min: min = zone['risk']
         
@@ -337,14 +351,14 @@ class RiskZonesGrid:
         if amplitude == 0:
             amplitude = 1
 
-        for zone in self.zones:
+        for zone in self.zones_inside:
             zone['risk'] = (zone['risk'] - min) / amplitude
     
     '''
     Calculate the RL according to risk perception.
     '''
     def __calculate_RL(self):
-        for zone in self.zones:
+        for zone in self.zones_inside:
             if zone['risk'] == 0:
                 zone['RL'] = 1
             else:
@@ -365,9 +379,8 @@ class RiskZonesGrid:
         for i in range(1, self.M + 1):
             nzones[i] = 0
         
-        for zone in self.zones:
-            if zone['inside']:
-                nzones[zone['RL']] += 1
+        for zone in self.zones_inside:
+            nzones[zone['RL']] += 1
         
         return nzones
     
@@ -398,9 +411,8 @@ class RiskZonesGrid:
         for i in range(self.M + 1):
             zones_by_RL[i] = []
 
-        for zone in grid.zones:
-            if zone['inside']:
-                zones_by_RL[zone['RL']].append(zone)
+        for zone in grid.zones_inside:
+            zones_by_RL[zone['RL']].append(zone)
         
         return zones_by_RL
 
@@ -645,16 +657,11 @@ if __name__ == '__main__':
         try:
             print(f"Loading cache file {cache_filename}...")
             fp = open(cache_filename, 'r')
-            grid.zones = json.load(fp)
+            grid.load_zones(json.load(fp))
             fp.close()
         except json.JSONDecodeError:
             print("The cache file is corrupted. Delete it and run the program again.")
             sys.exit()
-
-        zones_inside = 0
-        for zone in grid.zones:
-            if zone['inside']: zones_inside += 1
-        grid.n_zones_inside = zones_inside
     else:
         # GeoJSON file
         try:
@@ -682,11 +689,10 @@ if __name__ == '__main__':
     row = 0
     data = 'system:index,class,.geo\n'
 
-    for zone in grid.zones:
-        if zone['inside']:
-            coordinates = f"[{zone['lon']},{zone['lat']}]"
-            data += f'{row:020},{zone["RL"]},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
-            row += 1
+    for zone in grid.zones_inside:
+        coordinates = f"[{zone['lon']},{zone['lat']}]"
+        data += f'{row:020},{zone["RL"]},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
+        row += 1
 
     fp = open(conf['output'], 'w')
     fp.write(data)
