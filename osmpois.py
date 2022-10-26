@@ -71,14 +71,17 @@ def extract_pois(file: str, pois_types: dict) -> tuple[list, list]:
 
             # Combine nodes in a way to make roads
             if len(way_nodes) < 2: continue
-            road = {}
-            road['start'] = {}
-            road['end'] = {}
-            road['start']['lat'] = nodes[way_nodes[-2]]['lat']
-            road['start']['lon'] = nodes[way_nodes[-2]]['lon']
-            road['end']['lat'] = nodes[way_nodes[-1]]['lat']
-            road['end']['lon'] = nodes[way_nodes[-1]]['lon']
-            way_roads.append(road)
+            try:
+                road = {}
+                road['start'] = {}
+                road['end'] = {}
+                road['start']['lat'] = nodes[way_nodes[-2]]['lat']
+                road['start']['lon'] = nodes[way_nodes[-2]]['lon']
+                road['end']['lat'] = nodes[way_nodes[-1]]['lat']
+                road['end']['lon'] = nodes[way_nodes[-1]]['lon']
+                way_roads.append(road)
+            except KeyError:
+                pass
         
         # Check if this way is a highway (roads, streets, etc.)
         for tag in way.iter('tag'):
