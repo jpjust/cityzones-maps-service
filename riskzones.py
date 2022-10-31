@@ -17,9 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from datetime import datetime
 from enum import Enum
 import osmpois
+import time
 import json
 import sys
 import os
@@ -109,7 +109,7 @@ class RiskZonesGrid:
                 }
 
                 self.zones.append(zone)
-                self.zones_inside.append(zone)
+                self.zones_inside.append(zone['id'])
     
     '''
     Load zones from JSON data.
@@ -122,7 +122,7 @@ class RiskZonesGrid:
 
         for zone in self.zones:
             if zone['inside']: 
-                grid.zones_inside.append(zone)
+                self.zones_inside.append(zone['id'])
 
     '''
     Add roads to zones list.
@@ -232,7 +232,7 @@ class RiskZonesGrid:
             for pol in self.polygons:
                 if self.__check_zone_in_polygon(zone, pol):
                     zone['inside'] = True
-                    self.zones_inside.append(zone)
+                    self.zones_inside.append(zone['id'])
                     break
             prog = (i / total) * 100
             print(f'Checking zones inside the polygon... {prog:.2f}%', end='\r')
@@ -312,12 +312,12 @@ class RiskZonesGrid:
         total = len(self.zones_inside)
         print(f'Calculating risk perception... {prog:.2f}%', end='\r')
 
-        for zone in self.zones_inside:
+        for id in self.zones_inside:
             i += 1
             sum = 0
             for poi in pois:
-                sum += poi['weight'] / (self.__calculate_distance(zone, poi) ** 2)
-            zone['risk'] = 1 / sum
+                sum += poi['weight'] / (self.__calculate_distance(self.zones[id], poi) ** 2)
+            self.zones[id]['risk'] = 1 / sum
 
             prog = (i / total) * 100
             print(f'Calculating risk perception... {prog:.2f}%', end='\r')
@@ -343,27 +343,27 @@ class RiskZonesGrid:
     def __normalize_risks(self):
         min = max = self.zones[0]['risk']
 
-        for zone in self.zones_inside:
-            if zone['risk'] > max: max = zone['risk']
-            if zone['risk'] < min: min = zone['risk']
+        for id in self.zones_inside:
+            if self.zones[id]['risk'] > max: max = self.zones[id]['risk']
+            if self.zones[id]['risk'] < min: min = self.zones[id]['risk']
         
         amplitude = max - min
         if amplitude == 0:
             amplitude = 1
 
-        for zone in self.zones_inside:
-            zone['risk'] = (zone['risk'] - min) / amplitude
+        for id in self.zones_inside:
+            self.zones[id]['risk'] = (self.zones[id]['risk'] - min) / amplitude
     
     '''
     Calculate the RL according to risk perception.
     '''
     def __calculate_RL(self):
-        for zone in self.zones_inside:
-            if zone['risk'] == 0:
-                zone['RL'] = 1
+        for id in self.zones_inside:
+            if self.zones[id]['risk'] == 0:
+                self.zones[id]['RL'] = 1
             else:
-                rl = self.M - numpy.minimum(abs(int(numpy.log10(zone['risk']))), self.M - 1)
-                zone['RL'] = int(rl)
+                rl = self.M - numpy.minimum(abs(int(numpy.log10(self.zones[id]['risk']))), self.M - 1)
+                self.zones[id]['RL'] = int(rl)
 
     '''
     Sort zones by its risk levels.
@@ -379,8 +379,8 @@ class RiskZonesGrid:
         for i in range(1, self.M + 1):
             nzones[i] = 0
         
-        for zone in self.zones_inside:
-            nzones[zone['RL']] += 1
+        for id in self.zones_inside:
+            nzones[self.zones[id]['RL']] += 1
         
         return nzones
     
@@ -411,8 +411,8 @@ class RiskZonesGrid:
         for i in range(self.M + 1):
             zones_by_RL[i] = []
 
-        for zone in grid.zones_inside:
-            zones_by_RL[zone['RL']].append(zone)
+        for id in self.zones_inside:
+            zones_by_RL[self.zones[id]['RL']].append(self.zones[id])
         
         return zones_by_RL
 
@@ -636,7 +636,7 @@ if __name__ == '__main__':
         print("config.json is a configuration file in JSON format. See examples in conf folder.")
         sys.exit()
     
-    time_begin = datetime.now()
+    time_begin = time.perf_counter()
 
     # Config file
     fp = open(sys.argv[1], 'r')
@@ -689,9 +689,9 @@ if __name__ == '__main__':
     row = 0
     data = 'system:index,class,.geo\n'
 
-    for zone in grid.zones_inside:
-        coordinates = f"[{zone['lon']},{zone['lat']}]"
-        data += f'{row:020},{zone["RL"]},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
+    for id in grid.zones_inside:
+        coordinates = f"[{grid.zones[id]['lon']},{grid.zones[id]['lat']}]"
+        data += f'{row:020},{grid.zones[id]["RL"]},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
         row += 1
 
     fp = open(conf['output'], 'w')
@@ -739,5 +739,5 @@ if __name__ == '__main__':
 
     print("Done.")
 
-    time_diff = datetime.now() - time_begin
-    print(f"Elapsed time: {time_diff}")
+    time_diff = time.perf_counter() - time_begin
+    print(f"Elapsed time: {round(time_diff, 3)} seconds.")
