@@ -92,11 +92,14 @@ def extract_pois(file: str, pois_types: dict) -> tuple[list, list]:
         # Get the first available node to copy its coordinates
         # (depending on the boundaries of the exported OSM file, some
         # nodes may be out of the map)
+        if 'poi_weight' in way_data.keys():
+            way_data['weight'] = float(way_data['poi_weight'])
+        else:
+            way_data['weight'] = 1.0
         for node in way_nodes:
             if node in nodes:
                 way_data['lat'] = float(nodes[node]['lat'])
                 way_data['lon'] = float(nodes[node]['lon'])
-                way_data['weight'] = float(nodes[node]['weight'])
                 break
 
         ways[id] = way_data
@@ -128,11 +131,13 @@ def extract_pois(file: str, pois_types: dict) -> tuple[list, list]:
         # Get the first available way to copy its coordinates
         # (depending on the boundaries of the exported OSM file, some
         # ways may be out of the map)
+        relation_data['weight'] = 1.0
         for way in relation_ways:
             if way in ways:
                 relation_data['lat'] = float(ways[way]['lat'])
                 relation_data['lon'] = float(ways[way]['lon'])
-                relation_data['weight'] = float(ways[way]['weight'])
+                if 'poi_weight' in ways[way].keys():
+                    relation_data['weight'] = float(ways[way]['poi_weight'])
                 break
 
         relations[id] = relation_data
