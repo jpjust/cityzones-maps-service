@@ -27,6 +27,17 @@
             ]
         },
         {
+            "name": "Python: Risk Zones in Eiffel AoI",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/riskzones.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "conf/eiffel.json"
+            ]
+        },
+        {
             "name": "Python: Risk Zones in Feira",
             "type": "python",
             "request": "launch",

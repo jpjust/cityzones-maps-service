@@ -1,0 +1,19 @@
+{
+    "left": 2.1842,
+    "bottom": 48.7897,
+    "right": 2.5097,
+    "top": 48.9281,
+    "zone_size": 10,
+    "cache_zones": true,
+    "M": 3,
+    "edus": 300,
+    "geojson": "geojson/eiffel.geojson",
+    "pois": "osm/paris_filtered.osm",
+    "pois_types": {
+        "amenity": ["hospital", "fire_station", "police"]
+    },
+    "edu_alg": "none",
+    "output": "csv/eiffel_M3.csv",
+    "output_edus": "csv/eiffel_edus_none.csv",
+    "output_roads": "csv/eiffel_roads.csv"
+}
