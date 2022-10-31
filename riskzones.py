@@ -240,6 +240,31 @@ class RiskZonesGrid:
         print(f'\n{len(self.zones_inside)} zones inside the polygon.')
 
     '''
+    Check every PoI if it is inside the polygon area.
+    '''
+    def init_pois_by_polygon(self, polygon: dict, pois: list) -> list:
+        prog = 0.0
+        i = 0
+        total = len(pois)
+        print(f'Checking PoIs inside the polygon... {prog:.2f}%', end='\r')
+        pois_inside = []
+
+        for coord in polygon:
+            self.polygons.append(coord[0])
+        
+        for poi in pois:
+            i += 1
+            for pol in self.polygons:
+                if self.__check_zone_in_polygon(poi, pol):
+                    pois_inside.append(poi)
+                    break
+            prog = (i / total) * 100
+            print(f'Checking PoIs inside the polygon... {prog:.2f}%', end='\r')
+        
+        print(f'\n{len(pois_inside)} PoIs inside the polygon.')
+        return pois_inside
+
+    '''
     Check if a zone is inside a polygon.
 
     For each zone, trace a line to the right and check how many times it
@@ -303,7 +328,7 @@ class RiskZonesGrid:
     '''
     Calculate the risk perception considering all PoIs.
     '''
-    def calculate_risk_from_pois(self, pois: dict):
+    def calculate_risk_from_pois(self, pois: list):
         if len(pois) == 0:
             return
 
@@ -341,7 +366,7 @@ class RiskZonesGrid:
     Normalize the risk perception values.
     '''
     def __normalize_risks(self):
-        min = max = self.zones[0]['risk']
+        min = max = self.zones[self.zones_inside[0]]['risk']
 
         for id in self.zones_inside:
             if self.zones[id]['risk'] > max: max = self.zones[id]['risk']
@@ -374,7 +399,7 @@ class RiskZonesGrid:
     '''
     Calculate the number of zones by RL.
     '''
-    def __get_number_of_zones_by_RL(self) -> list:
+    def __get_number_of_zones_by_RL(self) -> dict:
         nzones = {}
         for i in range(1, self.M + 1):
             nzones[i] = 0
@@ -669,21 +694,41 @@ if __name__ == '__main__':
             geojson = json.load(fp)
             fp.close()
             grid.init_zones_by_polygon(geojson['features'][0]['geometry']['coordinates'])
+            pois_inside = grid.init_pois_by_polygon(geojson['features'][0]['geometry']['coordinates'], pois)
         except KeyError:
             print("WARNING: No GeoJSON file specified. Not filtering by AoI polygon.")
+            pois_inside = pois
         except FileNotFoundError:
             print(f"WARNING: GeoJSON file '{conf['geojson']}' not found. Not filtering by AoI polygon.")
+            pois_inside = pois
 
         grid.add_roads(roads)
         
         # Calculate risks
-        grid.calculate_risk_from_pois(pois)
+        grid.calculate_risk_from_pois(pois_inside)
 
     # Write cache file
     if conf['cache_zones'] == True and not os.path.isfile(cache_filename):
+        print('Writing cache file... ', end='')
+        cached_zones = []
+        for id in grid.zones_inside:
+            cached_zones.append(grid.zones[id])
         fp = open(cache_filename, 'w')
-        json.dump(grid.zones, fp)
+        json.dump(cached_zones, fp)
         fp.close()
+        print('Done!')
+
+    # Run EDUs positioning algorithm
+    if conf['edu_alg'] == 'random':
+        grid.set_edus_positions_random()
+    elif conf['edu_alg'] == 'balanced':
+        grid.set_edus_positions_uniform(UniformPositioningMode.UNBALANCED)
+    elif conf['edu_alg'] == 'enhanced':
+        grid.set_edus_positions_uniform(UniformPositioningMode.BALANCED)
+    elif conf['edu_alg'] == 'restricted':
+        grid.set_edus_positions_uniform(UniformPositioningMode.RESTRICTED)
+
+    print('Writing output CSV files... ', end='')
 
     # Write a CSV file with risk zones
     row = 0
@@ -698,16 +743,7 @@ if __name__ == '__main__':
     fp.write(data)
     fp.close()
     
-    # Write a CSV file with EDUs positioning
-    if conf['edu_alg'] == 'random':
-        grid.set_edus_positions_random()
-    elif conf['edu_alg'] == 'balanced':
-        grid.set_edus_positions_uniform(UniformPositioningMode.UNBALANCED)
-    elif conf['edu_alg'] == 'enhanced':
-        grid.set_edus_positions_uniform(UniformPositioningMode.BALANCED)
-    elif conf['edu_alg'] == 'restricted':
-        grid.set_edus_positions_uniform(UniformPositioningMode.RESTRICTED)
-    
+    # Write a CSV file with EDUs positions
     if 'output_edus' in conf.keys():
         row = 0
         data = 'system:index,.geo\n'
@@ -727,7 +763,8 @@ if __name__ == '__main__':
         row = 0
         data = 'system:index,.geo\n'
 
-        for zone in grid.zones:
+        for id in grid.zones_inside:
+            zone = grid.zones[id]
             if zone['is_road']:
                 coordinates = f"[{zone['lon']},{zone['lat']}]"
                 data += f'{row:020},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
