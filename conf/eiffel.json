@@ -13,7 +13,7 @@
         "amenity": ["hospital", "fire_station", "police"]
     },
     "edu_alg": "none",
-    "output": "csv/eiffel_M3.csv",
+    "output": "csv/eiffel_M3_no_weight.csv",
     "output_edus": "csv/eiffel_edus_none.csv",
     "output_roads": "csv/eiffel_roads.csv"
 }

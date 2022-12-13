@@ -1,0 +1,19 @@
+{
+    "left": 2.1842,
+    "bottom": 48.7897,
+    "right": 2.5097,
+    "top": 48.9281,
+    "zone_size": 10,
+    "cache_zones": true,
+    "M": 3,
+    "edus": 600,
+    "geojson": "geojson/paris_island.geojson",
+    "pois": "osm/paris_filtered.osm",
+    "pois_types": {
+        "amenity": ["hospital", "fire_station", "police"]
+    },
+    "edu_alg": "restricted",
+    "output": "csv/paris_island_M3.csv",
+    "output_edus": "csv/paris_island_edus_restricted.csv",
+    "output_roads": "csv/paris_island_roads.csv"
+}

@@ -121,8 +121,9 @@ class RiskZonesGrid:
         self.zones = zones
 
         for zone in self.zones:
-            if zone['inside']: 
+            if zone['inside']:
                 self.zones_inside.append(zone['id'])
+        self.zones.sort(key=lambda zone : zone['id'])
 
     '''
     Add roads to zones list.
@@ -284,7 +285,7 @@ class RiskZonesGrid:
         }
 
         intersec = 0
-        for i in range(len(polygon) - 1):
+        for i in range(-1, len(polygon) - 1):
             line2 = {
                 'p1': {
                     'lon': polygon[i][0],
@@ -390,12 +391,6 @@ class RiskZonesGrid:
                 rl = self.M - numpy.minimum(abs(int(numpy.log10(self.zones[id]['risk']))), self.M - 1)
                 self.zones[id]['RL'] = int(rl)
 
-    '''
-    Sort zones by its risk levels.
-    '''
-    def sort_zones_by_risk(self):
-        self.zones.sort(key=lambda zone : zone['risk'])
-    
     '''
     Calculate the number of zones by RL.
     '''
@@ -599,10 +594,11 @@ class RiskZonesGrid:
                 if zone['is_road']: continue
 
                 zone_id = zone['id']
-                spiral_path = self.__get_spiral_path(zone_id, self.radius[i])
+                spiral_path = self.__get_spiral_path(self.radius[i])
                 for step in spiral_path:
                     zone_id += step
                     nearby_zone = self.zones[zone_id]
+                    if not nearby_zone['inside']: continue
                     if not nearby_zone['is_road']: continue
                     if nearby_zone['has_edu']: break
 
@@ -620,7 +616,7 @@ class RiskZonesGrid:
     '''
     Compute a spiral path for zone search whithin a range.
     '''
-    def __get_spiral_path(self, center_id: int, range_radius: int) -> list:
+    def __get_spiral_path(self, range_radius: int) -> list:
         steps = []
         step = -1
 
@@ -660,8 +656,6 @@ if __name__ == '__main__':
         print(f"Use: {sys.argv[0]} config.json\n")
         print("config.json is a configuration file in JSON format. See examples in conf folder.")
         sys.exit()
-    
-    time_begin = time.perf_counter()
 
     # Config file
     fp = open(sys.argv[1], 'r')
@@ -689,6 +683,8 @@ if __name__ == '__main__':
             sys.exit()
     else:
         # GeoJSON file
+        time_begin = time.perf_counter()
+
         try:
             fp = open(conf['geojson'], 'r')
             geojson = json.load(fp)
@@ -707,18 +703,21 @@ if __name__ == '__main__':
         # Calculate risks
         grid.calculate_risk_from_pois(pois_inside)
 
+        # Output elapsed time
+        time_diff = time.perf_counter() - time_begin
+        print(f"Classification time: {round(time_diff, 3)} seconds.")
+
     # Write cache file
     if conf['cache_zones'] == True and not os.path.isfile(cache_filename):
         print('Writing cache file... ', end='')
-        cached_zones = []
-        for id in grid.zones_inside:
-            cached_zones.append(grid.zones[id])
         fp = open(cache_filename, 'w')
-        json.dump(cached_zones, fp)
+        json.dump(grid.zones, fp)
         fp.close()
         print('Done!')
 
     # Run EDUs positioning algorithm
+    time_begin = time.perf_counter()
+
     if conf['edu_alg'] == 'random':
         grid.set_edus_positions_random()
     elif conf['edu_alg'] == 'balanced':
@@ -727,6 +726,10 @@ if __name__ == '__main__':
         grid.set_edus_positions_uniform(UniformPositioningMode.BALANCED)
     elif conf['edu_alg'] == 'restricted':
         grid.set_edus_positions_uniform(UniformPositioningMode.RESTRICTED)
+
+    # Output elapsed time
+    time_diff = time.perf_counter() - time_begin
+    print(f"Positioning time: {round(time_diff, 3)} seconds.")
 
     print('Writing output CSV files... ', end='')
 
@@ -775,6 +778,3 @@ if __name__ == '__main__':
         fp.close()
 
     print("Done.")
-
-    time_diff = time.perf_counter() - time_begin
-    print(f"Elapsed time: {round(time_diff, 3)} seconds.")

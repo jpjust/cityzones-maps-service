@@ -426,7 +426,7 @@
 	</node>
 	<node id="202289605" lat="48.891299" lon="2.2422117" version="11" timestamp="2021-04-24T09:55:55Z" changeset="103527538" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="layer" v="5"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de La Défense"/>
@@ -449,7 +449,7 @@
 		<tag k="addr:postcode" v="92310"/>
 		<tag k="addr:street" v="Avenue de l&#39;Europe"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="contact:phone" v="+33 1 41 14 09 00"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Sèvres"/>
@@ -464,7 +464,7 @@
 		<tag k="addr:postcode" v="75004"/>
 		<tag k="addr:street" v="Boulevard Bourdon"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Paris 4ème arrondissement"/>
 		<tag k="opening_hours" v="24/7"/>
@@ -574,7 +574,7 @@
 		<tag k="addr:postcode" v="92800"/>
 		<tag k="addr:street" v="Rue Chante Coq"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Puteaux"/>
 		<tag k="operator" v="Police nationale"/>
@@ -1689,7 +1689,7 @@
 	<node id="257403015" lat="48.8429246" lon="2.4080057" version="6" timestamp="2018-09-23T18:26:28Z" changeset="62858319" uid="713836" user="gendy54"/>
 	<node id="257713149" lat="48.8442218" lon="2.3811783" version="12" timestamp="2022-10-05T20:56:42Z" changeset="127067649" uid="14309561" user="kmpoppe (@ Mapillary Update)">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="architect" v="Nunez-Yanowsky, Manolo"/>
 		<tag k="mapillary" v="1449606185384295"/>
 		<tag k="name" v="Police nationale"/>
@@ -3418,7 +3418,7 @@
 	</node>
 	<node id="267466471" lat="48.9072568" lon="2.3387497" version="6" timestamp="2021-04-24T09:55:55Z" changeset="103527538" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Saint-Ouen"/>
 		<tag k="operator" v="Police nationale"/>
@@ -3590,7 +3590,7 @@
 		<tag k="addr:postcode" v="75012"/>
 		<tag k="addr:street" v="Rue Antoine-Julien Hénard"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="opening_hours" v="Mo-Th 9:00-12:00,14:00-17:00; Fr 9:00-12:00,14:00-16:00"/>
 		<tag k="operator" v="Police nationale"/>
@@ -3610,7 +3610,7 @@
 		<tag k="addr:postcode" v="75016"/>
 		<tag k="addr:street" v="Rue de la Faisanderie"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="email" v="ciat16-opj-permanence@interieur.gouv.fr"/>
 		<tag k="government" v="public_service"/>
 		<tag k="name" v="Direction centrale de la Sécurité publique"/>
@@ -3717,7 +3717,7 @@
 	</node>
 	<node id="311114951" lat="48.854231" lon="2.268805" version="15" timestamp="2022-01-17T23:40:15Z" changeset="116275435" uid="3832948" user="D6B8">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police du 16e arrondissement"/>
 		<tag k="opening_hours" v="24/7"/>
@@ -3817,7 +3817,7 @@
 	</node>
 	<node id="324353055" lat="48.8503222" lon="2.3325549" version="7" timestamp="2021-04-23T17:55:43Z" changeset="103499539" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat Central du 6e arrondissement"/>
 		<tag k="wheelchair" v="limited"/>
@@ -4160,7 +4160,7 @@
 		<tag k="addr:postcode" v="92140"/>
 		<tag k="addr:street" v="Avenue Jean Jaurès"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Clamart"/>
 		<tag k="operator" v="Police nationale"/>
@@ -4263,7 +4263,7 @@
 		<tag k="addr:postcode" v="92150"/>
 		<tag k="addr:street" v="Place du Moutier"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Suresnes"/>
 		<tag k="operator" v="Police nationale"/>
@@ -4298,7 +4298,7 @@
 	<node id="447800130" lat="48.8989668" lon="2.3309136" version="3" timestamp="2018-06-24T19:07:35Z" changeset="60127064" uid="57126" user="yxoc"/>
 	<node id="449443732" lat="48.8725069" lon="2.3582792" version="6" timestamp="2021-04-24T10:40:38Z" changeset="103529756" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Unité de police de quartier Porte Saint-Martin"/>
 		<tag k="operator" v="Police nationale"/>
@@ -4309,7 +4309,7 @@
 	<node id="449755529" lat="48.8275574" lon="2.2783474" version="11" timestamp="2020-04-03T15:08:00Z" changeset="83041301" uid="7550430" user="Britzz"/>
 	<node id="459781196" lat="48.8824469" lon="2.4148265" version="7" timestamp="2021-04-24T09:55:55Z" changeset="103527538" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police des Lilas"/>
 		<tag k="operator" v="Police nationale"/>
@@ -4386,7 +4386,7 @@
 	<node id="476313165" lat="48.8785177" lon="2.4146019" version="4" timestamp="2014-10-25T20:07:00Z" changeset="26329301" uid="1598001" user="OsmIdf">
 		<tag k="amenity" v="hospital"/>
 <tag k="poi_weight" v="2"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="name" v="Maternité des Lilas"/>
 		<tag k="ref:FR:FINESS" v="930150032"/>
 		<tag k="source:ref:FR:FINESS" v="data.gouv.fr:Ministère des Affaires sociales et de la Santé - 2014-05-05"/>
@@ -4397,7 +4397,7 @@
 		<tag k="addr:housenumber" v="10"/>
 		<tag k="addr:street" v="Rue Minard"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="email" v="info@hopitalsuissedeparis.com"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="heritage" v="3"/>
@@ -4416,7 +4416,7 @@
 	<node id="487110197" lat="48.8838632" lon="2.2706349" version="3" timestamp="2022-08-21T07:53:30Z" changeset="125172032" uid="5426465" user="lepszyrydz">
 		<tag k="addr:housenumber" v="119"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police municipale"/>
 		<tag k="operator:type" v="public"/>
 		<tag k="police:FR" v="police_municipale"/>
@@ -4426,7 +4426,7 @@
 		<tag k="addr:postcode" v="92300"/>
 		<tag k="addr:street" v="Rue Rivay"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Levallois-Perret"/>
 		<tag k="operator" v="Police nationale"/>
@@ -4439,7 +4439,7 @@
 	</node>
 	<node id="510724981" lat="48.8922817" lon="2.344308" version="4" timestamp="2021-04-24T10:26:24Z" changeset="103529071" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police municipale"/>
 		<tag k="police:FR" v="police_municipale"/>
 	</node>
@@ -4533,7 +4533,7 @@
 	<node id="521200354" lat="48.8228841" lon="2.4303647" version="3" timestamp="2011-12-08T16:34:13Z" changeset="10066290" uid="138059" user="Truchin"/>
 	<node id="525184522" lat="48.8843283" lon="2.3861616" version="9" timestamp="2021-04-24T09:55:55Z" changeset="103527538" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police du 19e arrondissement"/>
 		<tag k="operator" v="Police nationale"/>
@@ -4574,7 +4574,7 @@
 	<node id="548211651" lat="48.9158766" lon="2.2215382" version="2" timestamp="2018-08-21T00:39:18Z" changeset="61839347" uid="713836" user="gendy54"/>
 	<node id="553538354" lat="48.8363546" lon="2.4835037" version="4" timestamp="2021-04-24T09:55:55Z" changeset="103527538" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Nogent-sur-Marne"/>
 		<tag k="operator" v="Police nationale"/>
@@ -4585,7 +4585,7 @@
 	</node>
 	<node id="553538533" lat="48.8365523" lon="2.4798549" version="4" timestamp="2021-04-24T09:46:32Z" changeset="103527063" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police municipale"/>
 		<tag k="police:FR" v="police_municipale"/>
 	</node>
@@ -4642,7 +4642,7 @@
 	<node id="600932924" lat="48.8138944" lon="2.3912196" version="12" timestamp="2021-04-24T09:55:55Z" changeset="103527538" uid="125897" user="overflorian">
 		<tag k="addr:street" v="Place Marcel Cachin"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="contact:phone" v="+33 1 49 59 33 00"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Ivry-sur-Seine"/>
@@ -4699,7 +4699,7 @@
 	<node id="619522048" lat="48.8926689" lon="2.2048438" version="2" timestamp="2010-02-02T02:42:21Z" changeset="3773107" uid="210173" user="osmmaker"/>
 	<node id="622390220" lat="48.8193156" lon="2.2670872" version="6" timestamp="2022-01-24T07:02:13Z" changeset="116526908" uid="53948" user="illogict">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Gendarmerie nationale"/>
 		<tag k="operator" v="Gendarmerie nationale"/>
 		<tag k="operator:wikidata" v="Q1422336"/>
@@ -4770,7 +4770,7 @@
 		<tag k="addr:postcode" v="94170"/>
 		<tag k="addr:street" v="Rue Denfert-Rochereau"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police municipale"/>
 		<tag k="opening_hours" v="Mo-Fr 08:30-12:30,13:30-18:00; Sa 08:30-12:00"/>
 		<tag k="phone" v="+33800094170"/>
@@ -4778,7 +4778,7 @@
 	</node>
 	<node id="672709606" lat="48.8577179" lon="2.2773092" version="6" timestamp="2022-05-21T08:38:17Z" changeset="121272345" uid="53948" user="illogict">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat du Quartier de la Muette"/>
 		<tag k="operator" v="Police nationale"/>
@@ -4787,7 +4787,7 @@
 	</node>
 	<node id="672714990" lat="48.8638302" lon="2.2764451" version="3" timestamp="2022-05-21T08:38:17Z" changeset="121272345" uid="53948" user="illogict">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="note" v="For administrative papers only"/>
 		<tag k="operator" v="Police nationale"/>
@@ -4796,7 +4796,7 @@
 	</node>
 	<node id="672725690" lat="48.884169" lon="2.322376" version="5" timestamp="2021-04-24T09:55:55Z" changeset="103527538" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="note" v="For administrative purpose only"/>
 		<tag k="official_name" v="Commissariat de police du 17e arrondissement"/>
@@ -4809,7 +4809,7 @@
 		<tag k="addr:postcode" v="75015"/>
 		<tag k="addr:street" v="Rue Balard"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police Javel-Grenelle"/>
 		<tag k="operator" v="Police nationale"/>
@@ -4818,7 +4818,7 @@
 	</node>
 	<node id="672730405" lat="48.8414384" lon="2.3002634" version="4" timestamp="2022-05-16T11:28:15Z" changeset="121048784" uid="53948" user="illogict">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="note" v="For administrative purpose only"/>
 		<tag k="operator" v="Police nationale"/>
@@ -4844,7 +4844,7 @@
 	</node>
 	<node id="674772628" lat="48.875536" lon="2.3042932" version="5" timestamp="2021-09-11T17:32:43Z" changeset="111071525" uid="1205555" user="benoitdd">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Préfecture de police"/>
 	</node>
 	<node id="675054023" lat="48.8439956" lon="2.2900242" version="2" timestamp="2010-04-04T19:15:28Z" changeset="4326131" uid="3085" user="mat"/>
@@ -4855,7 +4855,7 @@
 	<node id="676727512" lat="48.8553731" lon="2.3435125" version="3" timestamp="2013-07-01T17:37:37Z" changeset="16780710" uid="598976" user="Eolas">
 		<tag k="alt_name" v="Direction Régionale de la Police Judiciaire de Paris"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police Judiciaire - Brigade Criminelle - Brigade des Stupéfiants"/>
 		<tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010"/>
 	</node>
@@ -5097,7 +5097,7 @@
 	</node>
 	<node id="683255902" lat="48.8669041" lon="2.3315149" version="5" timestamp="2022-04-03T22:30:35Z" changeset="119280284" uid="10731965" user="Hydrel">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Commissariat central"/>
 		<tag k="official_name" v="Commissariat central de police de Paris 1er arrondissement"/>
 		<tag k="opening_hours" v="Mo-Fr 09:00-20:00"/>
@@ -5250,7 +5250,7 @@
 		<tag k="addr:postcode" v="75011"/>
 		<tag k="addr:street" v="Passage Charles Dallery"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="description" v="SARIJ et UPQ Dallery"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police du 11e arrondissement"/>
@@ -5398,7 +5398,7 @@
 		<tag k="addr:housenumber" v="108"/>
 		<tag k="addr:street" v="Avenue Victor Hugo"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="name" v="Centre de Pneumologie de l&#39;Enfant"/>
 		<tag k="phone" v="+33 1 46 99 98 98"/>
 		<tag k="source:amenity" v="survey"/>
@@ -6991,7 +6991,7 @@
 	<node id="912526498" lat="48.9256287" lon="2.2380432" version="1" timestamp="2010-09-14T20:57:45Z" changeset="5782278" uid="49047" user="vincent_95"/>
 	<node id="913577885" lat="48.8340181" lon="2.3740832" version="4" timestamp="2021-04-24T10:26:24Z" changeset="103529071" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="operator" v="Police nationale"/>
 		<tag k="operator:wikidata" v="Q121484"/>
@@ -7631,7 +7631,7 @@
 	<node id="929178578" lat="48.8275941" lon="2.3415562" version="1" timestamp="2010-09-28T14:56:55Z" changeset="5904559" uid="322872" user="maouth-"/>
 	<node id="929558495" lat="48.8652119" lon="2.2905036" version="3" timestamp="2022-05-28T21:34:55Z" changeset="121633567" uid="53948" user="illogict">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de Police Chaillot"/>
 		<tag k="operator" v="Police nationale"/>
@@ -8311,7 +8311,7 @@
 		<tag k="addr:postcode" v="92170"/>
 		<tag k="addr:street" v="Rue Raymond Marcheron"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="contact:housenumber" v="28"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Vanves"/>
@@ -8443,7 +8443,7 @@
 	<node id="975838443" lat="48.8463689" lon="2.4520024" version="1" timestamp="2010-11-03T14:05:02Z" changeset="6275790" uid="83557" user="Esperanza36"/>
 	<node id="977194624" lat="48.8435512" lon="2.3549103" version="8" timestamp="2022-02-13T11:21:49Z" changeset="117349789" uid="703542" user="nuitsfauves">
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="fax" v="+33 1 43 37 73 98"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="healthcare:speciality" v="intensive"/>
@@ -8931,7 +8931,7 @@
 	</node>
 	<node id="1199394987" lat="48.8896373" lon="2.3480452" version="6" timestamp="2021-04-24T09:55:55Z" changeset="103527538" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Paris 18ème arrondissement"/>
 		<tag k="operator" v="Police nationale"/>
@@ -9042,7 +9042,7 @@
 		<tag k="addr:housenumber" v="104"/>
 		<tag k="addr:street" v="Avenue Victor Hugo"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="name" v="Centre d&#39;Exploration Digestive de l&#39;Enfant"/>
 		<tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2011"/>
 		<tag k="source:amenity" v="survey"/>
@@ -9116,7 +9116,7 @@
 	</node>
 	<node id="1258430130" lat="48.8063108" lon="2.4733252" version="7" timestamp="2021-04-24T09:46:32Z" changeset="103527063" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police municipale"/>
 		<tag k="operator" v="Ville de Saint-Maur des Fossés"/>
 		<tag k="police:FR" v="police_municipale"/>
@@ -9173,7 +9173,7 @@
 	</node>
 	<node id="1272931917" lat="48.8788312" lon="2.4158401" version="5" timestamp="2021-04-24T09:46:32Z" changeset="103527063" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police municipale"/>
 		<tag k="police:FR" v="police_municipale"/>
 	</node>
@@ -9344,7 +9344,7 @@
 		<tag k="addr:postcode" v="92230"/>
 		<tag k="addr:street" v="Avenue de la Libération"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Gennevilliers"/>
 		<tag k="operator" v="Police nationale"/>
@@ -9377,7 +9377,7 @@
 	<node id="1298347307" lat="48.8402678" lon="2.247854" version="1" timestamp="2011-05-24T12:07:42Z" changeset="8234774" uid="49047" user="vincent_95"/>
 	<node id="1299475009" lat="48.8670978" lon="2.3131224" version="6" timestamp="2021-04-24T09:55:55Z" changeset="103527538" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Paris 8ème arrondissement"/>
 		<tag k="operator" v="Police nationale"/>
@@ -9735,7 +9735,7 @@
 		<tag k="addr:housenumber" v="161"/>
 		<tag k="addr:street" v="Rue de Charenton"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Préfecture de police"/>
 		<tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2011"/>
 	</node>
@@ -9978,7 +9978,7 @@
 		<tag k="addr:street" v="Rue de Lisbonne"/>
 		<tag k="alt_name" v="Brigade des délégations et des enquêtes de proximité Europe"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="opening_hours" v="Mo-Fr 09:00-20:00"/>
 		<tag k="operator" v="Police nationale"/>
@@ -10105,7 +10105,7 @@
 	<node id="1455479993" lat="48.8477049" lon="2.2102482" version="2" timestamp="2012-04-06T21:34:07Z" changeset="11207090" uid="300459" user="didier2020"/>
 	<node id="1462112612" lat="48.8604665" lon="2.2777715" version="3" timestamp="2016-12-24T15:58:08Z" changeset="44647475" uid="1598001" user="OsmIdf">
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="name" v="Clinique de la Muette"/>
 		<tag k="ref:FR:FINESS" v="750300840"/>
 		<tag k="source:ref:FR:FINESS" v="data.gouv.fr:Ministère des Affaires sociales, de la Santé et des Droits des Femmes - 12/2015"/>
@@ -10458,7 +10458,7 @@
 	<node id="1664672293" lat="48.8199569" lon="2.2026943" version="2" timestamp="2018-01-19T10:31:18Z" changeset="55573918" uid="675449" user="jseigneuret"/>
 	<node id="1673539365" lat="48.916839" lon="2.3346543" version="6" timestamp="2022-02-08T21:53:08Z" changeset="117178503" uid="299486" user="Mouameme">
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Clinique du Landy"/>
 		<tag k="phone" v="+33 8 25 74 34 84"/>
@@ -10473,7 +10473,7 @@
 		<tag k="addr:postcode" v="94220"/>
 		<tag k="addr:street" v="Rue de Conflans"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Charenton-le-Pont"/>
 		<tag k="operator" v="Police nationale"/>
@@ -10486,7 +10486,7 @@
 	</node>
 	<node id="1684818336" lat="48.8426449" lon="2.3435197" version="6" timestamp="2020-04-10T08:31:11Z" changeset="83349123" uid="6466263" user="zorglubu">
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Institut Curie"/>
 		<tag k="ref:FR:FINESS" v="750160012"/>
@@ -10495,7 +10495,7 @@
 	</node>
 	<node id="1687021461" lat="48.8054655" lon="2.4149857" version="6" timestamp="2021-04-24T09:55:55Z" changeset="103527538" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police d&#39;Alfortville"/>
 		<tag k="operator" v="Police nationale"/>
@@ -10517,7 +10517,7 @@
 		<tag k="addr:postcode" v="94300"/>
 		<tag k="addr:street" v="Rue Raymond du Temple"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Vincennes"/>
 		<tag k="operator" v="Police nationale"/>
@@ -10597,14 +10597,14 @@
 	<node id="1746338199" lat="48.8631566" lon="2.4399111" version="1" timestamp="2012-05-09T07:30:52Z" changeset="11546567" uid="300459" user="didier2020"/>
 	<node id="1749491067" lat="48.8192583" lon="2.4745486" version="2" timestamp="2021-04-25T07:54:54Z" changeset="103562939" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police municipale"/>
 		<tag k="operator:type" v="public"/>
 		<tag k="police:FR" v="police_municipale"/>
 	</node>
 	<node id="1763282456" lat="48.7904711" lon="2.2617123" version="4" timestamp="2020-06-01T07:19:03Z" changeset="86033240" uid="57126" user="yxoc">
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="no"/>
 		<tag k="fax" v="+33146306323"/>
 		<tag k="healthcare" v="yes"/>
@@ -10633,7 +10633,7 @@
 	<node id="1768419851" lat="48.9039701" lon="2.3463936" version="3" timestamp="2019-01-10T20:01:08Z" changeset="66207250" uid="6540509" user="Globeur">
 		<tag k="alt_name" v="Centre de Santé Bauer"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="no"/>
 		<tag k="name" v="CMS et PMI Bauer"/>
 		<tag k="ref:FR:FINESS" v="930019559"/>
@@ -10736,7 +10736,7 @@
 	</node>
 	<node id="1786110373" lat="48.8827796" lon="2.2387015" version="2" timestamp="2021-04-25T07:54:54Z" changeset="103562939" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police municipale"/>
 		<tag k="operator:type" v="public"/>
 		<tag k="police:FR" v="police_municipale"/>
@@ -10858,7 +10858,7 @@
 	</node>
 	<node id="1899126651" lat="48.8877415" lon="2.4585676" version="9" timestamp="2022-10-07T21:37:56Z" changeset="127173944" uid="14309561" user="kmpoppe (@ Mapillary Update)">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="mapillary" v="593700514921517"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Noisy-le-Sec"/>
@@ -10951,7 +10951,7 @@
 	<node id="1944912555" lat="48.9266742" lon="2.5004959" version="1" timestamp="2012-10-03T20:14:17Z" changeset="13353027" uid="98316" user="cyflo"/>
 	<node id="1945941131" lat="48.8999756" lon="2.2388567" version="4" timestamp="2020-08-12T11:52:11Z" changeset="89302874" uid="6466263" user="zorglubu">
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="no"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="La Cité des Fleurs"/>
@@ -11203,7 +11203,7 @@
 		<tag k="addr:postcode" v="75003"/>
 		<tag k="addr:street" v="Rue aux Ours"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Paris 3ème arrondissement"/>
 		<tag k="operator" v="Police nationale"/>
@@ -11216,7 +11216,7 @@
 		<tag k="addr:housenumber" v="8"/>
 		<tag k="addr:street" v="Avenue du 11 Novembre 1918"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="no"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Maison de Santé de Bellevue"/>
@@ -11244,7 +11244,7 @@
 	<node id="2028682231" lat="48.9041971" lon="2.3057693" version="10" timestamp="2022-08-13T09:35:37Z" changeset="124845953" uid="974272" user="baprischka">
 		<tag k="addr:housenumber" v="96"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="check_date" v="2022-08-12"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Clichy-la-Garenne"/>
@@ -11289,7 +11289,7 @@
 	</node>
 	<node id="2089723521" lat="48.8781498" lon="2.2912675" version="3" timestamp="2019-12-09T19:34:10Z" changeset="78168520" uid="43207" user="kdkeller">
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="contact:website" v="http://www.hopital-marmottan.fr/"/>
 		<tag k="name" v="Hôpital Marmottan"/>
 		<tag k="ref:FR:FINESS" v="750006249"/>
@@ -11356,7 +11356,7 @@
 	<node id="2118687834" lat="48.807816" lon="2.333161" version="1" timestamp="2013-01-19T00:43:17Z" changeset="14702998" uid="37548" user="Marcussacapuces91"/>
 	<node id="2125350854" lat="48.8198712" lon="2.3012261" version="4" timestamp="2021-12-20T21:09:04Z" changeset="115181733" uid="53948" user="illogict">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="operator" v="Police nationale"/>
 		<tag k="operator:wikidata" v="Q121484"/>
@@ -11375,7 +11375,7 @@
 	<node id="2132841647" lat="48.8391511" lon="2.3577184" version="2" timestamp="2013-08-26T12:16:56Z" changeset="17515988" uid="860575" user="Marcel Herault"/>
 	<node id="2142308234" lat="48.8056223" lon="2.3457578" version="6" timestamp="2021-04-24T09:55:55Z" changeset="103527538" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police du Kremlin-Bicêtre"/>
 		<tag k="operator" v="Police nationale"/>
@@ -11405,7 +11405,7 @@
 	</node>
 	<node id="2194257164" lat="48.8768355" lon="2.3527879" version="7" timestamp="2021-04-24T09:55:55Z" changeset="103527538" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police du 10e arrondissement – BDEP Chabrol"/>
 		<tag k="operator" v="Police nationale"/>
@@ -11571,7 +11571,7 @@
 	</node>
 	<node id="2325918469" lat="48.8156606" lon="2.3195764" version="9" timestamp="2021-04-24T09:46:32Z" changeset="103527063" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police municipale"/>
 		<tag k="phone" v="+33 1 46 12 72 59"/>
 		<tag k="police:FR" v="police_municipale"/>
@@ -11615,7 +11615,7 @@
 	</node>
 	<node id="2368932142" lat="48.8550679" lon="2.3462868" version="5" timestamp="2022-08-23T21:00:21Z" changeset="125289082" uid="181582" user="quazgar">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="government" v="public_service"/>
 		<tag k="name" v="Brigade de Répression du Proxénétisme"/>
 		<tag k="office" v="government"/>
@@ -11654,7 +11654,7 @@
 	<node id="2409338020" lat="48.885548" lon="2.3520032" version="1" timestamp="2013-08-06T22:47:19Z" changeset="17248030" uid="138059" user="Truchin"/>
 	<node id="2412199474" lat="48.9218411" lon="2.4446533" version="7" timestamp="2021-04-24T09:55:55Z" changeset="103527538" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Drancy"/>
 		<tag k="operator" v="Police nationale"/>
@@ -11766,7 +11766,7 @@
 		<tag k="addr:postcode" v="75015"/>
 		<tag k="addr:street" v="Rue Linois"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="operator" v="Police nationale"/>
 		<tag k="operator:wikidata" v="Q121484"/>
@@ -11833,7 +11833,7 @@
 	<node id="2503084479" lat="48.8933622" lon="2.364812" version="3" timestamp="2016-11-26T09:45:07Z" changeset="43960170" uid="1429581" user="Guillaume Mortier">
 		<tag k="alt_name" v="Sous-Direction Régionale de la Police des Transports - Site Évangile"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police des Transports"/>
 		<tag k="official_name" v="Département de l&#39;investigation judiciaire de la Brigade des réseaux ferrés"/>
 	</node>
@@ -12537,7 +12537,7 @@
 	<node id="2901971855" lat="48.9015353" lon="2.4442388" version="1" timestamp="2014-06-05T22:27:46Z" changeset="22764737" uid="1256648" user="Zigeuner"/>
 	<node id="2924827263" lat="48.8856585" lon="2.3878153" version="3" timestamp="2021-05-20T12:52:59Z" changeset="105030367" uid="13375347" user="El&#39;Paolito">
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Clinique Canal de l&#39;Ourcq"/>
 		<tag k="operator" v="Korian"/>
@@ -12567,7 +12567,7 @@
 	<node id="2983675247" lat="48.8100272" lon="2.3575196" version="3" timestamp="2019-04-05T17:16:38Z" changeset="68930186" uid="9390316" user="PARIS 7594"/>
 	<node id="2985757626" lat="48.895753" lon="2.4598132" version="5" timestamp="2022-10-12T03:04:18Z" changeset="127389051" uid="14309561" user="kmpoppe (@ Mapillary Update)">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="mapillary" v="209413644098024"/>
 		<tag k="name" v="Police municipale"/>
 		<tag k="police:FR" v="police_municipale"/>
@@ -12655,7 +12655,7 @@
 	</node>
 	<node id="3105749276" lat="48.8747235" lon="2.4028142" version="3" timestamp="2020-01-03T11:10:47Z" changeset="79152157" uid="49047" user="vincent_95">
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="name" v="Hôpital de Jour pour Enfants"/>
 		<tag k="operator" v="L&#39;Élan retrouvé"/>
 		<tag k="ref:FR:FINESS" v="750007999"/>
@@ -12677,7 +12677,7 @@
 		<tag k="addr:postcode" v="92250"/>
 		<tag k="addr:street" v="Rue Sartoris"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de La Garenne-Colombes"/>
 		<tag k="operator" v="Police nationale"/>
@@ -12689,7 +12689,7 @@
 	</node>
 	<node id="3139571972" lat="48.857724" lon="2.2943986" version="5" timestamp="2022-05-16T11:44:42Z" changeset="121049559" uid="53948" user="illogict">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="fixme" v="Position estimated"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="operator" v="Police nationale"/>
@@ -12755,7 +12755,7 @@
 	</node>
 	<node id="3200384690" lat="48.8249111" lon="2.2943632" version="5" timestamp="2021-04-24T09:46:32Z" changeset="103527063" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="description" v="55 rue Jean Jaurès"/>
 		<tag k="name" v="Police municipale"/>
 		<tag k="phone" v="+33 1 41 90 16 50"/>
@@ -12767,7 +12767,7 @@
 		<tag k="addr:postcode" v="92200"/>
 		<tag k="addr:street" v="Rue du Pont"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Neuilly-sur-Seine"/>
 		<tag k="operator" v="Police nationale"/>
@@ -12787,7 +12787,7 @@
 	</node>
 	<node id="3231694316" lat="48.8852964" lon="2.3750552" version="2" timestamp="2020-04-10T10:04:29Z" changeset="83355370" uid="6466263" user="zorglubu">
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Hôpital de jour Georges Vacola"/>
 		<tag k="ref:FR:FINESS" v="750810384"/>
@@ -12845,7 +12845,7 @@
 	<node id="3378538775" lat="48.8290952" lon="2.3106578" version="2" timestamp="2015-05-02T16:18:26Z" changeset="30725194" uid="713836" user="gendy54"/>
 	<node id="3381774490" lat="48.8098256" lon="2.1894255" version="9" timestamp="2022-07-30T17:47:03Z" changeset="124277405" uid="1198089" user="GeorgeKaplan">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="phone" v="+33 1 41 15 95 30"/>
 		<tag k="police:FR" v="police_municipale"/>
 		<tag k="source" v="Open Data - Charville"/>
@@ -13126,7 +13126,7 @@
 	<node id="3498680465" lat="48.8058888" lon="2.3913281" version="4" timestamp="2016-03-12T20:00:48Z" changeset="37789369" uid="709289" user="Super-Map"/>
 	<node id="3501719723" lat="48.8726355" lon="2.3503654" version="2" timestamp="2019-10-24T16:59:31Z" changeset="76166657" uid="6466263" user="zorglubu">
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="name" v="Hôpital Maison Blanche"/>
 		<tag k="phone" v="+33 1 40 22 12 69"/>
 		<tag k="ref:FR:FINESS" v="750023749"/>
@@ -13386,7 +13386,7 @@
 	<node id="3593510594" lat="48.8464117" lon="2.3169492" version="1" timestamp="2015-06-13T22:42:20Z" changeset="31952500" uid="2771789" user="Ufal"/>
 	<node id="3608619807" lat="48.863069" lon="2.2061497" version="2" timestamp="2021-04-25T07:54:54Z" changeset="103562939" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="fixme" v="Préciser le type de police avec name=Gendarmerie nationale;Police nationale;Police municipale"/>
 	</node>
 	<node id="3617402581" lat="48.846636" lon="2.2653532" version="4" timestamp="2022-05-21T04:04:48Z" changeset="121266597" uid="53948" user="illogict">
@@ -13404,7 +13404,7 @@
 		<tag k="addr:postcode" v="75012"/>
 		<tag k="addr:street" v="Rue de Charenton"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Antenne de Police Administrative"/>
 	</node>
 	<node id="3650863933" lat="48.8908005" lon="2.3329062" version="1" timestamp="2015-07-14T15:11:58Z" changeset="32630111" uid="2771789" user="Ufal"/>
@@ -13418,7 +13418,7 @@
 	</node>
 	<node id="3660525271" lat="48.9015242" lon="2.2678433" version="2" timestamp="2021-04-25T07:54:54Z" changeset="103562939" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="fixme" v="Est-ce qu&#39;il y a bien la Police ici ? Gros doute à lever sur le terrain. Préciser le type de police avec name=Gendarmerie nationale;Police nationale;Police municipale"/>
 	</node>
 	<node id="3665505667" lat="48.8108166" lon="2.357576" version="1" timestamp="2015-07-25T06:07:27Z" changeset="32865055" uid="1151930" user="Ludovic Drouard">
@@ -13431,7 +13431,7 @@
 	</node>
 	<node id="3687995561" lat="48.8879409" lon="2.258375" version="2" timestamp="2017-10-13T18:32:12Z" changeset="52904421" uid="2805126" user="roptat">
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="name" v="Centre d&#39;Accueil Thérapeutique à Temps Partiel"/>
 		<tag k="phone" v="+33 1 47 38 68 14"/>
 		<tag k="ref:FR:FINESS" v="920023603"/>
@@ -13439,14 +13439,14 @@
 	</node>
 	<node id="3688206215" lat="48.794796" lon="2.3016985" version="3" timestamp="2021-04-24T09:46:32Z" changeset="103527063" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police municipale"/>
 		<tag k="police:FR" v="police_municipale"/>
 		<tag k="source" v="survey"/>
 	</node>
 	<node id="3688511674" lat="48.8492414" lon="2.2370643" version="3" timestamp="2021-08-10T09:20:32Z" changeset="109451233" uid="13844653" user="Paulolascience">
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Hôpital Ambroise Paré"/>
 		<tag k="short_name" v="IFSI"/>
@@ -13507,7 +13507,7 @@
 	<node id="3784468266" lat="48.9235179" lon="2.2342115" version="2" timestamp="2020-01-22T13:29:38Z" changeset="79919770" uid="2531732" user="Bastenbas"/>
 	<node id="3789136054" lat="48.9073522" lon="2.2466186" version="8" timestamp="2021-04-24T09:46:32Z" changeset="103527063" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police municipale"/>
 		<tag k="police:FR" v="police_municipale"/>
 		<tag k="source" v="Service-Public.fr - 06/2013"/>
@@ -13589,7 +13589,7 @@
 	</node>
 	<node id="3902833457" lat="48.8257565" lon="2.3948027" version="4" timestamp="2021-04-24T09:46:32Z" changeset="103527063" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police municipale"/>
 		<tag k="police:FR" v="police_municipale"/>
 	</node>
@@ -13802,7 +13802,7 @@
 	<node id="4107360905" lat="48.8996822" lon="2.4058308" version="1" timestamp="2016-04-08T09:53:07Z" changeset="38401659" uid="3620638" user="Kadanga"/>
 	<node id="4116658769" lat="48.8409353" lon="2.31843" version="2" timestamp="2021-04-25T07:54:54Z" changeset="103562939" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="level" v="2"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="operator" v="Police nationale"/>
@@ -13986,14 +13986,14 @@
 	<node id="4356628217" lat="48.9098264" lon="2.3428" version="1" timestamp="2016-08-18T21:37:17Z" changeset="41544794" uid="713836" user="gendy54"/>
 	<node id="4365816271" lat="48.8675453" lon="2.4193301" version="2" timestamp="2021-04-24T09:55:55Z" changeset="103527538" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="police:FR" v="police"/>
 	</node>
 	<node id="4391587798" lat="48.8714704" lon="2.224969" version="6" timestamp="2022-10-04T03:03:57Z" changeset="126967601" uid="14309561" user="kmpoppe (@ Mapillary Update)">
 		<tag k="addr:street" v="Rue du Clos des Ermites"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="mapillary" v="1173839619755601"/>
 		<tag k="name" v="Police municipale"/>
 		<tag k="police:FR" v="police_municipale"/>
@@ -14027,7 +14027,7 @@
 	<node id="4406993060" lat="48.9142109" lon="2.2208657" version="1" timestamp="2016-09-18T16:13:56Z" changeset="42250526" uid="210173" user="osmmaker"/>
 	<node id="4416374303" lat="48.8355335" lon="2.3399561" version="2" timestamp="2020-04-10T07:24:27Z" changeset="83345083" uid="6466263" user="zorglubu">
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Clinique Port-Royal"/>
 		<tag k="ref:FR:FINESS" v="750038739"/>
@@ -14035,7 +14035,7 @@
 	</node>
 	<node id="4420368892" lat="48.826327" lon="2.3676967" version="2" timestamp="2019-11-01T16:24:13Z" changeset="76505632" uid="6466263" user="zorglubu">
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="name" v="Clinique Jeanne d&#39;Arc"/>
 		<tag k="ref:FR:FINESS" v="750300410"/>
 		<tag k="source" v="Le ministère des solidarités et de la santé - 03/2019"/>
@@ -14085,7 +14085,7 @@
 		<tag k="addr:postcode" v="94700"/>
 		<tag k="addr:street" v="Avenue Busteau"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="description" v="État-major du groupement, EGM 24/1, EGM 25/1, EGM 26-1, Escadron de sécurité et d&#39;appui, Musique de la gendarmerie mobile"/>
 		<tag k="name" v="Gendarmerie nationale"/>
 		<tag k="name:en" v="Police"/>
@@ -14234,14 +14234,14 @@
 	</node>
 	<node id="4784528396" lat="48.805567" lon="2.2961558" version="6" timestamp="2021-04-24T09:46:32Z" changeset="103527063" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police municipale"/>
 		<tag k="phone" v="+33 1 47 46 86 70"/>
 		<tag k="police:FR" v="police_municipale"/>
 	</node>
 	<node id="4785118720" lat="48.8734832" lon="2.3397879" version="7" timestamp="2021-04-24T09:55:55Z" changeset="103527538" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Paris 9ème arrondissement"/>
 		<tag k="operator" v="Police nationale"/>
@@ -14280,7 +14280,7 @@
 	</node>
 	<node id="4866725091" lat="48.9029859" lon="2.3058791" version="4" timestamp="2021-04-24T09:46:32Z" changeset="103527063" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police municipale"/>
 		<tag k="police:FR" v="police_municipale"/>
 		<tag k="source" v="survey"/>
@@ -14353,7 +14353,7 @@
 		<tag k="addr:postcode" v="75005"/>
 		<tag k="addr:street" v="Boulevard de l&#39;Hôpital"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Service de protection et de sécurisation"/>
 		<tag k="official_name" v="Service de protection et de sécurisation - Direction de l&#39;ordre public et de la circulation"/>
 		<tag k="operator" v="Préfecture de Police de Paris"/>
@@ -14396,7 +14396,7 @@
 	</node>
 	<node id="5180365669" lat="48.8666265" lon="2.3446173" version="2" timestamp="2020-07-16T09:12:31Z" changeset="88076336" uid="5844714" user="quetslor">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Poste de contrôle du quartier Montorgueil"/>
 		<tag k="source" v="survey 10/2017"/>
 	</node>
@@ -14405,7 +14405,7 @@
 		<tag k="addr:postcode" v="75017"/>
 		<tag k="addr:street" v="Rue de Chazelles"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="name" v="Clinique Internationale du Parc Monceau"/>
 		<tag k="name:en" v="Clinical International du Parc Monceau"/>
 		<tag k="opening_hours" v="24/7"/>
@@ -14594,7 +14594,7 @@
 		<tag k="addr:city" v="Houilles"/>
 		<tag k="addr:street" v="Place Michelet"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police municipale"/>
 		<tag k="police:FR" v="police_municipale"/>
 	</node>
@@ -15090,7 +15090,7 @@
 	</node>
 	<node id="5820227988" lat="48.8248589" lon="2.3662869" version="3" timestamp="2021-04-25T07:54:54Z" changeset="103562939" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="fixme" v="Préciser le type de police avec name=Gendarmerie nationale;Police nationale;Police municipale"/>
 	</node>
 	<node id="5837300540" lat="48.8400137" lon="2.3370805" version="3" timestamp="2022-03-10T13:22:02Z" changeset="118323795" uid="4763179" user="ika-chan!">
@@ -15258,7 +15258,7 @@
 	<node id="5929500350" lat="48.7939004" lon="2.3372126" version="5" timestamp="2021-04-24T09:46:32Z" changeset="103527063" uid="125897" user="overflorian">
 		<tag k="addr:housenumber" v="22"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police municipale"/>
 		<tag k="opening_hours" v="Mo-Fr 08:00-20:00; Sa 09:00-18:30"/>
 		<tag k="phone" v="+33 1 49 69 96 71"/>
@@ -15458,7 +15458,7 @@
 	</node>
 	<node id="6044401912" lat="48.8746884" lon="2.4869117" version="5" timestamp="2021-04-24T09:55:55Z" changeset="103527538" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Rosny-sous-Bois"/>
 		<tag k="operator" v="Police nationale"/>
@@ -15475,7 +15475,7 @@
 		<tag k="addr:postcode" v="92210"/>
 		<tag k="addr:street" v="Rue Dailly"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Saint-Cloud"/>
 		<tag k="operator" v="Police nationale"/>
@@ -15491,7 +15491,7 @@
 		<tag k="addr:postcode" v="92400"/>
 		<tag k="addr:street" v="Rue Auguste Beau"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Courbevoie"/>
 		<tag k="operator" v="Police nationale"/>
@@ -15508,7 +15508,7 @@
 		<tag k="addr:postcode" v="93000"/>
 		<tag k="addr:street" v="Rue de Carency"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Bobigny"/>
 		<tag k="operator" v="Police nationale"/>
@@ -15534,7 +15534,7 @@
 		<tag k="addr:postcode" v="75019"/>
 		<tag k="addr:street" v="Rue Augustin Thierry"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Préfecture de police"/>
 		<tag k="official_name" v="Préfecture de police – antenne du 19e arrondissement"/>
 		<tag k="opening_hours" v="Mo-Fr 9:00-20:00"/>
@@ -16003,7 +16003,7 @@
 		<tag k="addr:postcode" v="93500"/>
 		<tag k="addr:street" v="Rue Eugène et Marie-Louise Cornet"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Pantin"/>
 		<tag k="operator" v="Police nationale"/>
@@ -16050,7 +16050,7 @@
 	</node>
 	<node id="6687923134" lat="48.7905304" lon="2.2908776" version="2" timestamp="2021-04-24T09:46:32Z" changeset="103527063" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police municipale"/>
 		<tag k="police:FR" v="police_municipale"/>
 	</node>
@@ -16231,7 +16231,7 @@
 		<tag k="addr:postcode" v="93500"/>
 		<tag k="addr:street" v="Avenue Jean Lolive"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police municipale"/>
 		<tag k="phone" v="+33 1 49 15 71 00"/>
 		<tag k="police:FR" v="police_municipale"/>
@@ -16304,7 +16304,7 @@
 	<node id="7405871076" lat="48.8495555" lon="2.3834967" version="1" timestamp="2020-04-15T13:34:50Z" changeset="83595650" uid="2588427" user="RT59RC"/>
 	<node id="7417017475" lat="48.8296833" lon="2.3388307" version="1" timestamp="2020-04-18T13:02:03Z" changeset="83742372" uid="2588427" user="RT59RC">
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="GHU Paris Psychiatrie &#38; neurosciences"/>
 		<tag k="operator" v="GHU Paris Psychiatrie &#38; neurosciences"/>
@@ -16317,7 +16317,7 @@
 	<node id="7528813709" lat="48.8080397" lon="2.3939229" version="2" timestamp="2022-06-06T11:07:16Z" changeset="122019174" uid="1885164" user="Xandrex"/>
 	<node id="7553939050" lat="48.8438335" lon="2.4667653" version="2" timestamp="2020-06-08T09:11:03Z" changeset="86343826" uid="49047" user="vincent_95">
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Centre d&#39;Imagerie Médicale de Fontenay-sous-Bois"/>
 	</node>
@@ -16325,7 +16325,7 @@
 		<tag k="addr:housenumber" v="62"/>
 		<tag k="addr:street" v="Rue de la Tour"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="fax" v="+33140724068"/>
 		<tag k="name" v="Clinique du Trocadéro"/>
 		<tag k="phone" v="+33140724040"/>
@@ -16336,7 +16336,7 @@
 	</node>
 	<node id="7568123336" lat="48.8416639" lon="2.3980305" version="1" timestamp="2020-05-29T05:21:31Z" changeset="85920674" uid="213513" user="ThomR">
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="fax" v="+33144687226"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Unité de Soins de Suite de la Fondation Rothschild"/>
@@ -16352,7 +16352,7 @@
 		<tag k="addr:postcode" v="75003"/>
 		<tag k="addr:street" v="Rue Volta"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Centre de santé Yvonne Pouzin"/>
 		<tag k="old_name" v="Centre Au Maire Volta"/>
@@ -16427,7 +16427,7 @@
 	</node>
 	<node id="7921483847" lat="48.8675555" lon="2.2969191" version="3" timestamp="2020-10-02T18:37:04Z" changeset="91879490" uid="392288" user="Kalepom">
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Clinique Bizet"/>
 		<tag k="website" v="https://www.bizet-cliniques-paris.fr/"/>
@@ -16448,7 +16448,7 @@
 	<node id="8076121280" lat="48.9096401" lon="2.3078516" version="2" timestamp="2021-05-01T07:07:19Z" changeset="103944434" uid="13220433" user="AMOBS">
 		<tag k="addr:housenumber" v="6"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="centre"/>
 		<tag k="healthcare:speciality" v="ophthalmology;gynaecology;covid19;vaccination;general;chiropractic"/>
 		<tag k="name" v="Centre Médico-Ophtalmologique des Berges de Seine"/>
@@ -16478,7 +16478,7 @@
 		<tag k="addr:postcode" v="93310"/>
 		<tag k="addr:street" v="Rue André Joineau"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police municipale"/>
 		<tag k="police:FR" v="police_municipale"/>
 	</node>
@@ -16596,7 +16596,7 @@
 	<node id="8330855953" lat="48.8947836" lon="2.3131456" version="1" timestamp="2021-01-17T15:39:01Z" changeset="97642428" uid="1205555" user="benoitdd"/>
 	<node id="8355054917" lat="48.9226606" lon="2.2538301" version="2" timestamp="2021-04-24T09:46:32Z" changeset="103527063" uid="125897" user="overflorian">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police municipale"/>
 		<tag k="police:FR" v="police_municipale"/>
 	</node>
@@ -16726,7 +16726,7 @@
 	<node id="8613557591" lat="48.8803697" lon="2.3600405" version="1" timestamp="2021-04-09T22:12:01Z" changeset="102672742" uid="7550430" user="Britzz"/>
 	<node id="8661670033" lat="48.8550437" lon="2.3463683" version="2" timestamp="2022-08-23T21:00:22Z" changeset="125289082" uid="181582" user="quazgar">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="government" v="public_service"/>
 		<tag k="name" v="Brigade de Répression du Banditisme"/>
 		<tag k="office" v="government"/>
@@ -16752,7 +16752,7 @@
 		<tag k="addr:postcode" v="92110"/>
 		<tag k="addr:street" v="Avenue Claude Debussy"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="no"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="healthcare:speciality" v="general"/>
@@ -16821,7 +16821,7 @@
 	<node id="8857679514" lat="48.8785111" lon="2.3317503" version="1" timestamp="2021-06-22T18:14:07Z" changeset="106793216" uid="7550430" user="Britzz"/>
 	<node id="8860878651" lat="48.8054096" lon="2.3768663" version="1" timestamp="2021-06-23T17:50:07Z" changeset="106853402" uid="6466263" user="zorglubu">
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="name" v="Pôle Santé Ivrymed"/>
 	</node>
 	<node id="8878291718" lat="48.8186936" lon="2.3655581" version="1" timestamp="2021-06-29T21:07:05Z" changeset="107170860" uid="57126" user="yxoc"/>
@@ -16892,7 +16892,7 @@
 	</node>
 	<node id="9041902636" lat="48.8320007" lon="2.332288" version="1" timestamp="2021-08-27T21:19:31Z" changeset="110359516" uid="7550430" user="Britzz">
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="note" v="installation transitoire : https://www.leparisien.fr/paris-75/paris-quand-les-policiers-du-xive-demenagent-a-l-hopital-06-05-2019-8066436.php"/>
 		<tag k="official_name" v="Commissariat central de police de Paris 14e arrondissement"/>
@@ -17242,7 +17242,7 @@
 		<tag k="addr:postcode" v="92200"/>
 		<tag k="addr:street" v="Boulevard du Château"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="no"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Entrée Piétons"/>
@@ -17253,7 +17253,7 @@
 		<tag k="addr:postcode" v="92200"/>
 		<tag k="addr:street" v="Rue Chauveau"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="no"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Accès Véhicules"/>
@@ -17295,7 +17295,7 @@
 		<tag k="addr:housenumber" v="103"/>
 		<tag k="addr:street" v="Avenue Maurice Thorez"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="check_date" v="2022-06-01"/>
 		<tag k="operator" v="Gendarmerie nationale"/>
 		<tag k="operator:wikidata" v="Q1422336"/>
@@ -17376,7 +17376,7 @@
 	</node>
 	<node id="9876027322" lat="48.8786051" lon="2.4521363" version="1" timestamp="2022-07-09T10:24:10Z" changeset="123394896" uid="15406028" user="Mobinaute">
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="no"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="healthcare:speciality" v="psychiatry"/>
@@ -17490,7 +17490,7 @@
 		<tag k="addr:postcode" v="92700"/>
 		<tag k="addr:street" v="Rue des Renouillers"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="fax" v="+33 1 47 60 62 75"/>
 		<tag k="healthcare" v="hospital"/>
@@ -17526,7 +17526,7 @@
 		<nd ref="441977902"/>
 		<nd ref="836110510"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="email" v="contact@hopital-foch.com"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="fax" v="+33 1 46 25 20 94"/>
@@ -17582,7 +17582,7 @@
 		<nd ref="993133046"/>
 		<nd ref="127642209"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="name" v="Hôpital Sainte-Périne - Rossini - Chardon-Lagache"/>
 		<tag k="ref:FR:FINESS" v="750809576"/>
 		<tag k="source" v="Le ministère des solidarités et de la santé - 10/2018"/>
@@ -17629,7 +17629,7 @@
 		<nd ref="836368761"/>
 		<nd ref="1989893462"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="fax" v="+33 1 56 01 64 90"/>
 		<tag k="healthcare" v="hospital"/>
@@ -17703,7 +17703,7 @@
 		<tag k="addr:housenumber" v="1"/>
 		<tag k="addr:street" v="Rue Cabanis"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="architect" v="Charles-Auguste Questel"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="healthcare:speciality" v="intensive"/>
@@ -17746,7 +17746,7 @@
 		<nd ref="243066000"/>
 		<nd ref="243065987"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="no"/>
 		<tag k="name" v="Hôpital Corentin Celton"/>
 		<tag k="phone" v="+33 1 58 00 40 00"/>
@@ -17789,7 +17789,7 @@
 		<nd ref="9025361507"/>
 		<nd ref="9025365519"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="fax" v="+33 1 48 03 69 23"/>
 		<tag k="healthcare" v="hospital"/>
@@ -17895,7 +17895,7 @@
 		<nd ref="1144416773"/>
 		<nd ref="247919900"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Hôpital du Val de Grâce"/>
 		<tag k="type:FR:FINESS" v="114"/>
@@ -18046,7 +18046,7 @@
 		<tag k="addr:postcode" v="75014"/>
 		<tag k="addr:street" v="Rue du Faubourg Saint-Jacques"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="fax" v="+33 1 58 41 10 05"/>
 		<tag k="healthcare" v="hospital"/>
@@ -18134,7 +18134,7 @@
 		<nd ref="6143233319"/>
 		<nd ref="1371276291"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Maternité Port Royal"/>
 		<tag k="ref:FR:FINESS" v="750100182"/>
@@ -18221,7 +18221,7 @@
 		<tag k="addr:street" v="Rue de Charenton"/>
 		<tag k="alt_name" v="Centre hospitalier national d&#39;ophtalmologie des Quinze-Vingts"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="contact:twitter" v="Quinze_Vingts"/>
 		<tag k="description" v="Centre hospitalier national d’ophtalmologie des Quinze-Vingts"/>
 		<tag k="emergency" v="yes"/>
@@ -18275,7 +18275,7 @@
 		<nd ref="3850640414"/>
 		<nd ref="249550935"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="contact:city" v="Paris"/>
 		<tag k="contact:housenumber" v="185"/>
 		<tag k="contact:postcode" v="75014"/>
@@ -18351,7 +18351,7 @@
 		<nd ref="250549576"/>
 		<tag k="alt_name" v="IMM"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="contact:website" v="http://imm.fr/"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="healthcare:speciality" v="intensive"/>
@@ -18406,7 +18406,7 @@
 		<nd ref="251492768"/>
 		<nd ref="343250081"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="fax" v="+33 1 56 09 21 19"/>
 		<tag k="healthcare" v="hospital"/>
@@ -18476,7 +18476,7 @@
 		<nd ref="921162935"/>
 		<nd ref="251516314"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Hôpital Privé des Peupliers"/>
 		<tag k="ref:FR:FINESS" v="750300360"/>
@@ -18555,7 +18555,7 @@
 		<nd ref="916534117"/>
 		<nd ref="257403008"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="healthcare:speciality" v="intensive"/>
@@ -18647,7 +18647,7 @@
 		<nd ref="784343165"/>
 		<nd ref="260557179"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="barrier" v="wall"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="fax" v="+33 1 49 95 82 12"/>
@@ -18679,7 +18679,7 @@
 		<nd ref="262861993"/>
 		<nd ref="262861992"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="name" v="Hôpital Vaugirard - Gabriel Pallez"/>
 		<tag k="ref:FR:FINESS" v="750100216"/>
 		<tag k="source" v="Le ministère des solidarités et de la santé - 10/2018"/>
@@ -18743,7 +18743,7 @@
 		<nd ref="690932903"/>
 		<nd ref="268031487"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Hôpital Fernand Widal"/>
 		<tag k="ref:FR:FINESS" v="750100067"/>
@@ -18781,7 +18781,7 @@
 		<nd ref="277714989"/>
 		<nd ref="277714982"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="email" v="contact@chicreteil.fr"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="fax" v="+33 1 45 17 58 92"/>
@@ -18817,7 +18817,7 @@
 		<tag k="addr:postcode" v="93140"/>
 		<tag k="addr:street" v="Avenue de Verdun"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 48 47 01 33"/>
 		<tag k="name" v="Centre de secours de Bondy"/>
 		<tag k="official_name" v="BONDY"/>
@@ -18871,7 +18871,7 @@
 		<nd ref="287541935"/>
 		<nd ref="287541863"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="name" v="Hôpital Broca"/>
 		<tag k="ref:FR:FINESS" v="750801441"/>
 		<tag k="source" v="Le ministère des solidarités et de la santé - 10/2018"/>
@@ -18956,7 +18956,7 @@
 		<nd ref="6548591297"/>
 		<nd ref="914241386"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="check_date" v="2022-10-19"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="fax" v="+33 1 42 38 50 10"/>
@@ -19029,7 +19029,7 @@
 		<tag k="addr:postcode" v="94800"/>
 		<tag k="addr:street" v="Avenue de la République"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="contact:facebook" v="GROUPE-HOSPITALIER-PAUL-GUIRAUD-110424615727245"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="healthcare:speciality" v="psychiatry"/>
@@ -19106,7 +19106,7 @@
 		<tag k="addr:postcode" v="94800"/>
 		<tag k="addr:street" v="Avenue Paul Vaillant-Couturier"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="healthcare:speciality" v="intensive"/>
 		<tag k="name" v="Hôpital Paul Brousse"/>
@@ -19140,7 +19140,7 @@
 		<nd ref="784615841"/>
 		<nd ref="784609565"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="fax" v="+33 1 40 03 47 77"/>
 		<tag k="healthcare:speciality" v="intensive"/>
@@ -19235,7 +19235,7 @@
 		<tag k="addr:postcode" v="94270"/>
 		<tag k="addr:street" v="Rue du Général Leclerc"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="fax" v="+33 1 45 21 20 97"/>
 		<tag k="healthcare" v="hospital"/>
@@ -19299,7 +19299,7 @@
 		<tag k="addr:postcode" v="75013"/>
 		<tag k="addr:street" v="Boulevard Masséna"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 45 83 80 80"/>
 		<tag k="name" v="Centre de secours Masséna"/>
 		<tag k="operator" v="BSPP"/>
@@ -19379,7 +19379,7 @@
 		<tag k="addr:postcode" v="94010"/>
 		<tag k="addr:street" v="Rue de Mesly"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Hôpital Albert Chenevier"/>
 		<tag k="phone" v="+33 1 49 81 31 31"/>
@@ -19402,7 +19402,7 @@
 		<nd ref="347458446"/>
 		<tag k="alt_name" v="ancien hôpital franco-musulman"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="fax" v="+33 1 48 95 56 67"/>
 		<tag k="healthcare" v="hospital"/>
@@ -19440,7 +19440,7 @@
 		<nd ref="391361994"/>
 		<nd ref="411108627"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="fax" v="+33 1 49 20 31 23"/>
 		<tag k="healthcare" v="hospital"/>
@@ -19466,7 +19466,7 @@
 		<nd ref="416375666"/>
 		<nd ref="416375658"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="fax" v="+33 1 48 02 61 02"/>
 		<tag k="healthcare" v="hospital"/>
@@ -19499,7 +19499,7 @@
 		<tag k="addr:postcode" v="92000"/>
 		<tag k="addr:street" v="Rue de l&#39;Industrie"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="architect" v="Jean-Marc Ibos;Myrto Vitart"/>
 		<tag k="building" v="yes"/>
 		<tag k="emergency:phone" v="01 47 21 23 79"/>
@@ -19546,7 +19546,7 @@
 		<nd ref="880244647"/>
 		<tag k="addr:housenumber" v="100"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="fax" v="+33 1 47 30 48 63"/>
 		<tag k="healthcare:speciality" v="intensive"/>
@@ -19623,7 +19623,7 @@
 		<nd ref="431424162"/>
 		<nd ref="1585181837"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="healthcare:speciality" v="intensive"/>
 		<tag k="landuse" v="military"/>
@@ -19664,7 +19664,7 @@
 		<nd ref="441773870"/>
 		<tag k="access" v="private"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="barrier" v="wall"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Clinique du Château"/>
@@ -19717,7 +19717,7 @@
 		<tag k="addr:street" v="Rue Henri Huchard"/>
 		<tag k="alt_name" v="Hopital Xavier Bichat"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="fax" v="+33 1 40 25 83 05"/>
 		<tag k="healthcare" v="hospital"/>
@@ -19812,7 +19812,7 @@
 		<nd ref="516669601"/>
 		<nd ref="516669578"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="yes"/>
 		<tag k="emergency" v="no"/>
 		<tag k="healthcare" v="hospital"/>
@@ -19846,7 +19846,7 @@
 		<tag k="addr:postcode" v="75005"/>
 		<tag k="addr:street" v="Rue du Cardinal Lemoine"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="building" v="yes"/>
 		<tag k="building:levels" v="7"/>
 		<tag k="emergency:phone" v="+33 1 43 54 41 64"/>
@@ -19899,7 +19899,7 @@
 		<nd ref="4406992341"/>
 		<tag k="alt_name" v="Centre d&#39;accueil et de soins hospitalier de Nanterre"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="architect" v="Achille Hermant"/>
 		<tag k="beds" v="924"/>
 		<tag k="emergency" v="yes"/>
@@ -19958,7 +19958,7 @@
 		<nd ref="564895261"/>
 		<tag k="alt_name" v="Hôpital de Courbevoie-Neuilly"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="fax" v="+33 1 40 88 60 30"/>
 		<tag k="loc_name" v="Hôpital de Neuilly"/>
@@ -19988,7 +19988,7 @@
 		<nd ref="1552399953"/>
 		<nd ref="571652344"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police d&#39;Aulnay-sous-Bois"/>
 		<tag k="operator" v="Police nationale"/>
@@ -20030,7 +20030,7 @@
 		<nd ref="6496172318"/>
 		<nd ref="593830798"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="fax" v="+33 1 49 09 57 99"/>
 		<tag k="healthcare" v="hospital"/>
@@ -20054,7 +20054,7 @@
 		<nd ref="606293828"/>
 		<nd ref="606293830"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="architect" v="Odile Decq;Benoît Cornette"/>
 		<tag k="building" v="yes"/>
 		<tag k="image" v="https://upload.wikimedia.org/wikipedia/commons/6/6f/Viaduc_de_Carriere_sur_seine_A14_-_Avril_2012_-_Tablier_et_pylones_(5).jpg"/>
@@ -20127,7 +20127,7 @@
 		<nd ref="3702986127"/>
 		<nd ref="638927640"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Hôpital Henri Dunant"/>
 		<tag k="ref:FR:FINESS" v="750150377"/>
@@ -20163,7 +20163,7 @@
 		<nd ref="297891490"/>
 		<nd ref="639163523"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Clinique Jouvenet"/>
 		<tag k="ref:FR:FINESS" v="750300774"/>
@@ -20199,7 +20199,7 @@
 		<nd ref="1003096313"/>
 		<nd ref="639173408"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Clinique Edouard Rist"/>
 		<tag k="ref:FR:FINESS" v="750150252"/>
@@ -20252,7 +20252,7 @@
 		<nd ref="7364941995"/>
 		<nd ref="916644709"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="name" v="Hôpital des Diaconesses"/>
 		<tag k="ref:FR:FINESS" v="750150260"/>
 		<tag k="source:ref:FR:FINESS" v="data.gouv.fr:Ministère des Solidarités et de la Santé - 03/2020"/>
@@ -20395,7 +20395,7 @@
 		<nd ref="677090282"/>
 		<nd ref="677090278"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="fax" v="+33 1 42 34 80 78"/>
 		<tag k="healthcare" v="hospital"/>
@@ -20440,7 +20440,7 @@
 		<nd ref="677598164"/>
 		<nd ref="677598163"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="building:levels" v="5"/>
 		<tag k="description:covid19" v="Pas d&#39;accès au public (compagnie motocycliste)"/>
@@ -20470,7 +20470,7 @@
 		<nd ref="678317065"/>
 		<nd ref="678321226"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="yes"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Hôpital Cognacq-Jay"/>
@@ -20513,7 +20513,7 @@
 		<tag k="addr:postcode" v="75001"/>
 		<tag k="addr:street" v="Rue du Jour"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="architect" v="E. Perronne"/>
 		<tag k="building" v="yes"/>
 		<tag k="emergency:phone" v="01 42 36 60 03"/>
@@ -20553,7 +20553,7 @@
 		<nd ref="682243823"/>
 		<nd ref="682243820"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="building" v="yes"/>
 		<tag k="emergency:phone" v="+33 1 42 61 03 93"/>
 		<tag k="name" v="Centre de secours Saint-Honoré"/>
@@ -20610,7 +20610,7 @@
 		<tag k="addr:postcode" v="75004"/>
 		<tag k="addr:street" v="Rue de Sévigné"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 42 72 17 84"/>
 		<tag k="name" v="Centre de secours Sévigné"/>
 		<tag k="official_name" v="SEVIGNE"/>
@@ -20690,7 +20690,7 @@
 		<nd ref="784448915"/>
 		<nd ref="784449528"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat Central de Police du 10e"/>
@@ -20718,7 +20718,7 @@
 		<tag k="addr:postcode" v="75010"/>
 		<tag k="addr:street" v="Rue de l&#39;Aqueduc"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="yes"/>
 		<tag k="building:levels" v="4"/>
 		<tag k="name" v="Hôpital de jour Léopold Bellan"/>
@@ -20755,7 +20755,7 @@
 		<nd ref="912271710"/>
 		<nd ref="784473131"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="yes"/>
 		<tag k="name" v="Les Cariatides d&#39;Abbeville"/>
 		<tag k="operator" v="Hôpital Maison Blanche"/>
@@ -20787,7 +20787,7 @@
 		<tag k="addr:postcode" v="75010"/>
 		<tag k="addr:street" v="Quai de Valmy"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="building" v="yes"/>
 		<tag k="building:levels" v="2"/>
 		<tag k="emergency:phone" v="01 40 35 74 58"/>
@@ -20825,7 +20825,7 @@
 		<tag k="addr:postcode" v="75010"/>
 		<tag k="addr:street" v="Rue du Château d&#39;Eau"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="building" v="yes"/>
 		<tag k="building:levels" v="4"/>
 		<tag k="emergency:phone" v="+33 1 40 40 03 33"/>
@@ -20876,7 +20876,7 @@
 		<nd ref="784698964"/>
 		<nd ref="784561566"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="hospital"/>
 		<tag k="emergency" v="no"/>
 		<tag k="name" v="Hôpital Jean Jaurès"/>
@@ -20932,7 +20932,7 @@
 		<nd ref="784594401"/>
 		<nd ref="784662366"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="yes"/>
 		<tag k="email" v="groupe@maussins.com"/>
 		<tag k="fax" v="+33 1 40 03 12 00"/>
@@ -20981,7 +20981,7 @@
 		<tag k="addr:postcode" v="75006"/>
 		<tag k="addr:street" v="Rue du Vieux Colombier"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="+33 1 45 48 32 90"/>
 		<tag k="name" v="Centre de Secours Colombier"/>
 		<tag k="official_name" v="COLOMBIER"/>
@@ -21027,7 +21027,7 @@
 		<tag k="addr:postcode" v="92100"/>
 		<tag k="addr:street" v="Avenue André Morizet"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="building:levels" v="5"/>
 		<tag k="building:name" v="Bâtiment Delory"/>
@@ -21055,7 +21055,7 @@
 		<nd ref="787453621"/>
 		<nd ref="787471874"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="government"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="operator" v="Police nationale"/>
@@ -21099,7 +21099,7 @@
 		<nd ref="788603889"/>
 		<nd ref="788604400"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Hôpital Tarnier"/>
 		<tag k="ref:FR:FINESS" v="750100026"/>
@@ -21130,7 +21130,7 @@
 		<nd ref="789602996"/>
 		<nd ref="789534606"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="hospital"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Clinique du Grand Stade"/>
@@ -21157,7 +21157,7 @@
 		<nd ref="789616073"/>
 		<nd ref="789510055"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de la Plaine-Saint-Denis"/>
@@ -21183,7 +21183,7 @@
 		<nd ref="3230091415"/>
 		<nd ref="790434610"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="yes"/>
 		<tag k="building:levels" v="7"/>
 		<tag k="email" v="marcelsembat@gsante.fr"/>
@@ -21338,7 +21338,7 @@
 		<nd ref="803998883"/>
 		<nd ref="803995052"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="yes"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Clinique Villa Marie-Louise"/>
@@ -21372,7 +21372,7 @@
 		<nd ref="804448462"/>
 		<nd ref="804453444"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="hospital"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Clinique Lambert"/>
@@ -21419,7 +21419,7 @@
 		<tag k="addr:housenumber" v="44"/>
 		<tag k="addr:street" v="Rue de la Tourelle"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="yes"/>
 		<tag k="building:levels" v="4"/>
 		<tag k="email" v="montevideo@montevideoclinic.net"/>
@@ -21612,7 +21612,7 @@
 		<nd ref="827019625"/>
 		<nd ref="827028911"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="yes"/>
 		<tag k="emergency" v="no"/>
 		<tag k="healthcare" v="hospital"/>
@@ -21635,7 +21635,7 @@
 		<tag k="addr:postcode" v="75007"/>
 		<tag k="addr:street" v="Rue Fabert"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="civic"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Paris 7ème arrondissement"/>
@@ -21655,7 +21655,7 @@
 		<nd ref="1234196798"/>
 		<nd ref="830151167"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="building:levels" v="5"/>
 		<tag k="name" v="Police - SAIP"/>
@@ -21684,7 +21684,7 @@
 		<nd ref="836100118"/>
 		<nd ref="836099920"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police du 15e arrondissement"/>
@@ -21724,7 +21724,7 @@
 		<tag k="addr:postcode" v="75020"/>
 		<tag k="addr:street" v="Rue des Gâtines"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="name:ru" v="Центральный комиссариат XX округа"/>
@@ -21770,7 +21770,7 @@
 		<nd ref="836410046"/>
 		<nd ref="836370458"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="hospital"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Centre post-cure de la Métairie"/>
@@ -21820,7 +21820,7 @@
 		<tag k="addr:postcode" v="92600"/>
 		<tag k="addr:street" v="Rue du Château"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="building:levels" v="4"/>
 		<tag k="name" v="Police nationale"/>
@@ -21872,7 +21872,7 @@
 		<nd ref="858373973"/>
 		<nd ref="858374258"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="yes"/>
 		<tag k="building:levels" v="3"/>
 		<tag k="healthcare" v="hospital"/>
@@ -21898,7 +21898,7 @@
 		<nd ref="866372678"/>
 		<nd ref="866363952"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="name" v="Police municipale"/>
 		<tag k="name:en" v="City police"/>
@@ -21970,7 +21970,7 @@
 		<nd ref="866240952"/>
 		<nd ref="866157594"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police d&#39;Aubervilliers"/>
@@ -22058,7 +22058,7 @@
 		<nd ref="868828582"/>
 		<nd ref="868772738"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="yes"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Clinique du Pré Saint-Gervais"/>
@@ -22079,7 +22079,7 @@
 		<nd ref="870447995"/>
 		<nd ref="870452021"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="civic"/>
 		<tag k="name" v="Police municipale"/>
 		<tag k="police:FR" v="police_municipale"/>
@@ -22106,7 +22106,7 @@
 		<tag k="addr:postcode" v="93230"/>
 		<tag k="addr:street" v="Avenue Paul Vaillant Couturier"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="name" v="Police municipale"/>
 		<tag k="opening_hours" v="Mo-Fr 08:30-12:00,13:30-17:00"/>
@@ -22122,7 +22122,7 @@
 		<nd ref="873796487"/>
 		<nd ref="873739332"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="building:levels" v="3"/>
 		<tag k="name" v="Police municipale"/>
@@ -22187,7 +22187,7 @@
 		<nd ref="894251092"/>
 		<nd ref="894274795"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="architect" v="Hellin;Sebbag"/>
 		<tag k="building" v="yes"/>
 		<tag k="name" v="Police nationale"/>
@@ -22221,7 +22221,7 @@
 		<tag k="addr:postcode" v="75017"/>
 		<tag k="addr:street" v="Rue Boursault"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="building" v="yes"/>
 		<tag k="building:levels" v="4"/>
 		<tag k="emergency:phone" v="01 45 22 36 77"/>
@@ -22289,7 +22289,7 @@
 		<tag k="addr:postcode" v="95870"/>
 		<tag k="addr:street" v="Rue Jean Jaurès"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="building" v="yes"/>
 		<tag k="name" v="CIS Bezons"/>
 		<tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010"/>
@@ -22307,7 +22307,7 @@
 		<nd ref="7159066079"/>
 		<nd ref="914442914"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="civic"/>
 		<tag k="name" v="Préfecture de police"/>
 		<tag k="official_name" v="Préfecture de police du 18e arrondissement"/>
@@ -22332,7 +22332,7 @@
 		<nd ref="916539901"/>
 		<tag k="alt_name" v="Maternité Les Bluets"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="hospital"/>
 		<tag k="building:levels" v="5"/>
 		<tag k="healthcare" v="hospital"/>
@@ -22378,7 +22378,7 @@
 		<nd ref="2409338020"/>
 		<nd ref="916527302"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de la Goutte d&#39;Or"/>
@@ -22471,7 +22471,7 @@
 		<nd ref="2265865459"/>
 		<nd ref="921536314"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="building:levels" v="6"/>
 		<tag k="name" v="Police nationale"/>
@@ -22589,7 +22589,7 @@
 		<nd ref="924128181"/>
 		<nd ref="924170576"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="contact:city" v="Paris"/>
 		<tag k="contact:housenumber" v="71"/>
@@ -22634,7 +22634,7 @@
 		<tag k="addr:postcode" v="92700"/>
 		<tag k="addr:street" v="Rue du 8 Mai 1945"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="administratif"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Colombes"/>
@@ -22680,7 +22680,7 @@
 		<nd ref="929959000"/>
 		<nd ref="929965432"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="building:levels" v="9"/>
 		<tag k="name" v="Police nationale"/>
@@ -22770,7 +22770,7 @@
 		<nd ref="930303336"/>
 		<nd ref="930323677"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="yes"/>
 		<tag k="building:levels" v="5"/>
 		<tag k="name" v="Les Colombages"/>
@@ -22823,7 +22823,7 @@
 		<nd ref="930341282"/>
 		<nd ref="930336610"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="hospital"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Fondation Hospitalière Sainte-Marie"/>
@@ -22840,7 +22840,7 @@
 		<nd ref="1720730791"/>
 		<nd ref="935079884"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="yes"/>
 		<tag k="building:levels" v="8"/>
 		<tag k="healthcare" v="hospital"/>
@@ -22885,7 +22885,7 @@
 		<nd ref="937048444"/>
 		<nd ref="937048990"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Clinique Chirurgicale Victor Hugo"/>
 		<tag k="ref:FR:FINESS" v="750300741"/>
@@ -23060,7 +23060,7 @@
 		<tag k="addr:housenumber" v="93"/>
 		<tag k="addr:postcode" v="93000"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="name" v="Direction territoriale de la sécurité de proximité 93"/>
 		<tag k="source" v="extraction vectorielle v1 cadastre-dgi-fr source : Direction Générale des Impôts - Cadas. Mise à jour : 2010"/>
@@ -23103,7 +23103,7 @@
 		<nd ref="949027275"/>
 		<nd ref="949027270"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Montreuil-sous-Bois"/>
@@ -23179,7 +23179,7 @@
 		<tag k="addr:postcode" v="92400"/>
 		<tag k="addr:street" v="rue Henri Regnault"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="building" v="yes"/>
 		<tag k="emergency:phone" v="01 43 33 01 20"/>
 		<tag k="name" v="Centre de secours de Courbevoie"/>
@@ -23208,7 +23208,7 @@
 		<tag k="addr:postcode" v="92130"/>
 		<tag k="addr:street" v="Avenue Victor Cresson"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="email" v="commissariat-issy-lesmoulineaux@interieur.gouv.fr"/>
 		<tag k="name" v="Police nationale"/>
@@ -23243,7 +23243,7 @@
 		<nd ref="968479222"/>
 		<nd ref="968451518"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="office"/>
 		<tag k="building:levels" v="2"/>
 		<tag k="name" v="Police nationale"/>
@@ -23299,7 +23299,7 @@
 		<nd ref="975589293"/>
 		<nd ref="975600839"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="yes"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Centre Laennec"/>
@@ -23352,7 +23352,7 @@
 		<nd ref="978915343"/>
 		<nd ref="978916428"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="public"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Bondy"/>
@@ -23387,7 +23387,7 @@
 		<tag k="addr:postcode" v="75016"/>
 		<tag k="addr:street" v="Rue François Millet"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 42 88 51 81"/>
 		<tag k="name" v="Centre de secours Auteuil"/>
 		<tag k="official_name" v="AUTEUIL"/>
@@ -23471,7 +23471,7 @@
 		<nd ref="980402072"/>
 		<nd ref="980685003"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="yes"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Clinique du Bois d&#39;Amour"/>
@@ -23492,7 +23492,7 @@
 		<nd ref="1004347660"/>
 		<nd ref="1004140246"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="yes"/>
 		<tag k="building:levels" v="6"/>
 		<tag k="healthcare" v="hospital"/>
@@ -23583,7 +23583,7 @@
 		<nd ref="1029952677"/>
 		<nd ref="1017022083"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Hôpital Sainte-Périne - Rossini - Chardon Lagache"/>
 		<tag k="ref:FR:FINESS" v="750100299"/>
@@ -23640,7 +23640,7 @@
 		<nd ref="1980858926"/>
 		<nd ref="1980858925"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="fax" v="+33 1 43 71 33 96"/>
 		<tag k="healthcare:speciality" v="intensive"/>
@@ -23666,7 +23666,7 @@
 		<nd ref="1120431475"/>
 		<nd ref="1120431498"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Saint-Maur-des-Fosses"/>
@@ -23694,7 +23694,7 @@
 		<tag k="addr:housenumber" v="60"/>
 		<tag k="addr:street" v="Avenue du Général de Gaulle"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="yes"/>
 		<tag k="healthcare:speciality" v="physiatry"/>
 		<tag k="name" v="Clinique du Parc de Vanves"/>
@@ -23735,7 +23735,7 @@
 		<nd ref="1202458544"/>
 		<nd ref="1202446465"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="name" v="Hôpital du Jour - Centre Médico-Psychologique"/>
 		<tag k="ref:FR:FINESS" v="920170040"/>
 		<tag k="source" v="survey 2013"/>
@@ -23782,7 +23782,7 @@
 		<nd ref="826096450"/>
 		<nd ref="1214216525"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Clinique Saint-Jean de Dieu"/>
 		<tag k="ref:FR:FINESS" v="750300121"/>
@@ -23812,7 +23812,7 @@
 		<nd ref="1219958450"/>
 		<nd ref="1217367492"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Fontenay-sous-Bois"/>
@@ -23844,7 +23844,7 @@
 		<nd ref="8140161158"/>
 		<nd ref="1234147645"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="name" v="Clinique Sainte-Isabelle"/>
 		<tag k="source" v="survey"/>
 	</way>
@@ -23875,7 +23875,7 @@
 		<nd ref="1239577963"/>
 		<tag k="alt_name" v="Clinique Alsace Lorraine"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="no"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Clinique Gaston Métivet"/>
@@ -23983,7 +23983,7 @@
 		<nd ref="937118819"/>
 		<nd ref="937108959"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="fax" v="+33 1 44 49 41 15"/>
 		<tag k="healthcare" v="hospital"/>
@@ -24034,7 +24034,7 @@
 		<nd ref="1298347300"/>
 		<nd ref="796874140"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Centre Chirurgical des Princes"/>
 		<tag k="ref:FR:FINESS" v="920300183"/>
@@ -24058,7 +24058,7 @@
 		<tag k="addr:postcode" v="78800"/>
 		<tag k="addr:street" v="Rue Hoche"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Houilles"/>
@@ -24122,7 +24122,7 @@
 		<nd ref="1350240714"/>
 		<nd ref="1350240951"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="hospital"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="fax" v="+33 1 43 94 81 77"/>
@@ -24153,7 +24153,7 @@
 		<nd ref="1354610899"/>
 		<nd ref="1354610846"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Maisons-Alfort"/>
@@ -24285,7 +24285,7 @@
 		<tag k="addr:postcode" v="75012"/>
 		<tag k="addr:street" v="Rue du Faubourg Saint-Antoine"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="fax" v="+33 1 49 28 20 84"/>
 		<tag k="foot" v="permissive"/>
@@ -24432,7 +24432,7 @@
 		<tag k="addr:postcode" v="92190"/>
 		<tag k="addr:street" v="Rue de Paris"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Meudon"/>
@@ -24487,7 +24487,7 @@
 		<nd ref="215372310"/>
 		<nd ref="215372311"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="fax" v="+33 1 41 46 64 91"/>
 		<tag k="healthcare" v="hospital"/>
@@ -24515,7 +24515,7 @@
 		<nd ref="1525627149"/>
 		<nd ref="1525627140"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Clinique La Montagne"/>
 		<tag k="ref:FR:FINESS" v="920300365"/>
@@ -24579,7 +24579,7 @@
 		<nd ref="1426494331"/>
 		<nd ref="1426494329"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="no"/>
 		<tag k="name" v="Hôpital Rothschild"/>
 		<tag k="ref:FR:FINESS" v="750100083"/>
@@ -24596,7 +24596,7 @@
 		<nd ref="1578588721"/>
 		<nd ref="1578553230"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="name" v="Police nationale et municipale"/>
 		<tag k="opening_hours:covid19" v="open"/>
@@ -24652,7 +24652,7 @@
 		<nd ref="1612317863"/>
 		<nd ref="1612317847"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="name" v="Gendarmerie nationale"/>
 		<tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2011"/>
@@ -24673,7 +24673,7 @@
 		<tag k="addr:housenumber" v="9"/>
 		<tag k="addr:street" v="Quai de Bercy"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="yes"/>
 		<tag k="contact:phone" v="+33143967800"/>
 		<tag k="emergency" v="no"/>
@@ -24705,7 +24705,7 @@
 		<nd ref="1624145009"/>
 		<nd ref="1624144481"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="yes"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Clinique Joncs Marins"/>
@@ -24805,7 +24805,7 @@
 		<nd ref="1538801063"/>
 		<nd ref="1536882201"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="no"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Hôpital National de Saint-Maurice"/>
@@ -24881,7 +24881,7 @@
 		<tag k="addr:postcode" v="75018"/>
 		<tag k="addr:street" v="Rue Carpeaux"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 46 27 35 55"/>
 		<tag k="name" v="Centre de secours Montmartre"/>
 		<tag k="official_name" v="MONTMARTRE"/>
@@ -24903,7 +24903,7 @@
 		<nd ref="894240736"/>
 		<nd ref="894265158"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Clinique de la Jonquière"/>
 		<tag k="ref:FR:FINESS" v="750014169"/>
@@ -24940,7 +24940,7 @@
 		<nd ref="1765280431"/>
 		<nd ref="979142640"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="fax" v="+33 1 47 59 59 60"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="heritage" v="3"/>
@@ -25005,7 +25005,7 @@
 		<nd ref="731043608"/>
 		<nd ref="731043711"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="name" v="Hôpital La Collégiale"/>
 		<tag k="ref:FR:FINESS" v="750806226"/>
 		<tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2012"/>
@@ -25020,7 +25020,7 @@
 		<nd ref="718669728"/>
 		<nd ref="540666803"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="building:levels" v="4"/>
 		<tag k="name" v="Commissariat Central du 5e arrondissement"/>
@@ -25070,7 +25070,7 @@
 		<nd ref="897209549"/>
 		<nd ref="897213250"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="name" v="Hôpital Bretonneau"/>
 		<tag k="ref:FR:FINESS" v="750041543"/>
 		<tag k="source" v="Le ministère des solidarités et de la santé - 10/2018"/>
@@ -25096,7 +25096,7 @@
 		<tag k="addr:postcode" v="75013"/>
 		<tag k="addr:street" v="Boulevard de Port-Royal"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 45 35 18 18"/>
 		<tag k="name" v="Centre de secours de Port-Royal"/>
 		<tag k="official_name" v="PORT ROYAL"/>
@@ -25201,7 +25201,7 @@
 		<tag k="addr:street" v="Quai de Conti"/>
 		<tag k="alt_name" v="Commandant Beinier"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="building" v="boat"/>
 		<tag k="emergency" v="marine_rescue"/>
 		<tag k="name" v="Centre de Secours La Monnaie"/>
@@ -25255,7 +25255,7 @@
 		<nd ref="692404207"/>
 		<nd ref="692403652"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Hôpital de Jour"/>
 		<tag k="ref:FR:FINESS" v="920010949"/>
@@ -25278,7 +25278,7 @@
 		<nd ref="2601996663"/>
 		<nd ref="921539138"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Hôpital des Gardiens de la Paix"/>
 		<tag k="ref:FR:FINESS" v="750150088"/>
@@ -25335,7 +25335,7 @@
 		<nd ref="4589190149"/>
 		<nd ref="2603436041"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Centre hospitalier de Courbevoie - Neuilly-sur-Seine"/>
 		<tag k="ref:FR:FINESS" v="920000569"/>
@@ -25474,7 +25474,7 @@
 		<nd ref="2608603973"/>
 		<nd ref="2608603976"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="fax" v="+33 1 42 17 60 06"/>
 		<tag k="healthcare" v="hospital"/>
@@ -25557,7 +25557,7 @@
 		<nd ref="2652403948"/>
 		<nd ref="784610050"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="yes"/>
 		<tag k="building:levels" v="5"/>
 		<tag k="healthcare" v="hospital"/>
@@ -25592,7 +25592,7 @@
 		<tag k="addr:postcode" v="94300"/>
 		<tag k="addr:street" v="Place du Maréchal Lyautey"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="+33 1 43 28 04 86"/>
 		<tag k="name" v="Centre de secours de Vincennes"/>
 		<tag k="official_name" v="VINCENNES"/>
@@ -25624,7 +25624,7 @@
 		<nd ref="2901971853"/>
 		<nd ref="2901971848"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Gendarmerie nationale"/>
 		<tag k="official_name" v="Brigade territoriale autonome de gendarmerie de Bobigny"/>
 		<tag k="operator" v="Gendarmerie nationale"/>
@@ -25650,7 +25650,7 @@
 		<tag k="addr:postcode" v="75014"/>
 		<tag k="addr:street" v="Rue Raymond Losserand"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building:colour" v="firebrick"/>
 		<tag k="building:material" v="brick"/>
 		<tag k="email" v="direction.hopital@bellan.fr"/>
@@ -25685,7 +25685,7 @@
 		<nd ref="2986179231"/>
 		<nd ref="2986179225"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="hospital"/>
 		<tag k="building:colour" v="cornsilk"/>
 		<tag k="building:material" v="brick"/>
@@ -25707,7 +25707,7 @@
 		<nd ref="3405092996"/>
 		<nd ref="3405092994"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="indoor" v="room"/>
 		<tag k="level" v="1"/>
 		<tag k="name" v="Police nationale"/>
@@ -25738,7 +25738,7 @@
 		<tag k="addr:postcode" v="75014"/>
 		<tag k="addr:street" v="Rue Raymond Losserand"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="hospital"/>
 		<tag k="emergency" v="no"/>
 		<tag k="healthcare" v="hospital"/>
@@ -25770,7 +25770,7 @@
 		<nd ref="3411148048"/>
 		<nd ref="3411148049"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="no"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Centre Hospitalier Stell"/>
@@ -25889,7 +25889,7 @@
 		<tag k="addr:postcode" v="75013"/>
 		<tag k="addr:street" v="Avenue de la Porte de Choisy"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="name" v="Hôpital Henri Ey"/>
 		<tag k="operator" v="Perray-Vaucluse"/>
 		<tag k="ref:FR:FINESS" v="750058471"/>
@@ -26014,7 +26014,7 @@
 		<tag k="addr:postcode" v="94200"/>
 		<tag k="addr:street" v="Rue Saint-Just"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="building" v="yes"/>
 		<tag k="emergency:phone" v="01 46 72 31 54"/>
 		<tag k="name" v="Centre de secours d&#39;Ivry-sur-Seine"/>
@@ -26055,7 +26055,7 @@
 		<tag k="addr:postcode" v="92210"/>
 		<tag k="addr:street" v="Avenue du Maréchal Foch"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 47 71 05 20"/>
 		<tag k="name" v="Centre de secours Saint-Cloud"/>
 		<tag k="official_name" v="Saint-Cloud"/>
@@ -26131,7 +26131,7 @@
 		<nd ref="4046525143"/>
 		<nd ref="4046525139"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="level" v="0"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="noname" v="yes"/>
@@ -26157,7 +26157,7 @@
 		<tag k="addr:postcode" v="94800"/>
 		<tag k="addr:street" v="Avenue de Verdun"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 47 26 39 60"/>
 		<tag k="name" v="Centre de secours de Villejuif"/>
 		<tag k="official_name" v="VILLEJUIF"/>
@@ -26211,7 +26211,7 @@
 		<tag k="addr:postcode" v="94100"/>
 		<tag k="addr:street" v="Avenue Louis Blanc"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 48 83 14 39"/>
 		<tag k="name" v="Centre de Secours de Saint-Maur"/>
 		<tag k="official_name" v="Saint-Maur"/>
@@ -26248,7 +26248,7 @@
 		<tag k="addr:full" v="4-6 rue Pasteur 94700 Maisons-Alfort"/>
 		<tag k="addr:housenumber" v="4-6"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 43 78 28 10"/>
 		<tag k="name" v="Centre de secours de Maison-Alfort"/>
 		<tag k="official_name" v="MAISON-ALFORT"/>
@@ -26287,7 +26287,7 @@
 		<tag k="addr:postcode" v="94130"/>
 		<tag k="addr:street" v="Route de Stalingrad"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 48 73 07 58"/>
 		<tag k="name" v="Centre de secours de Nogent-sur-Marne"/>
 		<tag k="note" v="adresse renseignée Boulevard de Strasbourg"/>
@@ -26330,7 +26330,7 @@
 		<tag k="addr:postcode" v="75012"/>
 		<tag k="addr:street" v="Place Lachambeaudie"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 43 43 53 75"/>
 		<tag k="name" v="Centre de secours Nativité"/>
 		<tag k="official_name" v="NATIVITE"/>
@@ -26362,7 +26362,7 @@
 		<nd ref="968477206"/>
 		<nd ref="968474598"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="contact:housenumber" v="53"/>
 		<tag k="contact:street" v="Rue de la Vanne"/>
 		<tag k="emergency:phone" v="+33 1 46 56 18 18"/>
@@ -26413,7 +26413,7 @@
 		<tag k="addr:postcode" v="92140"/>
 		<tag k="addr:street" v="Avenue Victor Hugo"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 46 41 02 86"/>
 		<tag k="name" v="Centre de Secours de Clamart"/>
 		<tag k="official_name" v="CLAMART"/>
@@ -26457,7 +26457,7 @@
 		<tag k="addr:postcode" v="92130"/>
 		<tag k="addr:street" v="Boulevard Galliéni"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 46 42 33 24"/>
 		<tag k="name" v="Centre de secours d&#39;Issy-les-Moulineaux"/>
 		<tag k="official_name" v="ISSY-LES-MOULINEAUX"/>
@@ -26502,7 +26502,7 @@
 		<tag k="addr:postcode" v="92100"/>
 		<tag k="addr:street" v="Boulevard Galliéni"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 46 05 12 86"/>
 		<tag k="name" v="Centre de secours de Boulogne"/>
 		<tag k="official_name" v="BOULOGNE"/>
@@ -26550,7 +26550,7 @@
 		<tag k="addr:postcode" v="92800"/>
 		<tag k="addr:street" v="Rue de Verdun"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 45 06 01 20"/>
 		<tag k="name" v="Centre de secours de Puteaux"/>
 		<tag k="official_name" v="PUTEAUX"/>
@@ -26586,7 +26586,7 @@
 		<tag k="addr:full" v="1 Avenue Georges Pompidou Levallois-Perret"/>
 		<tag k="addr:housenumber" v="1"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 47 58 51 14"/>
 		<tag k="name" v="Centre de secours de Levallois-Perret"/>
 		<tag k="official_name" v="LEVALLOIS-PERRET"/>
@@ -26647,7 +26647,7 @@
 		<tag k="addr:full" v="137 Boulevard Jean-Jaurès 92110 Clichy"/>
 		<tag k="addr:housenumber" v="137"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 47 37 11 30"/>
 		<tag k="name" v="Centre de secours de Clichy"/>
 		<tag k="official_name" v="CLICHY"/>
@@ -26704,7 +26704,7 @@
 		<tag k="addr:postcode" v="92700"/>
 		<tag k="addr:street" v="rue Hoche"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 42 42 14 56"/>
 		<tag k="name" v="Centre de secours de Colombes"/>
 		<tag k="official_name" v="COLOMBES"/>
@@ -26740,7 +26740,7 @@
 		<tag k="addr:postcode" v="75014"/>
 		<tag k="addr:street" v="Avenue Villemain"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="+33 1 45 43 00 51"/>
 		<tag k="name" v="Centre de secours Plaisance"/>
 		<tag k="official_name" v="PLAISANCE"/>
@@ -26773,7 +26773,7 @@
 		<tag k="addr:postcode" v="75007"/>
 		<tag k="addr:street" v="Rue Malar"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 47 05 41 99"/>
 		<tag k="name" v="Centre de secours Malar"/>
 		<tag k="official_name" v="MALAR"/>
@@ -26823,7 +26823,7 @@
 		<tag k="addr:postcode" v="75015"/>
 		<tag k="addr:street" v="Place Violet"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 45 78 74 52"/>
 		<tag k="name" v="Centre de secours Grenelle"/>
 		<tag k="official_name" v="GRENELLE"/>
@@ -26891,7 +26891,7 @@
 		<tag k="addr:postcode" v="75009"/>
 		<tag k="addr:street" v="Rue Blanche"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 48 74 56 20"/>
 		<tag k="name" v="Centre de Secours Blanche"/>
 		<tag k="official_name" v="BLANCHE"/>
@@ -26931,7 +26931,7 @@
 		<tag k="addr:postcode" v="75019"/>
 		<tag k="addr:street" v="Place de Bitche"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 40 36 86 03"/>
 		<tag k="name" v="Centre de secours Bitche"/>
 		<tag k="official_name" v="BITCHE"/>
@@ -26977,7 +26977,7 @@
 		<tag k="addr:postcode" v="93500"/>
 		<tag k="addr:street" v="Rue Cartier Bresson"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 48 45 06 37"/>
 		<tag k="name" v="Centre de secours de Pantin"/>
 		<tag k="official_name" v="PANTIN"/>
@@ -27011,7 +27011,7 @@
 		<nd ref="4354763694"/>
 		<tag k="addr:full" v="47 rue Saint-Fargeau 75020 Paris"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="contact:city" v="Paris"/>
 		<tag k="contact:country" v="FR"/>
 		<tag k="contact:housenumber" v="47"/>
@@ -27049,7 +27049,7 @@
 		<tag k="addr:postcode" v="75020"/>
 		<tag k="addr:street" v="Rue des Pyrénées"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 43 71 53 66"/>
 		<tag k="name" v="Centre de secours Charonne"/>
 		<tag k="official_name" v="Charonne"/>
@@ -27095,7 +27095,7 @@
 		<tag k="addr:postcode" v="93700"/>
 		<tag k="addr:street" v="Rue Roger Salengro"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 48 32 02 63"/>
 		<tag k="name" v="Centre de secours de Drancy"/>
 		<tag k="official_name" v="DRANCY"/>
@@ -27149,7 +27149,7 @@
 		<tag k="addr:postcode" v="93105"/>
 		<tag k="addr:street" v="Avenue Pasteur"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 42 87 00 02"/>
 		<tag k="name" v="Centre de secours de Montreuil"/>
 		<tag k="official_name" v="MONTREUIL"/>
@@ -27182,7 +27182,7 @@
 		<nd ref="4355689311"/>
 		<nd ref="4355689313"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 45 28 73 05"/>
 		<tag k="name" v="Centre de secours de Villemomble"/>
 		<tag k="official_name" v="VILLEMOMBLE"/>
@@ -27212,7 +27212,7 @@
 		<tag k="addr:postcode" v="93300"/>
 		<tag k="addr:street" v="Rue de la Commune de Paris"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 48 52 03 42"/>
 		<tag k="name" v="Centre de secours d&#39;Aubervilliers"/>
 		<tag k="official_name" v="AUBERVILLIERS"/>
@@ -27255,7 +27255,7 @@
 		<tag k="ADRESSE" v="24 rue de la Convention 93120 La Courneuve"/>
 		<tag k="addr:housenumber" v="24"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 48 36 32 61"/>
 		<tag k="name" v="Centre de secours de La Courneuve"/>
 		<tag k="official_name" v="LA COURNEUVE"/>
@@ -27294,7 +27294,7 @@
 		<tag k="addr:postcode" v="75011"/>
 		<tag k="addr:street" v="Avenue Parmentier"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 43 57 58 69"/>
 		<tag k="name" v="Centre de secours Parmentier"/>
 		<tag k="official_name" v="PARMENTIER"/>
@@ -27332,7 +27332,7 @@
 		<tag k="addr:postcode" v="92190"/>
 		<tag k="addr:street" v="Rue Charles Liot"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 45 34 16 06"/>
 		<tag k="name" v="Centre de secours de Meudon"/>
 		<tag k="official_name" v="MEUDON"/>
@@ -27361,7 +27361,7 @@
 		<tag k="addr:postcode" v="94340"/>
 		<tag k="addr:street" v="Avenue Pierre Mendès France"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="building" v="yes"/>
 		<tag k="description" v="Centre de secours à vocation nautique"/>
 		<tag k="emergency" v="marine_rescue"/>
@@ -27432,7 +27432,7 @@
 		<nd ref="4356628208"/>
 		<tag k="addr:housenumber" v="89"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="emergency:phone" v="01 40 11 12 56"/>
 		<tag k="name" v="Centre de Secours de Saint-Ouen"/>
 		<tag k="official_name" v="Saint-Ouen"/>
@@ -27457,7 +27457,7 @@
 		<nd ref="957778741"/>
 		<nd ref="957781169"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="name" v="Police municipale"/>
 		<tag k="opening_hours" v="24/7"/>
@@ -27505,7 +27505,7 @@
 		<nd ref="1215370531"/>
 		<nd ref="1215367875"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Clinique Blomet"/>
 		<tag k="ref:FR:FINESS" v="750300592"/>
@@ -27591,7 +27591,7 @@
 		<tag k="addr:postcode" v="92310"/>
 		<tag k="addr:street" v="Grande Rue"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="name" v="Centre Hospitalier des Quatre Villes"/>
 		<tag k="phone" v="+33 1 77707070"/>
@@ -27631,7 +27631,7 @@
 		<nd ref="5471517171"/>
 		<nd ref="1215366630"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="yes"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Maternité Sainte-Félicité"/>
@@ -27757,7 +27757,7 @@
 		<tag k="addr:street" v="Rue Floréal"/>
 		<tag k="alt_name" v="Clinique Floréal"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="hospital"/>
 		<tag k="check_date" v="2022-08-31"/>
 		<tag k="email" v="cmcfcontact@cliniquefloreal.com"/>
@@ -27791,7 +27791,7 @@
 		<nd ref="5937996438"/>
 		<nd ref="5937996447"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="fax" v="+33 1 48 34 22 33"/>
 		<tag k="healthcare" v="hospital"/>
@@ -27873,7 +27873,7 @@
 		<nd ref="5965004934"/>
 		<nd ref="5965004963"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="fax" v="+33 1 45 37 49 25"/>
 		<tag k="healthcare" v="hospital"/>
@@ -28266,7 +28266,7 @@
 		<tag k="addr:street" v="Rue Édouard Vaillant"/>
 		<tag k="alt_name" v="IGR"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="no"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="healthcare:speciality" v="oncology;intensive"/>
@@ -28306,7 +28306,7 @@
 		<nd ref="1455448443"/>
 		<nd ref="1455448433"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="fax" v="+33 1 47 11 77 97"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="healthcare:speciality" v="intensive"/>
@@ -28331,7 +28331,7 @@
 		<nd ref="7922642223"/>
 		<nd ref="7922642232"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Bois-Colombes"/>
@@ -28449,7 +28449,7 @@
 		<nd ref="8125171503"/>
 		<nd ref="8125171551"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="healthcare:speciality" v="intensive"/>
@@ -28562,7 +28562,7 @@
 		<tag k="addr:postcode" v="94250"/>
 		<tag k="addr:street" v="Rue Bensérade"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="email" v="secdirection@ch-fondationvallee.fr"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="fax" v="+33 1 41 24 81 50"/>
@@ -28626,7 +28626,7 @@
 		<tag k="addr:postcode" v="94410"/>
 		<tag k="addr:street" v="Rue du Maréchal Leclerc"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="name" v="Police municipale de Saint Maurice"/>
 		<tag k="opening_hours" v="8:30-17:30"/>
@@ -28649,7 +28649,7 @@
 		<tag k="addr:postcode" v="92410"/>
 		<tag k="addr:street" v="Rue Pradier"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="fax" v="+33 1 47 09 18 22"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Centre du Parc de Saint-Cloud"/>
@@ -28706,7 +28706,7 @@
 		<tag k="addr:housenumber" v="10"/>
 		<tag k="addr:street" v="Rue Minard"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="no"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="L&#39;Hôpital Suisse de Paris"/>
@@ -28729,7 +28729,7 @@
 		<nd ref="2083019470"/>
 		<nd ref="1642962854"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Centre de Santé Jean Moulin"/>
 		<tag k="phone" v="+33141814553"/>
@@ -28751,7 +28751,7 @@
 		<tag k="addr:postcode" v="75001"/>
 		<tag k="addr:street" v="Rue Jean-Jacques Rousseau"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="name" v="Sûreté Territoriale de Paris"/>
 		<tag k="operator" v="Police nationale"/>
@@ -28766,7 +28766,7 @@
 		<tag k="addr:postcode" v="92000"/>
 		<tag k="addr:street" v="Rue du 19 Mars 1962"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="building:levels" v="3"/>
 		<tag k="height" v="14"/>
@@ -28786,7 +28786,7 @@
 		<member type="way" ref="53601020" role="inner"/>
 		<member type="way" ref="53601014" role="outer"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="office"/>
 		<tag k="building:levels" v="5"/>
 		<tag k="name" v="Préfecture de police"/>
@@ -28810,7 +28810,7 @@
 		<tag k="addr:street" v="Boulevard Saint-Marcel"/>
 		<tag k="alt_name" v="Clinique des Sports"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="yes"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="healthcare:speciality" v="orthopaedics;cardiology;radiology"/>
@@ -28832,7 +28832,7 @@
 		<tag k="addr:postcode" v="92600"/>
 		<tag k="addr:street" v="rue du Capitaine Bossard"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="building" v="yes"/>
 		<tag k="emergency:phone" v="01 47 99 05 01"/>
 		<tag k="name" v="Centre de secours d&#39;Asnières"/>
@@ -28854,7 +28854,7 @@
 		<member type="way" ref="74475107" role="inner"/>
 		<member type="way" ref="74475810" role="inner"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="yes"/>
 		<tag k="emergency" v="no"/>
 		<tag k="healthcare" v="hospital"/>
@@ -28868,7 +28868,7 @@
 		<member type="way" ref="78814458" role="outer"/>
 		<member type="way" ref="78813512" role="inner"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Clinique de Rochebrune"/>
 		<tag k="ref:FR:FINESS" v="920007549"/>
@@ -28885,7 +28885,7 @@
 		<tag k="addr:postcode" v="75012"/>
 		<tag k="addr:street" v="Rue de Chaligny"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="building" v="civic"/>
 		<tag k="building:levels" v="3"/>
 		<tag k="emergency:phone" v="01 43 72 51 52"/>
@@ -28915,7 +28915,7 @@
 		<tag k="addr:postcode" v="75016"/>
 		<tag k="addr:street" v="Rue Mesnil"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="building" v="yes"/>
 		<tag k="building:levels" v="4"/>
 		<tag k="emergency:phone" v="01 45 53 80 11"/>
@@ -28938,7 +28938,7 @@
 		<member type="way" ref="64623551" role="inner"/>
 		<member type="way" ref="64623294" role="inner"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="hospital"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="name" v="Institut hospitalier franco-britannique - Site Kléber"/>
@@ -28959,7 +28959,7 @@
 		<tag k="addr:postcode" v="93000"/>
 		<tag k="addr:street" v="Rue de Carency"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="operator" v="Police nationale"/>
 		<tag k="operator:wikidata" v="Q121484"/>
@@ -28976,7 +28976,7 @@
 		<tag k="addr:postcode" v="75017"/>
 		<tag k="addr:street" v="Boulevard de l&#39;Yser"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="building" v="yes"/>
 		<tag k="emergency:phone" v="01 45 72 30 65"/>
 		<tag k="name" v="Centre de secours Champerret"/>
@@ -29004,7 +29004,7 @@
 		<member type="way" ref="258614905" role="outer"/>
 		<tag k="alt_name" v="Groupe hospitalier Henri Mondor"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="fax" v="+33 1 49 81 21 99"/>
 		<tag k="healthcare" v="hospital"/>
@@ -29029,7 +29029,7 @@
 		<member type="way" ref="132081639" role="outer"/>
 		<member type="way" ref="132081636" role="outer"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Hôpital de jour"/>
 		<tag k="type" v="multipolygon"/>
@@ -29042,7 +29042,7 @@
 		<tag k="addr:postcode" v="92220"/>
 		<tag k="addr:street" v="Rue des Mathurins"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="yes"/>
 		<tag k="name" v="Police nationale"/>
 		<tag k="official_name" v="Commissariat de police de Bagneux"/>
@@ -29059,7 +29059,7 @@
 		<member type="way" ref="246325596" role="outer"/>
 		<member type="way" ref="246325591" role="outer"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="name" v="Service d&#39;Investigation Transversale"/>
 		<tag k="short_name" v="SIT"/>
 		<tag k="type" v="multipolygon"/>
@@ -29068,7 +29068,7 @@
 		<member type="way" ref="255119535" role="inner"/>
 		<member type="way" ref="78535551" role="outer"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="hospital"/>
 		<tag k="emergency" v="yes"/>
 		<tag k="healthcare" v="hospital"/>
@@ -29083,7 +29083,7 @@
 		<member type="way" ref="132284393" role="outer"/>
 		<member type="way" ref="132287895" role="inner"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="hospital"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Hôpital René Huguenin - Institut Curie"/>
@@ -29111,7 +29111,7 @@
 		<member type="way" ref="378492777" role="inner"/>
 		<member type="way" ref="378493895" role="inner"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Hôpital Charles Foix"/>
 		<tag k="ref:FR:FINESS" v="940100035"/>
@@ -29127,7 +29127,7 @@
 		<member type="way" ref="473189670" role="outer"/>
 		<member type="way" ref="473189671" role="outer"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="health_facility:type" v="dispensary"/>
 		<tag k="healthcare" v="hospital"/>
 		<tag k="name" v="Centre de Prévention Médico-sociale"/>
@@ -29140,7 +29140,7 @@
 		<member type="way" ref="481196422" role="inner"/>
 		<tag k="alt_name" v="36, rue du Bastion"/>
 		<tag k="amenity" v="police"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="4"/>
 		<tag k="building" v="civic"/>
 		<tag k="building:levels" v="6"/>
 		<tag k="contact:city" v="Paris"/>
@@ -29163,7 +29163,7 @@
 		<member type="way" ref="628864611" role="outer"/>
 		<member type="way" ref="628864613" role="outer"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="fax" v="+33 1 46 77 75 54"/>
 		<tag k="name" v="Hôpital privé de Vitry - Site Noriets"/>
 		<tag k="operator" v="Groupe Elsan"/>
@@ -29178,7 +29178,7 @@
 		<member type="way" ref="631676945" role="outer"/>
 		<member type="way" ref="631676944" role="inner"/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="building" v="hospital"/>
 		<tag k="heritage" v="2"/>
 		<tag k="heritage:operator" v="mhs"/>
@@ -29197,7 +29197,7 @@
 	<relation id="11883162" version="1" timestamp="2020-11-12T20:48:03Z" changeset="94018023" uid="210173" user="osmmaker">
 		<member type="way" ref="870927115" role=""/>
 		<tag k="amenity" v="hospital"/>
-<tag k="poi_weight" v="2"/>
+<tag k="poi_weight" v="10"/>
 		<tag k="healthcare:speciality" v="intensive"/>
 		<tag k="name" v="Réanimation"/>
 		<tag k="type" v="site"/>
@@ -29217,7 +29217,7 @@
 		<member type="way" ref="83816655" role="outer"/>
 		<member type="way" ref="83819800" role="outer"/>
 		<tag k="amenity" v="fire_station"/>
-<tag k="poi_weight" v="1.5"/>
+<tag k="poi_weight" v="5"/>
 		<tag k="building" v="yes"/>
 		<tag k="name:signed" v="no"/>
 		<tag k="source" v="cadastre-dgi-fr source : Direction Générale des Impôts - Cadastre. Mise à jour : 2010"/>

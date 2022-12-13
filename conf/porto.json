@@ -4,8 +4,8 @@
     "right": -8.5405,
     "top": 41.1939,
     "zone_size": 10,
-    "cache_zones": true,
-    "M": 5,
+    "cache_zones": false,
+    "M": 3,
     "edus": 300,
     "geojson": "geojson/porto.geojson",
     "pois": "osm/porto.osm",
@@ -14,7 +14,7 @@
         "railway": ["station"]
     },
     "edu_alg": "restricted",
-    "output": "csv/porto_M5.csv",
+    "output": "csv/porto_M3.csv",
     "output_edus": "csv/porto_edus_restricted.csv",
     "output_roads": "csv/porto_roads.csv"
 }

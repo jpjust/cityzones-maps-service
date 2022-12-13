@@ -1,0 +1,24 @@
+Classification:
+
+Porto M=3: 998.46 seconds.
+Porto M=5: 992.677 seconds.
+Paris Island M=3: 1341.993 seconds.
+Eiffel M=3: 70.928 seconds.
+
+
+EDUs positioning:
+
+Porto M=3, U=300:
+- Random: 0.124 seconds.
+- Balanced: 5.692 seconds.
+- Enhanced: 107.578 seconds.
+- Restricted: 108.716 seconds.
+
+Paris M=3, U=600:
+- Random: 0.215 seconds.
+- Balanced: 10.974 seconds.
+- Enhanced: 316.359 seconds.
+- Restricted: 325.006 seconds.
+
+Zones in Porto: 413012
+Zones in Paris: 801241

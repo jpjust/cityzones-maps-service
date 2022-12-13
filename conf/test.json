@@ -1,16 +1,19 @@
 {
-    "left": -38.9189,
-    "bottom": -12.2070,
-    "right": -38.9114,
-    "top": -12.2006,
+    "left": -38.9548,
+    "bottom": -12.2459,
+    "right": -38.9349,
+    "top": -12.2298,
     "zone_size": 10,
-    "cache_zones": true,
+    "cache_zones": false,
     "M": 3,
     "edus": 300,
+    "max_workers": 6,
+    "geojson": "geojson/test.geojson",
     "pois": "osm/test.osm",
     "pois_types": {
         "amenity": ["hospital", "fire_station", "police"]
     },
+    "edu_alg": "none",
     "output": "csv/test.csv",
     "output_edus": "csv/test_edus.csv",
     "output_roads": "csv/test_roads.csv"

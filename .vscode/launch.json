@@ -27,6 +27,17 @@
             ]
         },
         {
+            "name": "Python: Risk Zones in Paris Island",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/riskzones.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "conf/paris_island.json"
+            ]
+        },
+        {
             "name": "Python: Risk Zones in Eiffel AoI",
             "type": "python",
             "request": "launch",
