@@ -133,3 +133,6 @@ dmypy.json
 
 # Output CSV files
 csv/
+
+# Paris OSM file is too large
+paris.osm
