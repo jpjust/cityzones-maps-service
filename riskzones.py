@@ -26,6 +26,8 @@ import os
 import random
 import numpy
 
+import multiprocessing as mp
+
 '''
 Exception classes.
 '''
@@ -43,6 +45,82 @@ class UniformPositioningMode(Enum):
     BALANCED = 2
     RESTRICTED = 3
 
+def calculate_risk_of_zone(zone: dict, pois: list) -> float:
+    sum = 0
+
+    for poi in pois:
+        lat1 = numpy.radians(zone['lat'])
+        lat2 = numpy.radians(poi['lat'])
+        lon1 = numpy.radians(zone['lon'])
+        lon2 = numpy.radians(poi['lon'])
+        r = 6378137
+        dist = 2 * r * numpy.arcsin(numpy.sqrt(numpy.sin((lat2 - lat1) / 2) ** 2 + numpy.cos(lat1) * numpy.cos(lat2) * numpy.sin((lon2 - lon1) / 2) ** 2))
+        sum += poi['weight'] / (dist ** 2)
+
+    return (zone['id'], 1 / sum)
+
+'''
+Check if line1 and line2 intersects.
+'''
+def check_intersection(line1: dict, line2: dict) -> bool:
+    if line2['p1']['lon'] == line2['p2']['lon']:
+        a2 = RiskZonesGrid.max_num
+    else:
+        a2 = (line2['p1']['lat'] - line2['p2']['lat']) / (line2['p1']['lon'] - line2['p2']['lon'])
+    b1 = -1
+    b2 = -1
+    c1 = line1['p1']['lat']
+    c2 = line2['p1']['lat'] - a2 * line2['p1']['lon']
+    
+    f1_1 = numpy.sign(b1 * line2['p1']['lat'] + c1)
+    f1_2 = numpy.sign(b1 * line2['p2']['lat'] + c1)
+    f2_1 = numpy.sign(a2 * line1['p1']['lon'] + b2 * line1['p1']['lat'] + c2)
+    f2_2 = numpy.sign(a2 * line1['p2']['lon'] + b2 * line1['p2']['lat'] + c2)
+
+    return f1_1 != f1_2 and f2_1 != f2_2
+
+def check_zone_in_polygon(zone: dict, polygon: list) -> bool:
+    line1 = {
+        'p1': {
+            'lon': zone['lon'],
+            'lat': zone['lat']
+        },
+        'p2': {
+            'lon': zone['lon'] + 180,
+            'lat': zone['lat']
+        }
+    }
+
+    intersec = 0
+    for i in range(-1, len(polygon) - 1):
+        line2 = {
+            'p1': {
+                'lon': polygon[i][0],
+                'lat': polygon[i][1]
+            },
+            'p2': {
+                'lon': polygon[i + 1][0],
+                'lat': polygon[i + 1][1]
+            }
+        }
+
+        # We only need to check the zone against lines at its right and if zone's latitude
+        # is between the line's latitudes
+        if  (line2['p1']['lon'] >= zone['lon'] or line2['p2']['lon'] >= zone['lon']) and \
+            ((line2['p1']['lat'] <= zone['lat'] <= line2['p2']['lat']) or ((line2['p2']['lat'] <= zone['lat'] <= line2['p1']['lat']))):
+            if check_intersection(line1, line2):
+                intersec += 1
+    
+    return intersec % 2 == 1
+
+def check_zone_in_polygon_set(zone:dict, polygons: dict) -> bool:
+    zone['inside'] = False
+    for pol in polygons:
+        if check_zone_in_polygon(zone, pol):
+            zone['inside'] = True
+            break
+
+    return zone
 '''
 This class contains the methods for calculating zone risks from PoIs
 inside a bbox region.
@@ -227,17 +305,31 @@ class RiskZonesGrid:
         for coord in polygon:
             self.polygons.append(coord[0])
         
-        for zone in self.zones:
-            i += 1
-            zone['inside'] = False
-            for pol in self.polygons:
-                if self.__check_zone_in_polygon(zone, pol):
-                    zone['inside'] = True
-                    self.zones_inside.append(zone['id'])
-                    break
-            prog = (i / total) * 100
-            print(f'Checking zones inside the polygon... {prog:.2f}%', end='\r')
+        with mp.Pool() as pool:
+            payload = []
+            for zone in self.zones:
+                payload.append((zone, self.polygons))
+            self.zones = pool.starmap(check_zone_in_polygon_set, payload)
+
+        # for r in res:
+        #     if r[1] == True: self.zones_inside.append(r[0])
+        #     self.zones[r[0]]['inside'] = True
+
+        # for zone in self.zones:
+        #     i += 1
+        #     zone['inside'] = False
+        #     for pol in self.polygons:
+        #         if self.__check_zone_in_polygon(zone, pol):
+        #             zone['inside'] = True
+        #             self.zones_inside.append(zone['id'])
+        #             break
+        #     prog = (i / total) * 100
+        #     print(f'Checking zones inside the polygon... {prog:.2f}%', end='\r')
         
+        for zone in self.zones:
+            if zone['inside'] == True:
+                self.zones_inside.append(zone['id'])
+
         print(f'\n{len(self.zones_inside)} zones inside the polygon.')
 
     '''
@@ -336,18 +428,17 @@ class RiskZonesGrid:
         prog = 0.0
         i = 0
         total = len(self.zones_inside)
-        print(f'Calculating risk perception... {prog:.2f}%', end='\r')
+        # print(f'Calculating risk perception... {prog:.2f}%', end='\r')
 
-        for id in self.zones_inside:
-            i += 1
-            sum = 0
-            for poi in pois:
-                sum += poi['weight'] / (self.__calculate_distance(self.zones[id], poi) ** 2)
-            self.zones[id]['risk'] = 1 / sum
-
-            prog = (i / total) * 100
-            print(f'Calculating risk perception... {prog:.2f}%', end='\r')
+        with mp.Pool(processes=4) as pool:
+            payload = []
+            for id in self.zones_inside:
+                payload.append((self.zones[id], pois))
+            risks = pool.starmap(calculate_risk_of_zone, payload)
         
+        for risk in risks:
+            self.zones[risk[0]]['risk'] = risk[1]
+
         self.__normalize_risks()
         self.__calculate_RL()
         print('')
@@ -656,6 +747,8 @@ if __name__ == '__main__':
         print(f"Use: {sys.argv[0]} config.json\n")
         print("config.json is a configuration file in JSON format. See examples in conf folder.")
         sys.exit()
+
+    mp.set_start_method('spawn')
 
     # Config file
     fp = open(sys.argv[1], 'r')
