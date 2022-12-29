@@ -74,6 +74,7 @@ def create_riskzones_grid(left: float, bottom: float, right: float, top: float, 
         'edus': {},
         'zones': [],
         'zones_inside': [],
+        'pois': [],
         'roads': [],
         'polygons': []
     }
@@ -187,7 +188,7 @@ def init_pois_by_polygon(grid: dict, polygon: dict, pois: list) -> list:
         print(f'Checking PoIs inside the polygon... {prog:.2f}%', end='\r')
     
     print(f'\n{len(pois_inside)} PoIs inside the polygon.')
-    return pois_inside
+    grid['pois'] = pois_inside
 
 def check_zone_in_polygon_set(zone: dict, polygons: dict) -> bool:
     """
@@ -347,11 +348,11 @@ def move_zones_y(grid: dict, a: dict, b: dict, dist_x: int, dist_y: int):
             delta_x -= int(delta_x / abs(delta_x))
         grid['zones'][id]['is_road'] = True
 
-def calculate_risk_from_pois(grid: dict, pois: list):
+def calculate_risk_from_pois(grid: dict):
     """
     Calculate the risk perception considering all PoIs.
     """
-    if len(pois) == 0:
+    if len(grid['pois']) == 0:
         return
 
     print(f'Calculating risk perception... ', end='')
@@ -359,7 +360,7 @@ def calculate_risk_from_pois(grid: dict, pois: list):
     with mp.Pool(processes=None) as pool:
         payload = []
         for id in grid['zones_inside']:
-            payload.append((grid['zones'][id], pois))
+            payload.append((grid['zones'][id], grid['pois']))
         risks = pool.starmap(calculate_risk_of_zone, payload)
     
     for risk in risks:
@@ -711,18 +712,18 @@ if __name__ == '__main__':
             geojson = json.load(fp)
             fp.close()
             init_zones_by_polygon(grid, geojson['features'][0]['geometry']['coordinates'])
-            pois_inside = init_pois_by_polygon(grid, geojson['features'][0]['geometry']['coordinates'], pois)
+            init_pois_by_polygon(grid, geojson['features'][0]['geometry']['coordinates'], pois)
         except KeyError:
             print('WARNING: No GeoJSON file specified. Not filtering by AoI polygon.')
-            pois_inside = pois
+            grid['pois'] = pois
         except FileNotFoundError:
             print(f'WARNING: GeoJSON file {conf["geojson"]} not found. Not filtering by AoI polygon.')
-            pois_inside = pois
+            grid['pois'] = pois
 
         add_roads(grid, roads)
         
         # Calculate risks
-        calculate_risk_from_pois(grid, pois_inside)
+        calculate_risk_from_pois(grid)
 
         # Output elapsed time
         time_diff = time.perf_counter() - time_begin
