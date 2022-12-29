@@ -4,7 +4,7 @@
     "right": -8.5405,
     "top": 41.1939,
     "zone_size": 10,
-    "cache_zones": false,
+    "cache_zones": true,
     "M": 3,
     "edus": 300,
     "geojson": "geojson/porto.geojson",

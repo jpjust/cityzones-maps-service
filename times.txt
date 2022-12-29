@@ -5,6 +5,8 @@ Porto M=5: 992.677 seconds.
 Paris Island M=3: 1341.993 seconds.
 Eiffel M=3: 70.928 seconds.
 
+Porto M=3, zl=100: 18.47 seconds.
+Porto M=3, zl=10: 1754.491 seconds.
 
 EDUs positioning:
 
