@@ -72,6 +72,7 @@ def create_riskzones_grid(left: float, bottom: float, right: float, top: float, 
         'M': M,
         'n_edus': n_edus,
         'edus': {},
+        'polygons': [],
         'zones': [],
         'zones_inside': [],
         'pois': [],
@@ -141,17 +142,21 @@ def load_zones(grid: dict, zones: list):
         if zone['inside']:
             grid['zones_inside'].append(zone['id'])
 
-def init_zones_by_polygon(grid: dict, polygon: dict):
+def add_polygon(grid: dict, polygons: list):
+    """
+    Add the polygons in the list into the grid.
+    """
+    grid['polygons'].clear()
+    for coord in polygons:
+        grid['polygons'].append(coord[0])
+
+def init_zones_by_polygon(grid: dict):
     """
     Check every zone if it is inside the polygon area.
     """
     print('Checking zones inside the polygon... ', end='')
 
     grid['zones_inside'].clear()
-    grid['polygons'].clear()
-
-    for coord in polygon:
-        grid['polygons'].append(coord[0])
     
     with mp.Pool() as pool:
         payload = []
@@ -166,17 +171,13 @@ def init_zones_by_polygon(grid: dict, polygon: dict):
     print('Done!')
     print(f'{len(grid["zones_inside"])} zones inside the polygon.')
 
-def init_pois_by_polygon(grid: dict, polygon: dict, pois: list) -> list:
+def init_pois_by_polygon(grid: dict, pois: list) -> list:
     """
     Check every PoI if it is inside the polygon area.
     """
     print(f'Checking PoIs inside the polygon... ', end='')
 
     grid['pois'].clear()
-    grid['polygons'].clear()
-
-    for coord in polygon:
-        grid['polygons'].append(coord[0])
     
     with mp.Pool(processes=None) as pool:
         payload = []
@@ -708,8 +709,9 @@ if __name__ == '__main__':
             fp = open(conf['geojson'], 'r')
             geojson = json.load(fp)
             fp.close()
-            init_zones_by_polygon(grid, geojson['features'][0]['geometry']['coordinates'])
-            init_pois_by_polygon(grid, geojson['features'][0]['geometry']['coordinates'], pois)
+            add_polygon(grid, geojson['features'][0]['geometry']['coordinates'])
+            init_zones_by_polygon(grid)
+            init_pois_by_polygon(grid, pois)
         except KeyError:
             print('WARNING: No GeoJSON file specified. Not filtering by AoI polygon.')
             grid['pois'] = pois
