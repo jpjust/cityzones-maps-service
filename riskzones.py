@@ -15,9 +15,23 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+*******************************************************************************
+
+This module contains the functions for calculating zone risks from PoIs inside
+a bbox region.
+
+After creating a grid object, use the following functions to calculate zone
+risks:
+
+- init_zones_by_polygon(grid, list): select only zones inside the AoI delimited
+                                     by the polygon in 'list'
+- calculate_risk_from_pois(grid, pois): calculate the risk level for each zone
+                                        considering every PoI in 'pois'
+- set_edus_positions_*: calculate EDUs positiong from risks using a specific
+                        positioning algorithm
 """
 
-from enum import Enum
 import osmpois
 import time
 import json
@@ -25,7 +39,6 @@ import sys
 import os
 import random
 import numpy
-
 import multiprocessing as mp
 
 '''
@@ -38,48 +51,167 @@ class SkipZone(Exception):
     pass
 
 '''
+Maximum and minimum values for integers.
+'''
+MIN_NUM = 10 ** (-10)
+MAX_NUM = 10 ** 10
+
+'''
 Positioning modes.
 '''
-class UniformPositioningMode(Enum):
-    UNBALANCED = 1
-    BALANCED = 2
-    RESTRICTED = 3
+UNBALANCED = 1
+BALANCED = 2
+RESTRICTED = 3
 
-def calculate_risk_of_zone(zone: dict, pois: list) -> float:
-    sum = 0
+def create_riskzones_grid(left: float, bottom: float, right: float, top: float, zone_size: int, M: int, n_edus: int) -> dict:
+    '''
+    Create a riskzones grid object for futher manipulation.
+    '''
+    grid = {
+        'left': left,
+        'bottom': bottom,
+        'right': right,
+        'top': top,
+        'zone_size': zone_size,
+        'width': abs(right - left),
+        'height': abs(top - bottom),
+        'M': M,
+        'n_edus': n_edus,
+        'edus': {},
+        'zones': [],
+        'zones_inside': [],
+        'roads': [],
+        'polygons': []
+    }
 
-    for poi in pois:
-        lat1 = numpy.radians(zone['lat'])
-        lat2 = numpy.radians(poi['lat'])
-        lon1 = numpy.radians(zone['lon'])
-        lon2 = numpy.radians(poi['lon'])
-        r = 6378137
-        dist = 2 * r * numpy.arcsin(numpy.sqrt(numpy.sin((lat2 - lat1) / 2) ** 2 + numpy.cos(lat1) * numpy.cos(lat2) * numpy.sin((lon2 - lon1) / 2) ** 2))
-        sum += poi['weight'] / (dist ** 2)
+    # EDUs lists
+    for m in range(1, M + 1):
+        grid['edus'][m] = []
 
-    return (zone['id'], 1 / sum)
+    # Grid setup
+    w = calculate_distance({'lat': top, 'lon': left}, {'lat': top, 'lon': right})
+    h = calculate_distance({'lat': top, 'lon': left}, {'lat': bottom, 'lon': left})
+    grid['grid_x'] = int(w / zone_size)
+    grid['grid_y'] = int(h / zone_size)
+    grid['zone_center'] = {'x': grid['width'] / grid['grid_x'] / 2, 'y': grid['height'] / grid['grid_y'] / 2}
+    print(f"Grid size: {grid['grid_x']}x{grid['grid_y']}")
+
+    return grid
 
 '''
-Check if line1 and line2 intersects.
+Calculate the distance from a to b using haversine formula.
 '''
-def check_intersection(line1: dict, line2: dict) -> bool:
-    if line2['p1']['lon'] == line2['p2']['lon']:
-        a2 = RiskZonesGrid.max_num
-    else:
-        a2 = (line2['p1']['lat'] - line2['p2']['lat']) / (line2['p1']['lon'] - line2['p2']['lon'])
-    b1 = -1
-    b2 = -1
-    c1 = line1['p1']['lat']
-    c2 = line2['p1']['lat'] - a2 * line2['p1']['lon']
+def calculate_distance(a: dict, b: dict) -> float:
+    lat1 = numpy.radians(a['lat'])
+    lat2 = numpy.radians(b['lat'])
+    lon1 = numpy.radians(a['lon'])
+    lon2 = numpy.radians(b['lon'])
+    r = 6378137
+    return 2 * r * numpy.arcsin(numpy.sqrt(numpy.sin((lat2 - lat1) / 2) ** 2 + numpy.cos(lat1) * numpy.cos(lat2) * numpy.sin((lon2 - lon1) / 2) ** 2))
+
+def init_zones(grid: dict):
+    '''
+    Initialize every zone in the grid.
+    '''
+    grid['zones'].clear()
+    grid['zones_inside'].clear()
+
+    for j in range(grid['grid_y']):
+        for i in range(grid['grid_x']):
+            zone = {
+                'id': j * grid['grid_x'] + i,
+                'lat': (j / grid['grid_y'] * grid['height']) + grid['bottom'] + grid['zone_center']['y'],
+                'lon': (i / grid['grid_x'] * grid['width']) + grid['left'] + grid['zone_center']['x'],
+                'risk': 1.0,
+                'RL': grid['M'],
+                'inside': True,
+                'has_edu': False,
+                'is_road': False
+            }
+
+            grid['zones'].append(zone)
+            grid['zones_inside'].append(zone['id'])
+
+'''
+Load zones from JSON data.
+'''
+def load_zones(grid: dict, zones: list):
+    grid['zones'].clear()
+    grid['zones_inside'].clear()
+
+    grid['zones'] = zones
+    grid['zones'].sort(key=lambda zone : zone['id'])
+
+    for zone in grid['zones']:
+        if zone['inside']:
+            grid['zones_inside'].append(zone['id'])
+
+'''
+Check every zone if it is inside the polygon area.
+'''
+def init_zones_by_polygon(grid: dict, polygon: dict):
+    prog = 0.0
+    i = 0
+    total = len(grid['zones'])
+    print(f'Checking zones inside the polygon... {prog:.2f}%', end='\r')
+    grid['zones_inside'].clear()
+
+    for coord in polygon:
+        grid['polygons'].append(coord[0])
     
-    f1_1 = numpy.sign(b1 * line2['p1']['lat'] + c1)
-    f1_2 = numpy.sign(b1 * line2['p2']['lat'] + c1)
-    f2_1 = numpy.sign(a2 * line1['p1']['lon'] + b2 * line1['p1']['lat'] + c2)
-    f2_2 = numpy.sign(a2 * line1['p2']['lon'] + b2 * line1['p2']['lat'] + c2)
+    with mp.Pool() as pool:
+        payload = []
+        for zone in grid['zones']:
+            payload.append((zone, grid['polygons']))
+        grid['zones'] = pool.starmap(check_zone_in_polygon_set, payload)
+    
+    for zone in grid['zones']:
+        if zone['inside'] == True:
+            grid['zones_inside'].append(zone['id'])
 
-    return f1_1 != f1_2 and f2_1 != f2_2
+    print(f'\n{len(grid["zones_inside"])} zones inside the polygon.')
+
+'''
+Check every PoI if it is inside the polygon area.
+'''
+def init_pois_by_polygon(grid: dict, polygon: dict, pois: list) -> list:
+    prog = 0.0
+    i = 0
+    total = len(pois)
+    print(f'Checking PoIs inside the polygon... {prog:.2f}%', end='\r')
+    pois_inside = []
+
+    for coord in polygon:
+        grid['polygons'].append(coord[0])
+    
+    for poi in pois:
+        i += 1
+        for pol in grid['polygons']:
+            if check_zone_in_polygon(poi, pol):
+                pois_inside.append(poi)
+                break
+        prog = (i / total) * 100
+        print(f'Checking PoIs inside the polygon... {prog:.2f}%', end='\r')
+    
+    print(f'\n{len(pois_inside)} PoIs inside the polygon.')
+    return pois_inside
+
+def check_zone_in_polygon_set(zone: dict, polygons: dict) -> bool:
+    '''
+    Check a zone is inside any polygon in a polygons set.
+    '''
+    zone['inside'] = False
+    for pol in polygons:
+        if check_zone_in_polygon(zone, pol):
+            zone['inside'] = True
+            break
+
+    return zone
 
 def check_zone_in_polygon(zone: dict, polygon: list) -> bool:
+    '''
+    Check if a zone is inside a polygon.
+    '''
     line1 = {
         'p1': {
             'lon': zone['lon'],
@@ -113,631 +245,435 @@ def check_zone_in_polygon(zone: dict, polygon: list) -> bool:
     
     return intersec % 2 == 1
 
-def check_zone_in_polygon_set(zone:dict, polygons: dict) -> bool:
-    zone['inside'] = False
-    for pol in polygons:
-        if check_zone_in_polygon(zone, pol):
-            zone['inside'] = True
-            break
-
-    return zone
-'''
-This class contains the methods for calculating zone risks from PoIs
-inside a bbox region.
-
-After instantiating an object, use the following methods to calculate
-zone risks:
-
-- init_zones_by_polygon(list): select only zones inside the AoI delimited
-                               by the polygon in 'list'
-- calculate_risk_from_pois(pois): calculate the risk level for each zone
-                                  considering every PoI in 'pois'
-- set_edus_positions_random: calculate EDUs positiong from risks
-'''
-class RiskZonesGrid:
-
-    min_num = 10 ** (-10)
-    max_num = 10 ** 10
-
-    def __init__(self, left: float, bottom: float, right: float, top: float, zone_size: int, M: int, n_edus:int):
-        self.left = left
-        self.bottom = bottom
-        self.right = right
-        self.top = top
-        self.width = abs(right - left)
-        self.height = abs(top - bottom)
-        self.M = M
-        self.n_edus = n_edus
-        self.edus = {}
-        for m in range(1, M + 1):
-            self.edus[m] = []
-        self.zones = []
-        self.zones_inside = []
-        self.roads = []
-        self.polygons = []
-
-        # Grid setup
-        w = self.__calculate_distance({'lat': top, 'lon': left}, {'lat': top, 'lon': right})
-        h = self.__calculate_distance({'lat': top, 'lon': left}, {'lat': bottom, 'lon': left})
-        self.zone_size = zone_size
-        self.grid_x = int(w / zone_size)
-        self.grid_y = int(h / zone_size)
-        self.zone_center = {'x': self.width / self.grid_x / 2, 'y': self.height / self.grid_y / 2}
-        print(f"Grid size: {self.grid_x}x{self.grid_y}")
-        self.__init_zones()
-    
-    '''
-    Initialize every zone.
-    '''
-    def __init_zones(self):
-        self.zones.clear()
-        self.zones_inside.clear()
-
-        for j in range(self.grid_y):
-            for i in range(self.grid_x):
-                zone = {
-                    'id': j * self.grid_x + i,
-                    'lat': (j / self.grid_y * self.height) + self.bottom + self.zone_center['y'],
-                    'lon': (i / self.grid_x * self.width) + self.left + self.zone_center['x'],
-                    'risk': 1.0,
-                    'RL': self.M,
-                    'inside': True,
-                    'has_edu': False,
-                    'is_road': False
-                }
-
-                self.zones.append(zone)
-                self.zones_inside.append(zone['id'])
-    
-    '''
-    Load zones from JSON data.
-    '''
-    def load_zones(self, zones: list):
-        self.zones.clear()
-        self.zones_inside.clear()
-
-        self.zones = zones
-
-        for zone in self.zones:
-            if zone['inside']:
-                self.zones_inside.append(zone['id'])
-        self.zones.sort(key=lambda zone : zone['id'])
-
-    '''
-    Add roads to zones list.
-    '''
-    def add_roads(self, roads: list):
-        for road in roads:
-            a = self.__coordinates_to_id(road['start']['lat'], road['start']['lon'])
-            b = self.__coordinates_to_id(road['end']['lat'], road['end']['lon'])
-
-            if a < 0 or b < 0 or a >= len(self.zones) or b >= len(self.zones):
-                continue
-            
-            dist_x = b % self.grid_x - a % self.grid_x
-            dist_y = int(b / self.grid_x) - int(a / self.grid_x)
-
-            if abs(dist_x) >= abs(dist_y):
-                self.__move_zones_x(a, b, dist_x, dist_y)
-            else:
-                self.__move_zones_y(a, b, dist_x, dist_y)
-
-            self.zones[a]['is_road'] = self.zones[b]['is_road'] = True
-    
-    '''
-    Move through road in X axis
-    '''
-    def __move_zones_x(self, a: dict, b: dict, dist_x: int, dist_y: int):
-        if dist_x == 0:
-            return
-
-        # Calculate movement steps
-        if dist_y > 0:
-            step_y = (dist_y + 1) / (abs(dist_x) + 1)
-        else:
-            step_y = (dist_y - 1) / (abs(dist_x) + 1)
-        delta_y = 0.0
-        id = a
-        num_x = int(dist_x / abs(dist_x))
-        if dist_y != 0:
-            num_y = self.grid_x * (int(dist_y / abs(dist_y)))
-        else:
-            num_y = 0
-        
-        # While far from the destination zone, keep moving
-        while self.__calculate_distance(self.zones[id], self.zones[b]) > self.zone_size * 2:
-            id += num_x
-            delta_y = delta_y + step_y
-            if abs(delta_y) >= 1:
-                id += num_y
-                delta_y -= int(delta_y / abs(delta_y))
-            self.zones[id]['is_road'] = True
-    
-    '''
-    Move through road in Y axis
-    '''
-    def __move_zones_y(self, a: dict, b: dict, dist_x: int, dist_y: int):
-        if dist_y == 0:
-            return
-
-        # Calculate movement steps
-        if dist_x > 0:
-            step_x = (dist_x + 1) / (abs(dist_y) + 1)
-        else:
-            step_x = (dist_x - 1) / (abs(dist_y) + 1)
-        delta_x = 0.0
-        id = a
-        if dist_x != 0:
-            num_x = int(dist_x / abs(dist_x))
-        else:
-            num_x = 0
-        num_y = self.grid_x * (int(dist_y / abs(dist_y)))
-
-        # While far from the destination zone, keep moving
-        while self.__calculate_distance(self.zones[id], self.zones[b]) > self.zone_size * 2:
-            id += num_y
-            delta_x = delta_x + step_x
-            if abs(delta_x) >= 1:
-                id += num_x
-                delta_x -= int(delta_x / abs(delta_x))
-            self.zones[id]['is_road'] = True
-    
-    '''
-    Calculate the zone ID from its coordinates.
-    '''
-    def __coordinates_to_id(self, lat, lon):
-        prop_x = (lon - self.left) / abs(self.width)
-        prop_y = (lat - self.bottom) / abs(self.height)
-        pos_x = int(prop_x * self.grid_x)
-        pos_y = int(prop_y * self.grid_y)
-        return pos_y * self.grid_x + pos_x
-
-    '''
-    Check every zone if it is inside the polygon area.
-    '''
-    def init_zones_by_polygon(self, polygon: dict):
-        prog = 0.0
-        i = 0
-        total = len(self.zones)
-        print(f'Checking zones inside the polygon... {prog:.2f}%', end='\r')
-        self.zones_inside.clear()
-
-        for coord in polygon:
-            self.polygons.append(coord[0])
-        
-        with mp.Pool() as pool:
-            payload = []
-            for zone in self.zones:
-                payload.append((zone, self.polygons))
-            self.zones = pool.starmap(check_zone_in_polygon_set, payload)
-
-        # for r in res:
-        #     if r[1] == True: self.zones_inside.append(r[0])
-        #     self.zones[r[0]]['inside'] = True
-
-        # for zone in self.zones:
-        #     i += 1
-        #     zone['inside'] = False
-        #     for pol in self.polygons:
-        #         if self.__check_zone_in_polygon(zone, pol):
-        #             zone['inside'] = True
-        #             self.zones_inside.append(zone['id'])
-        #             break
-        #     prog = (i / total) * 100
-        #     print(f'Checking zones inside the polygon... {prog:.2f}%', end='\r')
-        
-        for zone in self.zones:
-            if zone['inside'] == True:
-                self.zones_inside.append(zone['id'])
-
-        print(f'\n{len(self.zones_inside)} zones inside the polygon.')
-
-    '''
-    Check every PoI if it is inside the polygon area.
-    '''
-    def init_pois_by_polygon(self, polygon: dict, pois: list) -> list:
-        prog = 0.0
-        i = 0
-        total = len(pois)
-        print(f'Checking PoIs inside the polygon... {prog:.2f}%', end='\r')
-        pois_inside = []
-
-        for coord in polygon:
-            self.polygons.append(coord[0])
-        
-        for poi in pois:
-            i += 1
-            for pol in self.polygons:
-                if self.__check_zone_in_polygon(poi, pol):
-                    pois_inside.append(poi)
-                    break
-            prog = (i / total) * 100
-            print(f'Checking PoIs inside the polygon... {prog:.2f}%', end='\r')
-        
-        print(f'\n{len(pois_inside)} PoIs inside the polygon.')
-        return pois_inside
-
-    '''
-    Check if a zone is inside a polygon.
-
-    For each zone, trace a line to the right and check how many times it
-    intersects a boundary. If the number of intersections if odd, then it is
-    inside the polygon.
-    '''
-    def __check_zone_in_polygon(self, zone: dict, polygon: list) -> bool:
-        line1 = {
-            'p1': {
-                'lon': zone['lon'],
-                'lat': zone['lat']
-            },
-            'p2': {
-                'lon': zone['lon'] + 180,
-                'lat': zone['lat']
-            }
-        }
-
-        intersec = 0
-        for i in range(-1, len(polygon) - 1):
-            line2 = {
-                'p1': {
-                    'lon': polygon[i][0],
-                    'lat': polygon[i][1]
-                },
-                'p2': {
-                    'lon': polygon[i + 1][0],
-                    'lat': polygon[i + 1][1]
-                }
-            }
-
-            # We only need to check the zone against lines at its right and if zone's latitude
-            # is between the line's latitudes
-            if  (line2['p1']['lon'] >= zone['lon'] or line2['p2']['lon'] >= zone['lon']) and \
-               ((line2['p1']['lat'] <= zone['lat'] <= line2['p2']['lat']) or ((line2['p2']['lat'] <= zone['lat'] <= line2['p1']['lat']))):
-                if self.__check_intersection(line1, line2):
-                    intersec += 1
-        
-        return intersec % 2 == 1
-    
+def check_intersection(line1: dict, line2: dict) -> bool:
     '''
     Check if line1 and line2 intersects.
     '''
-    def __check_intersection(self, line1: dict, line2: dict) -> bool:
-        if line2['p1']['lon'] == line2['p2']['lon']:
-            a2 = RiskZonesGrid.max_num
-        else:
-            a2 = (line2['p1']['lat'] - line2['p2']['lat']) / (line2['p1']['lon'] - line2['p2']['lon'])
-        b1 = -1
-        b2 = -1
-        c1 = line1['p1']['lat']
-        c2 = line2['p1']['lat'] - a2 * line2['p1']['lon']
+    if line2['p1']['lon'] == line2['p2']['lon']:
+        a2 = MAX_NUM
+    else:
+        a2 = (line2['p1']['lat'] - line2['p2']['lat']) / (line2['p1']['lon'] - line2['p2']['lon'])
+    b1 = -1
+    b2 = -1
+    c1 = line1['p1']['lat']
+    c2 = line2['p1']['lat'] - a2 * line2['p1']['lon']
+    
+    f1_1 = numpy.sign(b1 * line2['p1']['lat'] + c1)
+    f1_2 = numpy.sign(b1 * line2['p2']['lat'] + c1)
+    f2_1 = numpy.sign(a2 * line1['p1']['lon'] + b2 * line1['p1']['lat'] + c2)
+    f2_2 = numpy.sign(a2 * line1['p2']['lon'] + b2 * line1['p2']['lat'] + c2)
+
+    return f1_1 != f1_2 and f2_1 != f2_2
+
+'''
+Add roads to zones list.
+'''
+def add_roads(grid: dict, roads: list):
+    for road in roads:
+        a = coordinates_to_id(grid, road['start']['lat'], road['start']['lon'])
+        b = coordinates_to_id(grid, road['end']['lat'], road['end']['lon'])
+
+        if a < 0 or b < 0 or a >= len(grid['zones']) or b >= len(grid['zones']):
+            continue
         
-        f1_1 = numpy.sign(b1 * line2['p1']['lat'] + c1)
-        f1_2 = numpy.sign(b1 * line2['p2']['lat'] + c1)
-        f2_1 = numpy.sign(a2 * line1['p1']['lon'] + b2 * line1['p1']['lat'] + c2)
-        f2_2 = numpy.sign(a2 * line1['p2']['lon'] + b2 * line1['p2']['lat'] + c2)
+        dist_x = b % grid['grid_x'] - a % grid['grid_x']
+        dist_y = int(b / grid['grid_x']) - int(a / grid['grid_x'])
 
-        return f1_1 != f1_2 and f2_1 != f2_2
+        if abs(dist_x) >= abs(dist_y):
+            move_zones_x(grid, a, b, dist_x, dist_y)
+        else:
+            move_zones_y(grid, a, b, dist_x, dist_y)
 
+        grid['zones'][a]['is_road'] = grid['zones'][b]['is_road'] = True
+
+'''
+Calculate the zone ID from its coordinates.
+'''
+def coordinates_to_id(grid: dict, lat, lon):
+    prop_x = (lon - grid['left']) / abs(grid['width'])
+    prop_y = (lat - grid['bottom']) / abs(grid['height'])
+    pos_x = int(prop_x * grid['grid_x'])
+    pos_y = int(prop_y * grid['grid_y'])
+    return pos_y * grid['grid_x'] + pos_x
+
+'''
+Move through road in X axis
+'''
+def move_zones_x(grid: dict, a: dict, b: dict, dist_x: int, dist_y: int):
+    if dist_x == 0:
+        return
+
+    # Calculate movement steps
+    if dist_y > 0:
+        step_y = (dist_y + 1) / (abs(dist_x) + 1)
+    else:
+        step_y = (dist_y - 1) / (abs(dist_x) + 1)
+    delta_y = 0.0
+    id = a
+    num_x = int(dist_x / abs(dist_x))
+    if dist_y != 0:
+        num_y = grid['grid_x'] * (int(dist_y / abs(dist_y)))
+    else:
+        num_y = 0
+    
+    # While far from the destination zone, keep moving
+    while calculate_distance(grid['zones'][id], grid['zones'][b]) > grid['zone_size'] * 2:
+        id += num_x
+        delta_y = delta_y + step_y
+        if abs(delta_y) >= 1:
+            id += num_y
+            delta_y -= int(delta_y / abs(delta_y))
+        grid['zones'][id]['is_road'] = True
+    
+'''
+Move through road in Y axis
+'''
+def move_zones_y(grid: dict, a: dict, b: dict, dist_x: int, dist_y: int):
+    if dist_y == 0:
+        return
+
+    # Calculate movement steps
+    if dist_x > 0:
+        step_x = (dist_x + 1) / (abs(dist_y) + 1)
+    else:
+        step_x = (dist_x - 1) / (abs(dist_y) + 1)
+    delta_x = 0.0
+    id = a
+    if dist_x != 0:
+        num_x = int(dist_x / abs(dist_x))
+    else:
+        num_x = 0
+    num_y = grid['grid_x'] * (int(dist_y / abs(dist_y)))
+
+    # While far from the destination zone, keep moving
+    while calculate_distance(grid['zones'][id], grid['zones'][b]) > grid['zone_size'] * 2:
+        id += num_y
+        delta_x = delta_x + step_x
+        if abs(delta_x) >= 1:
+            id += num_x
+            delta_x -= int(delta_x / abs(delta_x))
+        grid['zones'][id]['is_road'] = True
+
+'''
+Calculate the risk perception considering all PoIs.
+'''
+def calculate_risk_from_pois(grid: dict, pois: list):
+    if len(pois) == 0:
+        return
+
+    prog = 0.0
+    i = 0
+    total = len(grid['zones_inside'])
+    # print(f'Calculating risk perception... {prog:.2f}%', end='\r')
+
+    with mp.Pool(processes=None) as pool:
+        payload = []
+        for id in grid['zones_inside']:
+            payload.append((grid['zones'][id], pois))
+        risks = pool.starmap(calculate_risk_of_zone, payload)
+    
+    for risk in risks:
+        grid['zones'][risk[0]]['risk'] = risk[1]
+
+    normalize_risks(grid)
+    calculate_RL(grid)
+    print('')
+
+def calculate_risk_of_zone(zone: dict, pois: list) -> float:
     '''
     Calculate the risk perception considering all PoIs.
     '''
-    def calculate_risk_from_pois(self, pois: list):
-        if len(pois) == 0:
-            return
+    sum = 0
 
-        prog = 0.0
-        i = 0
-        total = len(self.zones_inside)
-        # print(f'Calculating risk perception... {prog:.2f}%', end='\r')
+    for poi in pois:
+        sum += poi['weight'] / (calculate_distance(zone, poi) ** 2)
 
-        with mp.Pool(processes=4) as pool:
-            payload = []
-            for id in self.zones_inside:
-                payload.append((self.zones[id], pois))
-            risks = pool.starmap(calculate_risk_of_zone, payload)
-        
-        for risk in risks:
-            self.zones[risk[0]]['risk'] = risk[1]
+    return (zone['id'], 1 / sum)
 
-        self.__normalize_risks()
-        self.__calculate_RL()
-        print('')
+'''
+Normalize the risk perception values.
+'''
+def normalize_risks(grid: dict):
+    min = max = grid['zones'][grid['zones_inside'][0]]['risk']
 
-    '''
-    Calculate the distance from a to b using haversine formula.
-    '''
-    def __calculate_distance(self, a: dict, b: dict) -> float:
-        lat1 = numpy.radians(a['lat'])
-        lat2 = numpy.radians(b['lat'])
-        lon1 = numpy.radians(a['lon'])
-        lon2 = numpy.radians(b['lon'])
-        r = 6378137
-        return 2 * r * numpy.arcsin(numpy.sqrt(numpy.sin((lat2 - lat1) / 2) ** 2 + numpy.cos(lat1) * numpy.cos(lat2) * numpy.sin((lon2 - lon1) / 2) ** 2))
-
-    '''
-    Normalize the risk perception values.
-    '''
-    def __normalize_risks(self):
-        min = max = self.zones[self.zones_inside[0]]['risk']
-
-        for id in self.zones_inside:
-            if self.zones[id]['risk'] > max: max = self.zones[id]['risk']
-            if self.zones[id]['risk'] < min: min = self.zones[id]['risk']
-        
-        amplitude = max - min
-        if amplitude == 0:
-            amplitude = 1
-
-        for id in self.zones_inside:
-            self.zones[id]['risk'] = (self.zones[id]['risk'] - min) / amplitude
+    for id in grid['zones_inside']:
+        if grid['zones'][id]['risk'] > max: max = grid['zones'][id]['risk']
+        if grid['zones'][id]['risk'] < min: min = grid['zones'][id]['risk']
     
-    '''
-    Calculate the RL according to risk perception.
-    '''
-    def __calculate_RL(self):
-        for id in self.zones_inside:
-            if self.zones[id]['risk'] == 0:
-                self.zones[id]['RL'] = 1
-            else:
-                rl = self.M - numpy.minimum(abs(int(numpy.log10(self.zones[id]['risk']))), self.M - 1)
-                self.zones[id]['RL'] = int(rl)
+    amplitude = max - min
+    if amplitude == 0:
+        amplitude = 1
 
-    '''
-    Calculate the number of zones by RL.
-    '''
-    def __get_number_of_zones_by_RL(self) -> dict:
-        nzones = {}
-        for i in range(1, self.M + 1):
-            nzones[i] = 0
-        
-        for id in self.zones_inside:
-            nzones[self.zones[id]['RL']] += 1
-        
-        return nzones
+    for id in grid['zones_inside']:
+        grid['zones'][id]['risk'] = (grid['zones'][id]['risk'] - min) / amplitude
     
-    '''
-    Calculate the number of EDUs that must be positioned in each RL.
+'''
+Calculate the RL according to risk perception.
+'''
+def calculate_RL(grid: dict):
+    for id in grid['zones_inside']:
+        if grid['zones'][id]['risk'] == 0:
+            grid['zones'][id]['RL'] = 1
+        else:
+            rl = grid['M'] - numpy.minimum(abs(int(numpy.log10(grid['zones'][id]['risk']))), grid['M'] - 1)
+            grid['zones'][id]['RL'] = int(rl)
+
+'''
+Calculate the number of zones by RL.
+'''
+def get_number_of_zones_by_RL(grid: dict) -> dict:
+    nzones = {}
+    for i in range(1, grid['M'] + 1):
+        nzones[i] = 0
     
-    See paper.
-    '''
-    def __get_number_of_edus_by_RL(self) -> dict:
-        nzones = self.__get_number_of_zones_by_RL()
-        
-        sum = 0
-        for i in range(1, self.M + 1):
-            sum += i * nzones[i]
-
-        nedus = {}
-        for i in range(1, self.M + 1):
-            ni = (self.n_edus * i * nzones[i]) / sum
-            nedus[i] = int(ni)
-
-        return nedus
-
-    '''
-    Get a dict of zones by RL.
-    '''
-    def __get_zones_by_RL(self) -> dict:
-        zones_by_RL = {}
-        for i in range(self.M + 1):
-            zones_by_RL[i] = []
-
-        for id in self.zones_inside:
-            zones_by_RL[self.zones[id]['RL']].append(self.zones[id])
-        
-        return zones_by_RL
-
-    '''
-    Randomly select zones for EDUs positioning.
-    '''
-    def set_edus_positions_random(self):
-        random.seed()
-        zones_by_RL = self.__get_zones_by_RL()
-        self.edus = {}
-        edus = self.__get_number_of_edus_by_RL()
-        
-        for i in range(1, self.M + 1):
-            self.edus[i] = random.choices(zones_by_RL[i], k=edus[i])
-
-    '''
-    Reset EDUs flag
-    '''
-    def __reset_edus_flag(self):
-        edus = self.__get_number_of_edus_by_RL()
-        self.edus = {}
-        self.At = {}
-        self.Ax = {}
-        self.radius = {}
-        self.step = {}
-        self.step_x = {}
-        self.step_y = {}
-        self.zone_in_y = {}
-
-        for zone in self.zones:
-            zone['has_edu'] = False
-
-        for i in range(1, self.M + 1):
-            if edus[i] == 0:
-                edus[i] = 1
-            self.At[i] = self.__get_number_of_zones_by_RL()[i]              # Area of the whole RL
-            self.Ax[i] = numpy.round(self.At[i] / edus[i])                  # Coverage area of an EDU
-            self.radius[i] = numpy.floor(numpy.sqrt(self.Ax[i]) / 2)        # Radius of an EDU
-            self.step[i] = 2 * self.radius[i]                               # Step distance on x and y directions
-            self.edus[i] = []                                               # Final list of EDUs in zone i
-            self.step_x[i] = self.step_y[i] = 0                             # The steps are accounted individually for each RL
-            self.zone_in_y[i] = False                                       # To check if there was any zone for a RL in any y
-        self.smallest_radius = int(self.radius[self.M])                     # Radius of the highest level
-        self.highest_radius = int(self.radius[1])                           # Radius of the lowest level
-        
-        self.zones.sort(key=lambda zone : zone['id'])
-
-    '''
-    Uniformly select zones for EDUs positioning.
-    '''
-    def set_edus_positions_uniform(self, mode: UniformPositioningMode):
-        self.__reset_edus_flag()
-        
-        print('Positioning EDUs...', end='\r')
-
-        if mode == UniformPositioningMode.UNBALANCED:
-            self.set_edus_positions_uniform_unbalanced()
-        elif mode == UniformPositioningMode.BALANCED:
-            self.set_edus_positions_uniform_balanced()
-        elif mode == UniformPositioningMode.RESTRICTED:
-            self.set_edus_positions_uniform_restricted()
-        
-        print('Positioning EDUs... 100.00%')
-        
-    '''
-    Unbalanced positioning mode.
-    '''
-    def set_edus_positions_uniform_unbalanced(self):
-        print("Chosen positioning method: uniform unbalanced.")
-        for y in range(self.grid_y):
-            # First, reset step for every RL in x direction and check if there was any zone in y
-            for i in range(1, self.M + 1):
-                self.step_x[i] = 0
-                if self.zone_in_y[i]:
-                    self.step_y[i] += 1
-                    self.zone_in_y[i] = False
-
-            # For each zone in this coordinate, check if it is inside AoI and check if it is time to
-            # put an EDU in it
-            for x in range(self.grid_x):
-                id = self.grid_x * y + x
-                zone = self.zones[id]
-                if not zone['inside']: continue
-
-                for i in range(1, self.M + 1):
-                    if zone['RL'] != i: continue
-                    self.zone_in_y[i] = True # If there was any zone for this RL in this y, we can increment step_y later
-
-                    if self.step_x[i] % self.step[i] == 0 and self.step_y[i] % self.step[i] == 0:
-                        self.edus[i].append(zone)
-                        
-                    self.step_x[i] += 1
-
-                    prog = (id / len(self.zones)) * 100
-                    print(f'Positioning EDUs... {prog:.2f}%', end='\r')
+    for id in grid['zones_inside']:
+        nzones[grid['zones'][id]['RL']] += 1
     
-    '''
-    Balanced positioning mode.
-    '''
-    def set_edus_positions_uniform_balanced(self):
-        print("Chosen positioning method: uniform balanced.")
-        y = 0
-        while y < self.grid_y:
-            x = 0
-            try:
-                while x < self.grid_x:
-                    while True:
-                        # Get the zone in this coordinate by its ID
-                        id = self.grid_x * y + x
-                        zone = self.zones[id]
+    return nzones
+    
+'''
+Calculate the number of EDUs that must be positioned in each RL.
 
-                        # The zone must be inside the AoI, otherwise, check the next zone
-                        if zone['inside']:
-                            break
-                        elif x >= self.grid_x:
-                            raise OutOfBounds
-                        else:
-                            x += 1
+See paper.
+'''
+def get_number_of_edus_by_RL(grid: dict) -> dict:
+    nzones = get_number_of_zones_by_RL(grid)
+    
+    sum = 0
+    for i in range(1, grid['M'] + 1):
+        sum += i * nzones[i]
 
-                    try:
-                        # Don't even try if we are still within the range of another EDU
-                        nearby_zones = self.__get_zones_in_area(id, 2 * self.highest_radius + 1)
-                        for nearby_zone in nearby_zones:
-                            if not nearby_zone['has_edu']: continue
-                            calc_radius = 2 * self.radius[zone['RL']] * self.zone_size
-                            if self.__calculate_distance(zone, nearby_zone) <= (calc_radius):
-                                raise SkipZone
+    nedus = {}
+    for i in range(1, grid['M'] + 1):
+        ni = (grid['n_edus'] * i * nzones[i]) / sum
+        nedus[i] = int(ni)
 
-                        self.edus[zone['RL']].append(zone)
-                        zone['has_edu'] = True
-                        x += self.smallest_radius
+    return nedus
+
+'''
+Get a dict of zones by RL.
+'''
+def get_zones_by_RL(grid: dict) -> dict:
+    zones_by_RL = {}
+    for i in range(grid['M'] + 1):
+        zones_by_RL[i] = []
+
+    for id in grid['zones_inside']:
+        zones_by_RL[grid['zones'][id]['RL']].append(grid['zones'][id])
+    
+    return zones_by_RL
+
+'''
+Randomly select zones for EDUs positioning.
+'''
+def set_edus_positions_random(grid: dict):
+    random.seed()
+    zones_by_RL = get_zones_by_RL(grid)
+    grid['edus'] = {}
+    edus = get_number_of_edus_by_RL(grid)
+    
+    for i in range(1, grid['M'] + 1):
+        grid['edus'][i] = random.choices(zones_by_RL[i], k=edus[i])
+
+'''
+Reset EDUs flag
+'''
+def reset_edus_flag(grid: dict):
+    edus = get_number_of_edus_by_RL(grid)
+    grid['edus'] = {}
+    grid['At'] = {}
+    grid['Ax'] = {}
+    grid['radius'] = {}
+    grid['step'] = {}
+    grid['step_x'] = {}
+    grid['step_y'] = {}
+    grid['zone_in_y'] = {}
+
+    for zone in grid['zones']:
+        zone['has_edu'] = False
+
+    for i in range(1, grid['M'] + 1):
+        if edus[i] == 0:
+            edus[i] = 1
+        grid['At'][i] = get_number_of_zones_by_RL(grid)[i]                  # Area of the whole RL
+        grid['Ax'][i] = numpy.round(grid['At'][i] / edus[i])            # Coverage area of an EDU
+        grid['radius'][i] = numpy.floor(numpy.sqrt(grid['Ax'][i]) / 2)  # Radius of an EDU
+        grid['step'][i] = 2 * grid['radius'][i]                         # Step distance on x and y directions
+        grid['edus'][i] = []                                            # Final list of EDUs in zone i
+        grid['step_x'][i] = grid['step_y'][i] = 0                       # The steps are accounted individually for each RL
+        grid['zone_in_y'][i] = False                                    # To check if there was any zone for a RL in any y
+    grid['smallest_radius'] = int(grid['radius'][grid['M']])            # Radius of the highest level
+    grid['highest_radius'] = int(grid['radius'][1])                     # Radius of the lowest level
+    
+    grid['zones'].sort(key=lambda zone : zone['id'])
+
+'''
+Uniformly select zones for EDUs positioning.
+'''
+def set_edus_positions_uniform(grid, mode: int):
+    reset_edus_flag(grid)
+    
+    print('Positioning EDUs...', end='\r')
+
+    if mode == UNBALANCED:
+        set_edus_positions_uniform_unbalanced(grid)
+    elif mode == BALANCED:
+        set_edus_positions_uniform_balanced(grid)
+    elif mode == RESTRICTED:
+        set_edus_positions_uniform_restricted(grid)
+    
+    print('Positioning EDUs... 100.00%')
+        
+'''
+Unbalanced positioning mode.
+'''
+def set_edus_positions_uniform_unbalanced(grid):
+    print("Chosen positioning method: uniform unbalanced.")
+    for y in range(grid['grid_y']):
+        # First, reset step for every RL in x direction and check if there was any zone in y
+        for i in range(1, grid['M'] + 1):
+            grid['step_x'][i] = 0
+            if grid['zone_in_y'][i]:
+                grid['step_y'][i] += 1
+                grid['zone_in_y'][i] = False
+
+        # For each zone in this coordinate, check if it is inside AoI and check if it is time to
+        # put an EDU in it
+        for x in range(grid['grid_x']):
+            id = grid['grid_x'] * y + x
+            zone = grid['zones'][id]
+            if not zone['inside']: continue
+
+            for i in range(1, grid['M'] + 1):
+                if zone['RL'] != i: continue
+                grid['zone_in_y'][i] = True # If there was any zone for this RL in this y, we can increment step_y later
+
+                if grid['step_x'][i] % grid['step'][i] == 0 and grid['step_y'][i] % grid['step'][i] == 0:
+                    grid['edus'][i].append(zone)
                     
-                    except SkipZone:
+                grid['step_x'][i] += 1
+
+                prog = (id / len(grid['zones'])) * 100
+                print(f'Positioning EDUs... {prog:.2f}%', end='\r')
+    
+'''
+Balanced positioning mode.
+'''
+def set_edus_positions_uniform_balanced(grid: dict):
+    print("Chosen positioning method: uniform balanced.")
+    y = 0
+    while y < grid['grid_y']:
+        x = 0
+        try:
+            while x < grid['grid_x']:
+                while True:
+                    # Get the zone in this coordinate by its ID
+                    id = grid['grid_x'] * y + x
+                    zone = grid['zones'][id]
+
+                    # The zone must be inside the AoI, otherwise, check the next zone
+                    if zone['inside']:
+                        break
+                    elif x >= grid['grid_x']:
+                        raise OutOfBounds
+                    else:
                         x += 1
-                
-                    prog = (id / len(self.zones)) * 100
-                    print(f'Positioning EDUs... {prog:.2f}%', end='\r')
 
-            except IndexError:
-                pass
-            except OutOfBounds:
-                pass
+                try:
+                    # Don't even try if we are still within the range of another EDU
+                    nearby_zones = get_zones_in_area(grid, id, 2 * grid['highest_radius'] + 1)
+                    for nearby_zone in nearby_zones:
+                        if not nearby_zone['has_edu']: continue
+                        calc_radius = 2 * grid['radius'][zone['RL']] * grid['zone_size']
+                        if calculate_distance(zone, nearby_zone) <= (calc_radius):
+                            raise SkipZone
+
+                    grid['edus'][zone['RL']].append(zone)
+                    zone['has_edu'] = True
+                    x += grid['smallest_radius']
+                
+                except SkipZone:
+                    x += 1
             
-            y += self.smallest_radius
+                prog = (id / len(grid['zones'])) * 100
+                print(f'Positioning EDUs... {prog:.2f}%', end='\r')
 
-    '''
-    Restricted positioning mode.
-    '''
-    def set_edus_positions_uniform_restricted(self):
-        self.set_edus_positions_uniform_balanced()
-        print("Moving EDUs to permitted zones...")
-
-        # For each EDU check if it is in a permitted zone (only roads for now).
-        # If not, move it to the nearest permitted zone.
-        for i in range(1, self.M + 1):
-            zones_removal = []
-
-            for zone in self.edus[i]:
-                if zone['is_road']: continue
-
-                zone_id = zone['id']
-                spiral_path = self.__get_spiral_path(self.radius[i])
-                for step in spiral_path:
-                    zone_id += step
-                    nearby_zone = self.zones[zone_id]
-                    if not nearby_zone['inside']: continue
-                    if not nearby_zone['is_road']: continue
-                    if nearby_zone['has_edu']: break
-
-                    nearby_zone['has_edu'] = True
-                    self.edus[i].append(nearby_zone)
-                    break
-                
-                zone['has_edu'] = False
-                zones_removal.append(zone)
+        except IndexError:
+            pass
+        except OutOfBounds:
+            pass
         
-            # Remove from self.edus all zones that have not an EDU anymore
-            for zone in zones_removal:
-                self.edus[i].remove(zone)
+        y += grid['smallest_radius']
 
-    '''
-    Compute a spiral path for zone search whithin a range.
-    '''
-    def __get_spiral_path(self, range_radius: int) -> list:
-        steps = []
-        step = -1
+'''
+Restricted positioning mode.
+'''
+def set_edus_positions_uniform_restricted(grid: dict):
+    set_edus_positions_uniform_balanced(grid)
+    print("Moving EDUs to permitted zones...")
 
-        while True:
-            step_signal = int(step / abs(step))
-            for s in range(0, step, step_signal):
-                steps.append(step_signal * self.grid_x)
-            for s in range(0, step, step_signal):
-                steps.append(step_signal)
-            step += step_signal
-            step *= -1
-            if abs(step) > range_radius:
+    # For each EDU check if it is in a permitted zone (only roads for now).
+    # If not, move it to the nearest permitted zone.
+    for i in range(1, grid['M'] + 1):
+        zones_removal = []
+
+        for zone in grid['edus'][i]:
+            if zone['is_road']: continue
+
+            zone_id = zone['id']
+            spiral_path = get_spiral_path(grid, grid['radius'][i])
+            for step in spiral_path:
+                zone_id += step
+                nearby_zone = grid['zones'][zone_id]
+                if not nearby_zone['inside']: continue
+                if not nearby_zone['is_road']: continue
+                if nearby_zone['has_edu']: break
+
+                nearby_zone['has_edu'] = True
+                grid['edus'][i].append(nearby_zone)
                 break
+            
+            zone['has_edu'] = False
+            zones_removal.append(zone)
+    
+        # Remove from grid['edus'] all zones that have not an EDU anymore
+        for zone in zones_removal:
+            grid['edus'][i].remove(zone)
 
-        return steps
+'''
+Compute a spiral path for zone search whithin a range.
+'''
+def get_spiral_path(grid: dict, range_radius: int) -> list:
+    steps = []
+    step = -1
 
-    '''
-    Get all zones within a squared area.
-    '''
-    def __get_zones_in_area(self, center_id: int, radius: int) -> list:
-        start_x = int(center_id % self.grid_x) - radius
-        start_y = int(center_id / self.grid_x) - radius
-        zones = []
+    while True:
+        step_signal = int(step / abs(step))
+        for s in range(0, step, step_signal):
+            steps.append(step_signal * grid['grid_x'])
+        for s in range(0, step, step_signal):
+            steps.append(step_signal)
+        step += step_signal
+        step *= -1
+        if abs(step) > range_radius:
+            break
 
-        for i in range(start_y, radius * 2 + start_y + 1):
-            for j in range(start_x, radius * 2 + start_x + 1):
-                zones.append(self.zones[i * self.grid_x + j])
-        
-        zones.sort(key=lambda zone : zone['id'])
-        return zones
+    return steps
+
+'''
+Get all zones within a squared area.
+'''
+def get_zones_in_area(grid: dict, center_id: int, radius: int) -> list:
+    start_x = int(center_id % grid['grid_x']) - radius
+    start_y = int(center_id / grid['grid_x']) - radius
+    zones = []
+
+    for i in range(start_y, radius * 2 + start_y + 1):
+        for j in range(start_x, radius * 2 + start_x + 1):
+            zones.append(grid['zones'][i * grid['grid_x'] + j])
+    
+    zones.sort(key=lambda zone : zone['id'])
+    return zones
 
 '''
 Main program.
@@ -748,6 +684,7 @@ if __name__ == '__main__':
         print("config.json is a configuration file in JSON format. See examples in conf folder.")
         sys.exit()
 
+    # Python multiprocessing start method
     mp.set_start_method('spawn')
 
     # Config file
@@ -755,10 +692,12 @@ if __name__ == '__main__':
     conf = json.load(fp)
     fp.close()
 
-    grid = RiskZonesGrid(
+    # Create a new grid and initialize its zones
+    grid = create_riskzones_grid(
         conf['left'], conf['bottom'], conf['right'], conf['top'],
         conf['zone_size'], conf['M'], conf['edus']
     )
+    init_zones(grid)
 
     # Get PoIs and roads from OSM file
     pois, roads = osmpois.extract_pois(conf['pois'], conf['pois_types'])
@@ -769,7 +708,7 @@ if __name__ == '__main__':
         try:
             print(f"Loading cache file {cache_filename}...")
             fp = open(cache_filename, 'r')
-            grid.load_zones(json.load(fp))
+            load_zones(grid, json.load(fp))
             fp.close()
         except json.JSONDecodeError:
             print("The cache file is corrupted. Delete it and run the program again.")
@@ -782,8 +721,8 @@ if __name__ == '__main__':
             fp = open(conf['geojson'], 'r')
             geojson = json.load(fp)
             fp.close()
-            grid.init_zones_by_polygon(geojson['features'][0]['geometry']['coordinates'])
-            pois_inside = grid.init_pois_by_polygon(geojson['features'][0]['geometry']['coordinates'], pois)
+            init_zones_by_polygon(grid, geojson['features'][0]['geometry']['coordinates'])
+            pois_inside = init_pois_by_polygon(grid, geojson['features'][0]['geometry']['coordinates'], pois)
         except KeyError:
             print("WARNING: No GeoJSON file specified. Not filtering by AoI polygon.")
             pois_inside = pois
@@ -791,10 +730,10 @@ if __name__ == '__main__':
             print(f"WARNING: GeoJSON file '{conf['geojson']}' not found. Not filtering by AoI polygon.")
             pois_inside = pois
 
-        grid.add_roads(roads)
+        add_roads(grid, roads)
         
         # Calculate risks
-        grid.calculate_risk_from_pois(pois_inside)
+        calculate_risk_from_pois(grid, pois_inside)
 
         # Output elapsed time
         time_diff = time.perf_counter() - time_begin
@@ -804,7 +743,7 @@ if __name__ == '__main__':
     if conf['cache_zones'] == True and not os.path.isfile(cache_filename):
         print('Writing cache file... ', end='')
         fp = open(cache_filename, 'w')
-        json.dump(grid.zones, fp)
+        json.dump(grid['zones'], fp)
         fp.close()
         print('Done!')
 
@@ -812,13 +751,13 @@ if __name__ == '__main__':
     time_begin = time.perf_counter()
 
     if conf['edu_alg'] == 'random':
-        grid.set_edus_positions_random()
+        set_edus_positions_random(grid)
     elif conf['edu_alg'] == 'balanced':
-        grid.set_edus_positions_uniform(UniformPositioningMode.UNBALANCED)
+        set_edus_positions_uniform(grid, UNBALANCED)
     elif conf['edu_alg'] == 'enhanced':
-        grid.set_edus_positions_uniform(UniformPositioningMode.BALANCED)
+        set_edus_positions_uniform(grid, BALANCED)
     elif conf['edu_alg'] == 'restricted':
-        grid.set_edus_positions_uniform(UniformPositioningMode.RESTRICTED)
+        set_edus_positions_uniform(grid, RESTRICTED)
 
     # Output elapsed time
     time_diff = time.perf_counter() - time_begin
@@ -830,9 +769,9 @@ if __name__ == '__main__':
     row = 0
     data = 'system:index,class,.geo\n'
 
-    for id in grid.zones_inside:
-        coordinates = f"[{grid.zones[id]['lon']},{grid.zones[id]['lat']}]"
-        data += f'{row:020},{grid.zones[id]["RL"]},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
+    for id in grid['zones_inside']:
+        coordinates = f"[{grid['zones'][id]['lon']},{grid['zones'][id]['lat']}]"
+        data += f'{row:020},{grid["zones"][id]["RL"]},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
         row += 1
 
     fp = open(conf['output'], 'w')
@@ -844,8 +783,8 @@ if __name__ == '__main__':
         row = 0
         data = 'system:index,.geo\n'
 
-        for i in range(1, grid.M + 1):
-            for zone in grid.edus[i]:
+        for i in range(1, grid['M'] + 1):
+            for zone in grid['edus'][i]:
                 coordinates = f"[{zone['lon']},{zone['lat']}]"
                 data += f'{row:020},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
                 row += 1
@@ -859,8 +798,8 @@ if __name__ == '__main__':
         row = 0
         data = 'system:index,.geo\n'
 
-        for id in grid.zones_inside:
-            zone = grid.zones[id]
+        for id in grid['zones_inside']:
+            zone = grid['zones'][id]
             if zone['is_road']:
                 coordinates = f"[{zone['lon']},{zone['lat']}]"
                 data += f'{row:020},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
