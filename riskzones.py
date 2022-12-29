@@ -144,10 +144,8 @@ def init_zones_by_polygon(grid: dict, polygon: dict):
     """
     Check every zone if it is inside the polygon area.
     """
-    prog = 0.0
-    i = 0
-    total = len(grid['zones'])
-    print(f'Checking zones inside the polygon... {prog:.2f}%', end='\r')
+    print('Checking zones inside the polygon... ', end='')
+
     grid['zones_inside'].clear()
 
     for coord in polygon:
@@ -163,7 +161,8 @@ def init_zones_by_polygon(grid: dict, polygon: dict):
         if zone['inside'] == True:
             grid['zones_inside'].append(zone['id'])
 
-    print(f'\n{len(grid["zones_inside"])} zones inside the polygon.')
+    print('Done!')
+    print(f'{len(grid["zones_inside"])} zones inside the polygon.')
 
 def init_pois_by_polygon(grid: dict, polygon: dict, pois: list) -> list:
     """
@@ -355,10 +354,7 @@ def calculate_risk_from_pois(grid: dict, pois: list):
     if len(pois) == 0:
         return
 
-    prog = 0.0
-    i = 0
-    total = len(grid['zones_inside'])
-    # print(f'Calculating risk perception... {prog:.2f}%', end='\r')
+    print(f'Calculating risk perception... ', end='')
 
     with mp.Pool(processes=None) as pool:
         payload = []
@@ -371,7 +367,8 @@ def calculate_risk_from_pois(grid: dict, pois: list):
 
     normalize_risks(grid)
     calculate_RL(grid)
-    print('')
+
+    print('Done!')
 
 def calculate_risk_of_zone(zone: dict, pois: list) -> float:
     """
