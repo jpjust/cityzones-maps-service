@@ -57,6 +57,9 @@ UNBALANCED = 1
 BALANCED = 2
 RESTRICTED = 3
 
+# Multiprocessing
+MP_WORKERS=None  # If None, will use a value returned by the system
+
 def create_riskzones_grid(left: float, bottom: float, right: float, top: float, zone_size: int, M: int, n_edus: int) -> dict:
     """
     Create a riskzones grid object for futher manipulation.
@@ -158,7 +161,7 @@ def init_zones_by_polygon(grid: dict):
 
     grid['zones_inside'].clear()
     
-    with mp.Pool() as pool:
+    with mp.Pool(processes=MP_WORKERS) as pool:
         payload = []
         for zone in grid['zones']:
             payload.append((zone, grid['polygons']))
@@ -179,7 +182,7 @@ def init_pois_by_polygon(grid: dict, pois: list) -> list:
 
     grid['pois'].clear()
     
-    with mp.Pool(processes=None) as pool:
+    with mp.Pool(processes=MP_WORKERS) as pool:
         payload = []
         for poi in pois:
             payload.append((poi, grid['polygons']))
@@ -355,7 +358,7 @@ def calculate_risk_from_pois(grid: dict):
 
     print(f'Calculating risk perception... ', end='')
 
-    with mp.Pool(processes=None) as pool:
+    with mp.Pool(processes=MP_WORKERS) as pool:
         payload = []
         for id in grid['zones_inside']:
             payload.append((grid['zones'][id], grid['pois']))
