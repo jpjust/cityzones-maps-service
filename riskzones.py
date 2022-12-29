@@ -148,6 +148,7 @@ def init_zones_by_polygon(grid: dict, polygon: dict):
     print('Checking zones inside the polygon... ', end='')
 
     grid['zones_inside'].clear()
+    grid['polygons'].clear()
 
     for coord in polygon:
         grid['polygons'].append(coord[0])
@@ -169,26 +170,22 @@ def init_pois_by_polygon(grid: dict, polygon: dict, pois: list) -> list:
     """
     Check every PoI if it is inside the polygon area.
     """
-    prog = 0.0
-    i = 0
-    total = len(pois)
-    print(f'Checking PoIs inside the polygon... {prog:.2f}%', end='\r')
-    pois_inside = []
+    print(f'Checking PoIs inside the polygon... ', end='')
+
+    grid['pois'].clear()
+    grid['polygons'].clear()
 
     for coord in polygon:
         grid['polygons'].append(coord[0])
     
-    for poi in pois:
-        i += 1
-        for pol in grid['polygons']:
-            if check_zone_in_polygon(poi, pol):
-                pois_inside.append(poi)
-                break
-        prog = (i / total) * 100
-        print(f'Checking PoIs inside the polygon... {prog:.2f}%', end='\r')
+    with mp.Pool(processes=None) as pool:
+        payload = []
+        for poi in pois:
+            payload.append((poi, grid['polygons']))
+        grid['pois'] = pool.starmap(check_zone_in_polygon_set, payload)
     
-    print(f'\n{len(pois_inside)} PoIs inside the polygon.')
-    grid['pois'] = pois_inside
+    print('Done!')
+    print(f'{len(grid["pois"])} PoIs inside the polygon.')
 
 def check_zone_in_polygon_set(zone: dict, polygons: dict) -> bool:
     """
