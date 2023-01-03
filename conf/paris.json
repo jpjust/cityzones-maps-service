@@ -5,7 +5,7 @@
     "top": 48.9281,
     "zone_size": 10,
     "cache_zones": true,
-    "M": 5,
+    "M": 3,
     "edus": 750,
     "geojson": "geojson/paris.geojson",
     "pois": "osm/paris_filtered.osm",
@@ -14,7 +14,7 @@
         "railway": ["station"]
     },
     "edu_alg": "restricted",
-    "output": "csv/paris_M5.csv",
+    "output": "csv/paris_M3.csv",
     "output_edus": "csv/paris_edus_restricted.csv",
     "output_roads": "csv/paris_roads.csv"
 }
