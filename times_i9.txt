@@ -1,0 +1,21 @@
+Classification (M=3, zl=10):
+
+Porto: 39.1 seconds.
+Paris: 281.046 seconds.
+
+EDUs positioning (using cache):
+
+Porto U=300:
+- Random: 0.053
+- Balanced: 1.948
+- Enhanced: 32.887 32.735 33.004    
+- Restricted: 32.725 32.996 33.084  
+
+Paris U=750:
+- Random: 0.135
+- Balanced: 4.979
+- Enhanced: 139.17
+- Restricted: 139.78
+
+Zones in Porto: 413011
+Zones in Paris: 1025665
