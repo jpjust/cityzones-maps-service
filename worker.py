@@ -97,6 +97,7 @@ while True:
     fp_map = open(config['pois'], 'r')
     fp_edus = open(config['output_edus'], 'r')
 
+    logger(f'Sending data to web service...')
     req = request.Request(
         f'{os.getenv("API_URL")}/result',
         method='POST',
