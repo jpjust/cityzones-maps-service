@@ -136,3 +136,6 @@ csv/
 
 # Paris OSM file is too large
 paris.osm
+
+# Worker temp files directory
+worker/
