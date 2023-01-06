@@ -94,7 +94,7 @@ while True:
         continue
 
     # Post results to the web app
-    fp_map = open(config['pois'], 'r')
+    fp_map = open(config['output'], 'r')
     fp_edus = open(config['output_edus'], 'r')
 
     logger(f'Sending data to web service...')
