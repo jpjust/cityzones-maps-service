@@ -496,6 +496,10 @@ def reset_edus_flag(grid: dict):
     grid['smallest_radius'] = int(grid['radius'][grid['M']])            # Radius of the highest level
     grid['highest_radius'] = int(grid['radius'][1])                     # Radius of the lowest level
     
+    # Make sure there are no 0 radius
+    if grid['smallest_radius'] == 0: grid['smallest_radius'] = 1
+    if grid['highest_radius'] == 0: grid['highest_radius'] = 1
+
     grid['zones'].sort(key=lambda zone : zone['id'])
 
 def set_edus_positions_uniform(grid, mode: int):
