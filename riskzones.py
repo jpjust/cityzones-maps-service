@@ -717,8 +717,16 @@ if __name__ == '__main__':
             geojson = json.load(fp)
             fp.close()
             add_polygon(grid, geojson['features'][0]['geometry']['coordinates'])
+
             init_zones_by_polygon(grid)
+            if len(grid['zones_inside']) == 0:
+                print('No zones to classify!')
+                exit(1)
+
             init_pois_by_polygon(grid, pois)
+            if len(grid['pois']) == 0:
+                print('No PoIs inside the AoI!')
+                exit(2)
         except KeyError:
             print('WARNING: No GeoJSON file specified. Not filtering by AoI polygon.')
             grid['pois'] = pois
