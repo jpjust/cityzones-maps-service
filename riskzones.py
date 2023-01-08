@@ -38,6 +38,7 @@ import json
 import sys
 import os
 import random
+import resource
 import numpy
 import multiprocessing as mp
 
@@ -47,6 +48,19 @@ class OutOfBounds(Exception):
 
 class SkipZone(Exception):
     pass
+
+# Exit status
+EXIT_OK = 0
+EXIT_HELP = 1
+EXIT_CACHE_CORRUPTED = 2
+EXIT_NO_ZONES = 3
+EXIT_NO_POIS = 4
+EXIT_NO_MEMORY = 5
+
+# Resources limits
+RES_MEM_SOFT, RES_MEM_HARD = resource.getrlimit(resource.RLIMIT_DATA)
+RES_MEM_SOFT = 4 * 1024 * 1024 * 1024  # 4 GB maximum RAM
+resource.setrlimit(resource.RLIMIT_DATA, (RES_MEM_SOFT, RES_MEM_HARD))
 
 # Maximum and minimum values for integers.
 MIN_NUM = 10 ** (-10)
@@ -112,24 +126,31 @@ def init_zones(grid: dict):
     """
     Initialize every zone in the grid.
     """
-    grid['zones'].clear()
-    grid['zones_inside'].clear()
+    try:
+        grid['zones'].clear()
+        grid['zones_inside'].clear()
 
-    for j in range(grid['grid_y']):
-        for i in range(grid['grid_x']):
-            zone = {
-                'id': j * grid['grid_x'] + i,
-                'lat': (j / grid['grid_y'] * grid['height']) + grid['bottom'] + grid['zone_center']['y'],
-                'lon': (i / grid['grid_x'] * grid['width']) + grid['left'] + grid['zone_center']['x'],
-                'risk': 1.0,
-                'RL': grid['M'],
-                'inside': True,
-                'has_edu': False,
-                'is_road': False
-            }
+        for j in range(grid['grid_y']):
+            for i in range(grid['grid_x']):
+                zone = {
+                    'id': j * grid['grid_x'] + i,
+                    'lat': (j / grid['grid_y'] * grid['height']) + grid['bottom'] + grid['zone_center']['y'],
+                    'lon': (i / grid['grid_x'] * grid['width']) + grid['left'] + grid['zone_center']['x'],
+                    'risk': 1.0,
+                    'RL': grid['M'],
+                    'inside': True,
+                    'has_edu': False,
+                    'is_road': False
+                }
 
-            grid['zones'].append(zone)
-            grid['zones_inside'].append(zone['id'])
+                grid['zones'].append(zone)
+                grid['zones_inside'].append(zone['id'])
+
+    except MemoryError:
+        print('--- Memory limit reached! ---')
+        print(f'riskzones is configured to use at most {RES_MEM_SOFT} bytes of memory.')
+        print('If you think this limit is too low, you can raise it by setting the value of RES_MEM_SOFT in this script.')')
+        exit(EXIT_NO_MEMORY)
 
 def load_zones(grid: dict, zones: list):
     """
@@ -677,7 +698,7 @@ if __name__ == '__main__':
     if len(sys.argv) < 2:
         print(f'Use: {sys.argv[0]} config.json\n')
         print('config.json is a configuration file in JSON format. See examples in conf folder.')
-        sys.exit()
+        sys.exit(EXIT_HELP)
 
     # Python multiprocessing start method
     mp.set_start_method('spawn')
@@ -707,7 +728,7 @@ if __name__ == '__main__':
             fp.close()
         except json.JSONDecodeError:
             print('The cache file is corrupted. Delete it and run the program again.')
-            sys.exit()
+            exit(EXIT_CACHE_CORRUPTED)
     else:
         # GeoJSON file
         time_begin = time.perf_counter()
@@ -721,12 +742,12 @@ if __name__ == '__main__':
             init_zones_by_polygon(grid)
             if len(grid['zones_inside']) == 0:
                 print('No zones to classify!')
-                exit(1)
+                exit(EXIT_NO_ZONES)
 
             init_pois_by_polygon(grid, pois)
             if len(grid['pois']) == 0:
                 print('No PoIs inside the AoI!')
-                exit(2)
+                exit(EXIT_NO_POIS)
         except KeyError:
             print('WARNING: No GeoJSON file specified. Not filtering by AoI polygon.')
             grid['pois'] = pois
@@ -814,3 +835,4 @@ if __name__ == '__main__':
         fp.close()
 
     print('Done.')
+    exit(EXIT_OK)
