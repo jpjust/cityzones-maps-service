@@ -7,7 +7,7 @@ import subprocess
 import json
 import requests
 import time
-from urllib.error import URLError
+from requests_toolbelt import MultipartEncoder
 from datetime import datetime
 
 sleep_time = int(os.getenv('SLEEP_INT'))
@@ -94,17 +94,21 @@ while True:
         continue
 
     # Post results to the web app
-    fp_map = open(config['output'], 'rb')
-    fp_edus = open(config['output_edus'], 'r')
+    encoder = MultipartEncoder(
+        fields={
+            'map': ('map.csv', open(config['output'], 'rb'), 'text/plain'),
+            'edus': ('edus.csv', open(config['output_edus'], 'rb'), 'text/plain'),
+        }
+    )
 
     logger(f'Sending data to web service...')
     try:
         req = requests.post(
             f'{os.getenv("API_URL")}/result/{task["id"]}',
             headers={
-                'Content-type': 'application/json'
+                'Content-type': encoder.content_type
             },
-            data=fp_map.read()
+            data=encoder
         )
 
         if req.status_code == 201:
@@ -116,6 +120,3 @@ while True:
         logger(f'There was an error trying to connect to the server.')
         time.sleep(sleep_time)
         continue
-
-    fp_map.close()
-    fp_edus.close()
