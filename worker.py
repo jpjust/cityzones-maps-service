@@ -5,7 +5,7 @@ import os
 import sys
 import subprocess
 import json
-import urllib.request as request
+import requests
 import time
 from urllib.error import URLError
 from datetime import datetime
@@ -18,23 +18,23 @@ def logger(text: str):
 while True:
     # Request a task from the web app
     try:
-        res = request.urlopen(f'{os.getenv("API_URL")}/task')
-    except URLError:
-        logger(f'The server reported an internal error.')
+        res = requests.get(f'{os.getenv("API_URL")}/task')
+    except requests.exceptions.ConnectionError:
+        logger(f'There was an error trying to connect to the server.')
         time.sleep(sleep_time)
         continue
 
-    if res.status == 204:
+    if res.status_code == 204:
         logger('No task received from server.')
         time.sleep(sleep_time)
         continue
 
-    if res.status != 200:
+    if res.status_code != 200:
         logger('An error ocurred while trying to get a task from server.')
         time.sleep(sleep_time)
         continue
 
-    data = res.read().decode()
+    data = res.content.decode()
     task = json.loads(data)
     config = task['config']
     geojson = task['geojson']
@@ -94,35 +94,28 @@ while True:
         continue
 
     # Post results to the web app
-    fp_map = open(config['output'], 'r')
+    fp_map = open(config['output'], 'rb')
     fp_edus = open(config['output_edus'], 'r')
 
     logger(f'Sending data to web service...')
-    req = request.Request(
-        f'{os.getenv("API_URL")}/result',
-        method='POST',
-        headers={
-            'Content-type': 'application/json'
-        },
-        data=json.dumps({
-            'id': task['id'],
-            'map': fp_map.read(),
-            'edus': fp_edus.read()
-        }).encode('utf-8')
-    )
-
-    fp_map.close()
-    fp_edus.close()
-
     try:
-        res = request.urlopen(req)
-    except URLError:
-        logger(f'The server reported an internal error.')
+        req = requests.post(
+            f'{os.getenv("API_URL")}/result/{task["id"]}',
+            headers={
+                'Content-type': 'application/json'
+            },
+            data=fp_map.read()
+        )
+
+        if req.status_code == 201:
+            logger(f'Results for {config["base_filename"]} sent successfully.')
+        else:
+            logger(f'The server reported an error for {config["base_filename"]} data.')
+            time.sleep(sleep_time)
+    except requests.exceptions.ConnectionError:
+        logger(f'There was an error trying to connect to the server.')
         time.sleep(sleep_time)
         continue
 
-    if res.status == 201:
-        logger(f'Results for {config["base_filename"]} sent successfully.')
-    else:
-        logger(f'The server reported an error for {config["base_filename"]} data.')
-        time.sleep(sleep_time)
+    fp_map.close()
+    fp_edus.close()
