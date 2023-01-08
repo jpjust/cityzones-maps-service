@@ -1,7 +1,7 @@
 # encoding:utf-8
 """
 Risk Zones classification
-Copyright (C) 2022 João Paulo Just Peixoto
+Copyright (C) 2022 - 2023 João Paulo Just Peixoto
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
