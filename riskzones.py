@@ -149,7 +149,7 @@ def init_zones(grid: dict):
     except MemoryError:
         print('--- Memory limit reached! ---')
         print(f'riskzones is configured to use at most {RES_MEM_SOFT} bytes of memory.')
-        print('If you think this limit is too low, you can raise it by setting the value of RES_MEM_SOFT in this script.')')
+        print('If you think this limit is too low, you can raise it by setting the value of RES_MEM_SOFT in this script.')
         exit(EXIT_NO_MEMORY)
 
 def load_zones(grid: dict, zones: list):
