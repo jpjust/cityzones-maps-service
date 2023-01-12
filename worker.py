@@ -125,6 +125,7 @@ while True:
         fields={
             'map': ('map.csv', open(config['output'], 'rb'), 'text/plain'),
             'edus': ('edus.csv', open(config['output_edus'], 'rb'), 'text/plain'),
+            'roads': ('roads.csv', open(config['output_roads'], 'rb'), 'text/plain'),
         }
     )
 
