@@ -143,7 +143,18 @@ while True:
         else:
             logger(f'The server reported an error for {config["base_filename"]} data.')
             time.sleep(sleep_time)
+        
+        # Remove task files
+        os.remove(filename)
+        os.remove(config['geojson'])
+        os.remove(config['pois'])
+        os.remove(config['output'])
+        os.remove(config['output_edus'])
+        os.remove(config['output_roads'])
     except requests.exceptions.ConnectionError:
         logger(f'There was an error trying to connect to the server.')
         time.sleep(sleep_time)
+        continue
+    except FileNotFoundError:
+        logger(f'WARNING: Some of the task files could not be deleted. Check {os.getenv("TASKS_DIR")} and {os.getenv("OUT_DIR")} later for unneeded files.')
         continue
