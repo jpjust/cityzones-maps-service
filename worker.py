@@ -45,7 +45,7 @@ def logger(text: str):
 while True:
     # Request a task from the web app
     try:
-        res = requests.get(f'{os.getenv("API_URL")}/task')
+        res = requests.get(f'{os.getenv("API_URL")}/task', headers={'X-API-Key': os.getenv("API_KEY")})
     except requests.exceptions.ConnectionError:
         logger(f'There was an error trying to connect to the server.')
         time.sleep(sleep_time)
@@ -134,7 +134,8 @@ while True:
         req = requests.post(
             f'{os.getenv("API_URL")}/result/{task["id"]}',
             headers={
-                'Content-type': encoder.content_type
+                'Content-type': encoder.content_type,
+                'X-API-Key': os.getenv("API_KEY")
             },
             data=encoder
         )

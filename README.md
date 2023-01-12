@@ -32,7 +32,7 @@ This web application provides a GUI to request an AoI classification with Risk Z
 
 ## Worker
 
-The worker program is the `worker.py` script. It periodically request tasks from the web service to run locally, sending back the results. To run it, first make a copy of `.env.example` into `.env` and set it up. Then run:
+The worker program is the `worker.py` script. It periodically request tasks from the web service to run locally, sending back the results. To run it, first make a copy of `.env.example` into `.env` and set it up. You will need an API key from the web server application. Then run:
 
 `python3 worker.py`
 
