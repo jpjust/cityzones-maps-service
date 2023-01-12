@@ -12,13 +12,17 @@ If you don't have a GeoJSON file for the city you are working on, you can conver
 
 The output properties of the configuration file specifies two output files: the main output which will contain the zones and its classes of risk and an EDUs output which will contain the position of the EDUs on the region.
 
-To plot a map of the risk zones and the EDUs, run the script in `gee_riskzones.js` on Google Earch Engine. You will need to upload your output CSV files as assets on GEE.
+To plot a map of the risk zones and the EDUs, run the script in `gee_riskzones.js` on Google Earch Engine (you will need to upload your output CSV files as assets on GEE) or use the web interface at http://riskzonesweb.just.pro.br.
 
 ## Dependencies
 
 To install all modules needed by riskzones and its worker, run:
 
 `python3 -m pip install numpy requests requests-toolbelt`
+
+## Memory limit
+
+To avoid memory issues `riskzones.py` sets a memory limit. Copy `.env.example` as `.env` in the root directory and set `MEM_LIMIT` to the value of your choice. By default, riskzones.py limits itself to 1 GiB of RAM.
 
 ## RiskZones Web: online interface
 

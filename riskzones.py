@@ -62,7 +62,7 @@ EXIT_NO_MEMORY = 5
 
 # Resources limits
 RES_MEM_SOFT, RES_MEM_HARD = resource.getrlimit(resource.RLIMIT_DATA)
-RES_MEM_SOFT = int(os.getenv('MEM_LIMIT')) * 1024 * 1024
+RES_MEM_SOFT = int(os.getenv('MEM_LIMIT')) * (1024 ** 2) if os.getenv('MEM_LIMIT') != None else 1024 ** 3
 resource.setrlimit(resource.RLIMIT_DATA, (RES_MEM_SOFT, RES_MEM_HARD))
 
 # Maximum and minimum values for integers.
