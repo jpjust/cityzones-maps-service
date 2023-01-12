@@ -42,29 +42,25 @@ sleep_time = int(os.getenv('SLEEP_INT'))
 def logger(text: str):
     print(f'{datetime.now().isoformat()}: {text}')
 
-while True:
-    # Request a task from the web app
+def process_task():
+    """
+    Request a task from the web app and proccess it.
+    """
     try:
         res = requests.get(f'{os.getenv("API_URL")}/task', headers={'X-API-Key': os.getenv("API_KEY")})
     except requests.exceptions.ConnectionError:
         logger(f'There was an error trying to connect to the server.')
-        time.sleep(sleep_time)
-        continue
+        return
 
     if res.status_code == 204:
         logger('No task received from server.')
-        time.sleep(sleep_time)
-        continue
-
-    if res.status_code == 401:
+        return
+    elif res.status_code == 401:
         logger('Not authorized! Check API_KEY.')
-        time.sleep(sleep_time)
-        continue
-
-    if res.status_code != 200:
+        return
+    elif res.status_code != 200:
         logger('An error ocurred while trying to get a task from server.')
-        time.sleep(sleep_time)
-        continue
+        return
 
     data = res.content.decode()
     task = json.loads(data)
@@ -110,8 +106,7 @@ while True:
 
     if res.returncode != 0:
         logger(f'There was an error while extracting map data using {config["base_filename"]} coordinates.')
-        time.sleep(sleep_time)
-        continue
+        return
 
     # Run riskzones.py
     res = subprocess.run([
@@ -122,8 +117,7 @@ while True:
 
     if res.returncode != 0:
         logger(f'There was an error while running riskzones.py for {config["base_filename"]}.')
-        time.sleep(sleep_time)
-        continue
+        return
 
     # Post results to the web app
     encoder = MultipartEncoder(
@@ -159,12 +153,15 @@ while True:
         os.remove(config['output'])
         os.remove(config['output_edus'])
         os.remove(config['output_roads'])
-
-        time.sleep(sleep_time)
     except requests.exceptions.ConnectionError:
         logger(f'There was an error trying to connect to the server.')
-        time.sleep(sleep_time)
-        continue
+        return
     except FileNotFoundError:
         logger(f'WARNING: Some of the task files could not be deleted. Check {os.getenv("TASKS_DIR")} and {os.getenv("OUT_DIR")} later for unneeded files.')
-        continue
+        return
+
+# Main loop
+if __name__ == '__main__':
+    while True:
+        process_task()
+        time.sleep(sleep_time)
