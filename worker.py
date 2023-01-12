@@ -56,6 +56,11 @@ while True:
         time.sleep(sleep_time)
         continue
 
+    if res.status_code == 401:
+        logger('Not authorized! Check API_KEY.')
+        time.sleep(sleep_time)
+        continue
+
     if res.status_code != 200:
         logger('An error ocurred while trying to get a task from server.')
         time.sleep(sleep_time)
@@ -142,9 +147,10 @@ while True:
 
         if req.status_code == 201:
             logger(f'Results for {config["base_filename"]} sent successfully.')
+        elif res.status_code == 401:
+            logger('Not authorized! Check API_KEY.')
         else:
             logger(f'The server reported an error for {config["base_filename"]} data.')
-            time.sleep(sleep_time)
         
         # Remove task files
         os.remove(filename)
@@ -153,6 +159,8 @@ while True:
         os.remove(config['output'])
         os.remove(config['output_edus'])
         os.remove(config['output_roads'])
+
+        time.sleep(sleep_time)
     except requests.exceptions.ConnectionError:
         logger(f'There was an error trying to connect to the server.')
         time.sleep(sleep_time)
