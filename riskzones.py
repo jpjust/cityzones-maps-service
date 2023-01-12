@@ -32,6 +32,9 @@ risks:
                         positioning algorithm.
 """
 
+from dotenv import load_dotenv
+load_dotenv()
+
 import osmpois
 import time
 import json
@@ -59,7 +62,7 @@ EXIT_NO_MEMORY = 5
 
 # Resources limits
 RES_MEM_SOFT, RES_MEM_HARD = resource.getrlimit(resource.RLIMIT_DATA)
-RES_MEM_SOFT = 4 * 1024 * 1024 * 1024  # 4 GB maximum RAM
+RES_MEM_SOFT = int(os.getenv('MEM_LIMIT')) * 1024 * 1024
 resource.setrlimit(resource.RLIMIT_DATA, (RES_MEM_SOFT, RES_MEM_HARD))
 
 # Maximum and minimum values for integers.
@@ -126,6 +129,7 @@ def init_zones(grid: dict):
     """
     Initialize every zone in the grid.
     """
+    print('Initializing data structure for zones... ', end='')
     try:
         grid['zones'].clear()
         grid['zones_inside'].clear()
@@ -151,6 +155,8 @@ def init_zones(grid: dict):
         print(f'riskzones is configured to use at most {RES_MEM_SOFT} bytes of memory.')
         print('If you think this limit is too low, you can raise it by setting the value of RES_MEM_SOFT in this script.')
         exit(EXIT_NO_MEMORY)
+    
+    print('Done!')
 
 def load_zones(grid: dict, zones: list):
     """
@@ -793,6 +799,7 @@ if __name__ == '__main__':
     # Write a CSV file with risk zones
     row = 0
     data = 'system:index,class,.geo\n'
+    grid['zones_inside'].sort()
 
     for id in grid['zones_inside']:
         coordinates = f'[{grid["zones"][id]["lon"]},{grid["zones"][id]["lat"]}]'
