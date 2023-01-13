@@ -42,38 +42,52 @@ sleep_time = int(os.getenv('SLEEP_INT'))
 def logger(text: str):
     print(f'{datetime.now().isoformat()}: {text}')
 
-def process_task():
+def delete_task_files(task: dict):
     """
-    Request a task from the web app and proccess it.
+    Delete task files described in its config data.
+    """
+    fileslist = []
+    fileslist.append(f"{os.getenv('TASKS_DIR')}/{task['config']['base_filename']}.json")
+    fileslist.append(task['config']['geojson'])
+    fileslist.append(task['config']['pois'])
+    fileslist.append(task['config']['output'])
+    fileslist.append(task['config']['output_edus'])
+    fileslist.append(task['config']['output_roads'])
+
+    for file in fileslist:
+        if os.path.isfile(file):
+            os.remove(file)
+
+def get_task() -> dict:
+    """
+    Request a task from the web app.
     """
     try:
         res = requests.get(f'{os.getenv("API_URL")}/task', headers={'X-API-Key': os.getenv("API_KEY")})
     except requests.exceptions.ConnectionError:
         logger(f'There was an error trying to connect to the server.')
-        return
+        return None
 
     if res.status_code == 204:
         logger('No task received from server.')
-        return
+        return None
     elif res.status_code == 401:
         logger('Not authorized! Check API_KEY.')
-        return
+        return None
     elif res.status_code != 200:
         logger('An error ocurred while trying to get a task from server.')
-        return
+        return None
 
     data = res.content.decode()
-    task = json.loads(data)
+    return json.loads(data)
+
+def process_task(task: dict):
+    """
+    Process a task.
+    """
     config = task['config']
     geojson = task['geojson']
     logger(f'Starting task {config["base_filename"]}...')
-
-    # Create the queue and output directories
-    try:
-        os.makedirs(os.getenv('TASKS_DIR'))
-        os.makedirs(os.getenv('OUT_DIR'))
-    except FileExistsError:
-        pass
 
     # Apply directories path to configuration
     config['geojson'] = f"{os.getenv('TASKS_DIR')}/{config['geojson']}"
@@ -146,22 +160,21 @@ def process_task():
         else:
             logger(f'The server reported an error for {config["base_filename"]} data.')
         
-        # Remove task files
-        os.remove(filename)
-        os.remove(config['geojson'])
-        os.remove(config['pois'])
-        os.remove(config['output'])
-        os.remove(config['output_edus'])
-        os.remove(config['output_roads'])
     except requests.exceptions.ConnectionError:
         logger(f'There was an error trying to connect to the server.')
-        return
-    except FileNotFoundError:
-        logger(f'WARNING: Some of the task files could not be deleted. Check {os.getenv("TASKS_DIR")} and {os.getenv("OUT_DIR")} later for unneeded files.')
-        return
-
-# Main loop
+    
 if __name__ == '__main__':
+    # Create the queue and output directories
+    try:
+        os.makedirs(os.getenv('TASKS_DIR'))
+        os.makedirs(os.getenv('OUT_DIR'))
+    except FileExistsError:
+        pass
+
+    # Main loop
     while True:
-        process_task()
+        task = get_task()
+        if task != None:
+            process_task(task)
+            delete_task_files(task)
         time.sleep(sleep_time)
