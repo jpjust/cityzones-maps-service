@@ -53,6 +53,7 @@ def delete_task_files(task: dict):
     fileslist.append(task['config']['output'])
     fileslist.append(task['config']['output_edus'])
     fileslist.append(task['config']['output_roads'])
+    fileslist.append(task['config']['res_data'])
 
     for file in fileslist:
         if os.path.isfile(file):
@@ -95,6 +96,7 @@ def process_task(task: dict):
     config['output'] = f"{os.getenv('OUT_DIR')}/{config['output']}"
     config['output_edus'] = f"{os.getenv('OUT_DIR')}/{config['output_edus']}"
     config['output_roads'] = f"{os.getenv('OUT_DIR')}/{config['output_roads']}"
+    config['res_data'] = f"{os.getenv('OUT_DIR')}/{config['res_data']}"
     filename = f"{os.getenv('TASKS_DIR')}/{config['base_filename']}.json"
 
     # Write temp configuration files
@@ -136,9 +138,10 @@ def process_task(task: dict):
     # Post results to the web app
     encoder = MultipartEncoder(
         fields={
-            'map': ('map.csv', open(config['output'], 'rb'), 'text/plain'),
-            'edus': ('edus.csv', open(config['output_edus'], 'rb'), 'text/plain'),
-            'roads': ('roads.csv', open(config['output_roads'], 'rb'), 'text/plain'),
+            'map': ('map.csv', open(config['output'], 'rb'), 'text/csv'),
+            'edus': ('edus.csv', open(config['output_edus'], 'rb'), 'text/csv'),
+            'roads': ('roads.csv', open(config['output_roads'], 'rb'), 'text/csv'),
+            'res_data': ('res_data.json', open(config['res_data'], 'rb'), 'application/json'),
         }
     )
 
@@ -155,7 +158,7 @@ def process_task(task: dict):
 
         if req.status_code == 201:
             logger(f'Results for {config["base_filename"]} sent successfully.')
-        elif res.status_code == 401:
+        elif req.status_code == 401:
             logger('Not authorized! Check API_KEY.')
         else:
             logger(f'The server reported an error for {config["base_filename"]} data.')

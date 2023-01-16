@@ -767,8 +767,8 @@ if __name__ == '__main__':
         calculate_risk_from_pois(grid)
 
         # Output elapsed time
-        time_diff = time.perf_counter() - time_begin
-        print(f'Classification time: {round(time_diff, 3)} seconds.')
+        time_classification = time.perf_counter() - time_begin
+        print(f'Classification time: {round(time_classification, 3)} seconds.')
 
     # Write cache file
     if conf['cache_zones'] == True and not os.path.isfile(cache_filename):
@@ -791,10 +791,28 @@ if __name__ == '__main__':
         set_edus_positions_uniform(grid, RESTRICTED)
 
     # Output elapsed time
-    time_diff = time.perf_counter() - time_begin
-    print(f'Positioning time: {round(time_diff, 3)} seconds.')
+    time_positioning = time.perf_counter() - time_begin
+    print(f'Positioning time: {round(time_positioning, 3)} seconds.')
 
     print('Writing output CSV files... ', end='')
+
+    # Write a JSON file with results data
+    if 'res_data' in conf.keys():
+        n_edus = 0
+        for i in range(1, grid['M'] + 1):
+            n_edus += len(grid['edus'][i])
+
+        res_data = {
+            'n_zones': len(grid['zones_inside']),
+            'n_pois': len(grid['pois']),
+            'n_edus': n_edus,
+            'time_classification': time_classification,
+            'time_positioning': time_positioning
+        }
+
+        fp = open(conf['res_data'], 'w')
+        json.dump(res_data, fp)
+        fp.close()
 
     # Write a CSV file with risk zones
     row = 0
