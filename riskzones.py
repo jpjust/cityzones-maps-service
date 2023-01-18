@@ -516,7 +516,7 @@ def reset_edus_flag(grid: dict):
         grid['At'][i] = get_number_of_zones_by_RL(grid)[i]              # Area of the whole RL
         grid['Ax'][i] = numpy.round(grid['At'][i] / edus[i])            # Coverage area of an EDU
         grid['radius'][i] = numpy.floor(numpy.sqrt(grid['Ax'][i]) / 2)  # Radius of an EDU
-        grid['step'][i] = 2 * grid['radius'][i]                         # Step distance on x and y directions
+        grid['step'][i] = 2 * grid['radius'][i] + 1                     # Step distance on x and y directions
         grid['edus'][i] = []                                            # Final list of EDUs in zone i
         grid['step_x'][i] = grid['step_y'][i] = 0                       # The steps are accounted individually for each RL
         grid['zone_in_y'][i] = False                                    # To check if there was any zone for a RL in any y
@@ -583,9 +583,9 @@ def set_edus_positions_uniform_balanced(grid: dict):
     Balanced positioning mode.
     """
     print('Chosen positioning method: uniform balanced.')
-    y = 0
+    y = grid['smallest_radius']
     while y < grid['grid_y']:
-        x = 0
+        x = grid['smallest_radius']
         try:
             while x < grid['grid_x']:
                 while True:
@@ -603,16 +603,17 @@ def set_edus_positions_uniform_balanced(grid: dict):
 
                 try:
                     # Don't even try if we are still within the range of another EDU
-                    nearby_zones = get_zones_in_area(grid, id, 2 * grid['highest_radius'] + 1)
+                    nearby_zones = get_zones_in_area(grid, id, grid['highest_radius'])
+                    min_distance = 2 * grid['radius'][zone['RL']] * grid['zone_size'] + grid['zone_size']
                     for nearby_zone in nearby_zones:
                         if not nearby_zone['has_edu']: continue
-                        calc_radius = 2 * grid['radius'][zone['RL']] * grid['zone_size']
-                        if calculate_distance(zone, nearby_zone) <= (calc_radius):
+                        if not nearby_zone['inside']: continue
+                        if calculate_distance(zone, nearby_zone) < min_distance:
                             raise SkipZone
 
                     grid['edus'][zone['RL']].append(zone)
                     zone['has_edu'] = True
-                    x += grid['smallest_radius']
+                    x += grid['smallest_radius'] * 2 + 1
                 
                 except SkipZone:
                     x += 1
@@ -625,7 +626,7 @@ def set_edus_positions_uniform_balanced(grid: dict):
         except OutOfBounds:
             pass
         
-        y += grid['smallest_radius']
+        y += grid['smallest_radius'] * 2 + 1
 
 def set_edus_positions_uniform_restricted(grid: dict):
     """
@@ -660,6 +661,7 @@ def set_edus_positions_uniform_restricted(grid: dict):
     
         # Remove from grid['edus'] all zones that have not an EDU anymore
         for zone in zones_removal:
+            print(f'removing {zone["id"]}')
             grid['edus'][i].remove(zone)
 
 def get_spiral_path(grid: dict, range_radius: int) -> list:
@@ -691,7 +693,13 @@ def get_zones_in_area(grid: dict, center_id: int, radius: int) -> list:
     zones = []
 
     for i in range(start_y, radius * 2 + start_y + 1):
+        if i < 0: continue
+        if i >= grid['grid_y']: break
+
         for j in range(start_x, radius * 2 + start_x + 1):
+            if j < 0: continue
+            if j >= grid['grid_x']: break
+
             zones.append(grid['zones'][i * grid['grid_x'] + j])
     
     zones.sort(key=lambda zone : zone['id'])
