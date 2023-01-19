@@ -292,12 +292,20 @@ def add_roads(grid: dict, roads: list):
     Add roads to zones list.
     """
     for road in roads:
+        # Ignore points outside the grid
+        if road['start']['lat'] < grid['bottom'] or road['start']['lat'] > grid['top'] \
+           or road['end']['lat'] < grid['bottom'] or road['end']['lat'] > grid['top'] \
+           or road['start']['lon'] < grid['left'] or road['start']['lon'] > grid['right'] \
+           or road['end']['lon'] < grid['left'] or road['end']['lon'] > grid['right']:
+           continue
+
         a = coordinates_to_id(grid, road['start']['lat'], road['start']['lon'])
         b = coordinates_to_id(grid, road['end']['lat'], road['end']['lon'])
 
         if a < 0 or b < 0 or a >= len(grid['zones']) or b >= len(grid['zones']):
             continue
         
+        # Select the movement approach
         dist_x = b % grid['grid_x'] - a % grid['grid_x']
         dist_y = int(b / grid['grid_x']) - int(a / grid['grid_x'])
 
@@ -338,14 +346,24 @@ def move_zones_x(grid: dict, a: dict, b: dict, dist_x: int, dist_y: int):
     else:
         num_y = 0
     
-    # While far from the destination zone, keep moving
-    while calculate_distance(grid['zones'][id], grid['zones'][b]) > grid['zone_size'] * 2:
+    # While getting near to the destination zone, keep moving.
+    # If we start to get far, stop!
+    prev_dist = dist = calculate_distance(grid['zones'][id], grid['zones'][b])
+    while dist <= prev_dist:
         id += num_x
         delta_y = delta_y + step_y
         if abs(delta_y) >= 1:
             id += num_y
             delta_y -= int(delta_y / abs(delta_y))
+
+        if id < 0 or id > len(grid['zones']):
+            break
+
         grid['zones'][id]['is_road'] = True
+
+        # Update distance
+        prev_dist = dist
+        dist = calculate_distance(grid['zones'][id], grid['zones'][b])
     
 def move_zones_y(grid: dict, a: dict, b: dict, dist_x: int, dist_y: int):
     """
@@ -367,14 +385,24 @@ def move_zones_y(grid: dict, a: dict, b: dict, dist_x: int, dist_y: int):
         num_x = 0
     num_y = grid['grid_x'] * (int(dist_y / abs(dist_y)))
 
-    # While far from the destination zone, keep moving
-    while calculate_distance(grid['zones'][id], grid['zones'][b]) > grid['zone_size'] * 2:
+    # While getting near to the destination zone, keep moving.
+    # If we start to get far, stop!
+    prev_dist = dist = calculate_distance(grid['zones'][id], grid['zones'][b])
+    while dist <= prev_dist:
         id += num_y
         delta_x = delta_x + step_x
         if abs(delta_x) >= 1:
             id += num_x
             delta_x -= int(delta_x / abs(delta_x))
+        
+        if id < 0 or id > len(grid['zones']):
+            break
+
         grid['zones'][id]['is_road'] = True
+
+        # Update distance
+        prev_dist = dist
+        dist = calculate_distance(grid['zones'][id], grid['zones'][b])
 
 def calculate_risk_from_pois(grid: dict):
     """

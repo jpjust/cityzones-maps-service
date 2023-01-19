@@ -90,7 +90,7 @@ def extract_pois(file: str, pois_types: dict) -> tuple[list, list]:
         # Check if this way is a highway (roads, streets, etc.)
         for tag in way.iter('tag'):
             way_data[tag.get('k')] = tag.get('v')
-            if tag.get('k') == 'highway':
+            if tag.get('k') == 'highway' and tag.get('v') in ['motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'unclassified', 'residential']:
                 roads += way_roads
 
         # Get the first available node to copy its coordinates
