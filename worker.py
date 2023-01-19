@@ -91,13 +91,17 @@ def process_task(task: dict):
     logger(f'Starting task {config["base_filename"]}...')
 
     # Apply directories path to configuration
-    config['geojson'] = f"{os.getenv('TASKS_DIR')}/{config['geojson']}"
-    config['pois'] = f"{os.getenv('TASKS_DIR')}/{config['pois']}"
-    config['output'] = f"{os.getenv('OUT_DIR')}/{config['output']}"
-    config['output_edus'] = f"{os.getenv('OUT_DIR')}/{config['output_edus']}"
-    config['output_roads'] = f"{os.getenv('OUT_DIR')}/{config['output_roads']}"
-    config['res_data'] = f"{os.getenv('OUT_DIR')}/{config['res_data']}"
-    filename = f"{os.getenv('TASKS_DIR')}/{config['base_filename']}.json"
+    try:
+        config['geojson'] = f"{os.getenv('TASKS_DIR')}/{config['geojson']}"
+        config['pois'] = f"{os.getenv('TASKS_DIR')}/{config['pois']}"
+        config['output'] = f"{os.getenv('OUT_DIR')}/{config['output']}"
+        config['output_edus'] = f"{os.getenv('OUT_DIR')}/{config['output_edus']}"
+        config['output_roads'] = f"{os.getenv('OUT_DIR')}/{config['output_roads']}"
+        config['res_data'] = f"{os.getenv('OUT_DIR')}/{config['res_data']}"
+        filename = f"{os.getenv('TASKS_DIR')}/{config['base_filename']}.json"
+    except KeyError:
+        logger('A key is missing in task JSON file. Aborting!')
+        return
 
     # Write temp configuration files
     fp_config = open(filename, 'w')
