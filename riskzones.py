@@ -689,7 +689,6 @@ def set_edus_positions_uniform_restricted(grid: dict):
     
         # Remove from grid['edus'] all zones that have not an EDU anymore
         for zone in zones_removal:
-            print(f'removing {zone["id"]}')
             grid['edus'][i].remove(zone)
 
 def get_spiral_path(grid: dict, range_radius: int) -> list:
