@@ -675,14 +675,17 @@ def set_edus_positions_uniform_restricted(grid: dict):
             spiral_path = get_spiral_path(grid, grid['radius'][i])
             for step in spiral_path:
                 zone_id += step
-                nearby_zone = grid['zones'][zone_id]
-                if not nearby_zone['inside']: continue
-                if not nearby_zone['is_road']: continue
-                if nearby_zone['has_edu']: break
+                try:
+                    nearby_zone = grid['zones'][zone_id]
+                    if not nearby_zone['inside']: continue
+                    if not nearby_zone['is_road']: continue
+                    if nearby_zone['has_edu']: break
 
-                nearby_zone['has_edu'] = True
-                grid['edus'][i].append(nearby_zone)
-                break
+                    nearby_zone['has_edu'] = True
+                    grid['edus'][i].append(nearby_zone)
+                    break
+                except IndexError:
+                    continue
             
             zone['has_edu'] = False
             zones_removal.append(zone)
