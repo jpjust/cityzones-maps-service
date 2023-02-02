@@ -93,10 +93,12 @@ def create_riskzones_grid(left: float, bottom: float, right: float, top: float, 
         'n_edus': n_edus,
         'edus': {},
         'polygons': [],
+        'pol_points': 0,
         'zones': [],
         'zones_inside': [],
         'pois': [],
         'roads': [],
+        'roads_points': 0,
         'polygons': []
     }
 
@@ -177,8 +179,10 @@ def add_polygon(grid: dict, polygons: list):
     Add the polygons in the list into the grid.
     """
     grid['polygons'].clear()
+    grid['pol_points'] = 0
     for coord in polygons:
         grid['polygons'].append(coord[0])
+        grid['pol_points'] += len(coord[0])
 
 def init_zones_by_polygon(grid: dict):
     """
@@ -199,7 +203,7 @@ def init_zones_by_polygon(grid: dict):
             grid['zones_inside'].append(zone['id'])
 
     print('Done!')
-    print(f'{len(grid["zones_inside"])} zones inside the polygon.')
+    print(f'{len(grid["zones_inside"])} of {len(grid["zones"])} zones inside the polygon.')
 
 def init_pois_by_polygon(grid: dict, pois: list) -> list:
     """
@@ -216,7 +220,7 @@ def init_pois_by_polygon(grid: dict, pois: list) -> list:
         grid['pois'] = pool.starmap(check_zone_in_polygon_set, payload)
     
     print('Done!')
-    print(f'{len(grid["pois"])} PoIs inside the polygon.')
+    print(f'{len(grid["pois"])} of {len(pois)} PoIs inside the polygon.')
 
 def check_zone_in_polygon_set(zone: dict, polygons: dict) -> bool:
     """
@@ -315,6 +319,11 @@ def add_roads(grid: dict, roads: list):
             move_zones_y(grid, a, b, dist_x, dist_y)
 
         grid['zones'][a]['is_road'] = grid['zones'][b]['is_road'] = True
+    
+    # Count road zones
+    for zone in grid['zones']:
+        if zone['is_road']:
+            grid['roads_points'] += 1
 
 def coordinates_to_id(grid: dict, lat, lon):
     """
@@ -775,14 +784,14 @@ if __name__ == '__main__':
             exit(EXIT_CACHE_CORRUPTED)
     else:
         # GeoJSON file
-        time_begin = time.perf_counter()
-
         try:
             fp = open(conf['geojson'], 'r')
             geojson = json.load(fp)
             fp.close()
             add_polygon(grid, geojson['features'][0]['geometry']['coordinates'])
+            print(f'{grid["pol_points"]} points form the AoI polygon.')
 
+            time_begin = time.perf_counter()
             init_zones_by_polygon(grid)
             if len(grid['zones_inside']) == 0:
                 print('No zones to classify!')
@@ -799,8 +808,6 @@ if __name__ == '__main__':
             print(f'WARNING: GeoJSON file {conf["geojson"]} not found. Not filtering by AoI polygon.')
             grid['pois'] = pois
 
-        add_roads(grid, roads)
-        
         # Calculate risks
         calculate_risk_from_pois(grid)
 
@@ -818,6 +825,9 @@ if __name__ == '__main__':
 
     # Run EDUs positioning algorithm
     time_begin = time.perf_counter()
+
+    add_roads(grid, roads)
+    print(f'{grid["roads_points"]} allowed zones.')
 
     if conf['edu_alg'] == 'random':
         set_edus_positions_random(grid)
