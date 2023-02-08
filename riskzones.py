@@ -38,6 +38,7 @@ load_dotenv()
 import osmpois
 import time
 import json
+import geojson
 import sys
 import os
 import random
@@ -180,9 +181,9 @@ def add_polygon(grid: dict, polygons: list):
     """
     grid['polygons'].clear()
     grid['pol_points'] = 0
-    for coord in polygons:
-        grid['polygons'].append(coord[0])
-        grid['pol_points'] += len(coord[0])
+    for polygon in polygons:
+        grid['polygons'].append(polygon)
+        grid['pol_points'] += len(polygon)
 
 def init_zones_by_polygon(grid: dict):
     """
@@ -786,9 +787,17 @@ if __name__ == '__main__':
         # GeoJSON file
         try:
             fp = open(conf['geojson'], 'r')
-            geojson = json.load(fp)
+            geojson_collection = geojson.load(fp)
             fp.close()
-            add_polygon(grid, geojson['features'][0]['geometry']['coordinates'])
+
+            polygons = []
+            if geojson_collection.type == 'FeatureCollection':
+                if geojson_collection.features[0].geometry.type == 'Polygon':
+                    polygons.append(geojson_collection.features[0].geometry.coordinates[0])
+                elif geojson_collection.features[0].geometry.type == 'MultiPolygon':
+                    polygons = geojson_collection.features[0].geometry.coordinates[0]
+
+            add_polygon(grid, polygons)
             print(f'{grid["pol_points"]} points form the AoI polygon.')
 
             time_begin = time.perf_counter()
