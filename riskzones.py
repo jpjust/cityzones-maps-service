@@ -213,13 +213,18 @@ def init_pois_by_polygon(grid: dict, pois: list) -> list:
     print(f'Checking PoIs inside the polygon... ', end='')
 
     grid['pois'].clear()
+    pois_results = []
     
     with mp.Pool(processes=MP_WORKERS) as pool:
         payload = []
         for poi in pois:
             payload.append((poi, grid['polygons']))
-        grid['pois'] = pool.starmap(check_zone_in_polygon_set, payload)
+        pois_results = pool.starmap(check_zone_in_polygon_set, payload)
     
+    for poi in pois_results:
+        if poi['inside'] == True:
+            grid['pois'].append(poi)
+
     print('Done!')
     print(f'{len(grid["pois"])} of {len(pois)} PoIs inside the polygon.')
 
