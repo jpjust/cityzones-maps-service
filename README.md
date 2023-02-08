@@ -18,7 +18,7 @@ To plot a map of the risk zones and the EDUs, run the script in `gee_riskzones.j
 
 To install all modules needed by riskzones and its worker, run:
 
-`python3 -m pip install numpy requests requests-toolbelt`
+`python3 -m pip install osmpois geojson numpy requests requests-toolbelt`
 
 ## Memory limit
 
