@@ -570,7 +570,7 @@ def reset_edus_flag(grid: dict):
         grid['At'][i] = get_number_of_zones_by_RL(grid)[i]              # Area of the whole RL
         grid['Ax'][i] = numpy.round(grid['At'][i] / edus[i])            # Coverage area of an EDU
         grid['radius'][i] = numpy.sqrt(grid['Ax'][i]) / 2               # Radius of an EDU
-        grid['step'][i] = 2 * grid['radius'][i] + 1                     # Step distance on x and y directions
+        grid['step'][i] = int(2 * grid['radius'][i] + 1)                # Step distance on x and y directions
         grid['edus'][i] = []                                            # Final list of EDUs in zone i
         grid['step_x'][i] = grid['step_y'][i] = 0                       # The steps are accounted individually for each RL
         grid['zone_in_y'][i] = False                                    # To check if there was any zone for a RL in any y
@@ -613,7 +613,7 @@ def set_edus_positions_uniform_unbalanced(grid):
                 grid['step_y'][i] += 1
                 grid['zone_in_y'][i] = False
 
-        # For each zone in this coordinate, check if it is inside AoI and check if it is time to
+        # For each zone in this row, check if it is inside AoI and check if it is time to
         # put an EDU in it
         for x in range(grid['grid_x']):
             id = grid['grid_x'] * y + x
