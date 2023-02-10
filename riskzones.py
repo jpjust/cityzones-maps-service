@@ -43,7 +43,6 @@ import sys
 import os
 import random
 import resource
-import math
 import numpy
 import multiprocessing as mp
 
@@ -489,7 +488,7 @@ def calculate_RL(grid: dict):
         if grid['zones'][id]['risk'] == 0:
             grid['zones'][id]['RL'] = 1
         else:
-            rl = grid['M'] - numpy.minimum(abs(int(math.log(grid['zones'][id]['risk'], 3))), grid['M'] - 1)
+            rl = grid['M'] - numpy.minimum(abs(int(numpy.log(grid['zones'][id]['risk']))), grid['M'] - 1)
             grid['zones'][id]['RL'] = int(rl)
 
 def get_number_of_zones_by_RL(grid: dict) -> dict:
