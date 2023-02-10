@@ -711,12 +711,11 @@ def set_edus_positions_uniform_restricted(grid: dict):
 
                     nearby_zone['has_edu'] = True
                     grid['edus'][i].append(nearby_zone)
+                    zone['has_edu'] = False
+                    zones_removal.append(zone)
                     break
                 except IndexError:
                     continue
-            
-            zone['has_edu'] = False
-            zones_removal.append(zone)
     
         # Remove from grid['edus'] all zones that have not an EDU anymore
         for zone in zones_removal:
