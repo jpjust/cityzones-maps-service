@@ -129,6 +129,16 @@ def calculate_distance(a: dict, b: dict) -> float:
     r = 6378137
     return 2 * r * numpy.arcsin(numpy.sqrt(numpy.sin((lat2 - lat1) / 2) ** 2 + numpy.cos(lat1) * numpy.cos(lat2) * numpy.sin((lon2 - lon1) / 2) ** 2))
 
+def calculate_distance_in_grid(grid: dict, a: dict, b: dict) -> int:
+    """
+    Calculate the distance from a to b in the grid.
+    """
+    x1 = a['id'] % grid['grid_x']
+    x2 = b['id'] % grid['grid_x']
+    y1 = int(a['id'] / grid['grid_x'])
+    y2 = int(b['id'] / grid['grid_x'])
+    return numpy.sqrt(abs(x2 - x1) ** 2 + abs(y2 - y1) ** 2)
+
 def init_zones(grid: dict):
     """
     Initialize every zone in the grid.
@@ -559,13 +569,13 @@ def reset_edus_flag(grid: dict):
             edus[i] = 1
         grid['At'][i] = get_number_of_zones_by_RL(grid)[i]              # Area of the whole RL
         grid['Ax'][i] = numpy.round(grid['At'][i] / edus[i])            # Coverage area of an EDU
-        grid['radius'][i] = numpy.floor(numpy.sqrt(grid['Ax'][i]) / 2)  # Radius of an EDU
+        grid['radius'][i] = numpy.sqrt(grid['Ax'][i]) / 2               # Radius of an EDU
         grid['step'][i] = 2 * grid['radius'][i] + 1                     # Step distance on x and y directions
         grid['edus'][i] = []                                            # Final list of EDUs in zone i
         grid['step_x'][i] = grid['step_y'][i] = 0                       # The steps are accounted individually for each RL
         grid['zone_in_y'][i] = False                                    # To check if there was any zone for a RL in any y
-    grid['smallest_radius'] = int(grid['radius'][grid['M']])            # Radius of the highest level
-    grid['highest_radius'] = int(grid['radius'][1])                     # Radius of the lowest level
+    grid['smallest_radius'] = grid['radius'][grid['M']]                 # Radius of the highest level
+    grid['highest_radius'] = grid['radius'][1]                          # Radius of the lowest level
     
     # Make sure there are no 0 radius
     if grid['smallest_radius'] == 0: grid['smallest_radius'] = 1
@@ -627,9 +637,9 @@ def set_edus_positions_uniform_balanced(grid: dict):
     Balanced positioning mode.
     """
     print('Chosen positioning method: uniform balanced.')
-    y = grid['smallest_radius']
+    y = int(grid['smallest_radius'])
     while y < grid['grid_y']:
-        x = grid['smallest_radius']
+        x = 0
         try:
             while x < grid['grid_x']:
                 while True:
@@ -647,17 +657,19 @@ def set_edus_positions_uniform_balanced(grid: dict):
 
                 try:
                     # Don't even try if we are still within the range of another EDU
-                    nearby_zones = get_zones_in_area(grid, id, grid['highest_radius'])
-                    min_distance = 2 * grid['radius'][zone['RL']] * grid['zone_size'] + grid['zone_size']
+                    min_distance = 2 * grid['radius'][zone['RL']] + 1
+                    nearby_zones = get_zones_in_area(grid, id, int(numpy.ceil(min_distance)))
+
                     for nearby_zone in nearby_zones:
                         if not nearby_zone['has_edu']: continue
                         if not nearby_zone['inside']: continue
-                        if calculate_distance(zone, nearby_zone) < min_distance:
+                        dist = calculate_distance_in_grid(grid, zone, nearby_zone)
+                        if dist < min_distance:
                             raise SkipZone
 
-                    grid['edus'][zone['RL']].append(zone)
                     zone['has_edu'] = True
-                    x += grid['smallest_radius'] * 2 + 1
+                    grid['edus'][zone['RL']].append(zone)
+                    x += int(grid['smallest_radius'] * 2)
                 
                 except SkipZone:
                     x += 1
@@ -670,7 +682,7 @@ def set_edus_positions_uniform_balanced(grid: dict):
         except OutOfBounds:
             pass
         
-        y += grid['smallest_radius'] * 2 + 1
+        y += 1
 
 def set_edus_positions_uniform_restricted(grid: dict):
     """
@@ -734,15 +746,15 @@ def get_zones_in_area(grid: dict, center_id: int, radius: int) -> list:
     """
     Get all zones within a squared area.
     """
-    start_x = int(center_id % grid['grid_x']) - radius
-    start_y = int(center_id / grid['grid_x']) - radius
+    center_x = int(center_id % grid['grid_x'])
+    center_y = int(center_id / grid['grid_x'])
     zones = []
 
-    for i in range(start_y, radius * 2 + start_y + 1):
+    for i in range(center_y - radius, center_y + radius + 1):
         if i < 0: continue
         if i >= grid['grid_y']: break
 
-        for j in range(start_x, radius * 2 + start_x + 1):
+        for j in range(center_x - radius, center_x + radius + 1):
             if j < 0: continue
             if j >= grid['grid_x']: break
 
