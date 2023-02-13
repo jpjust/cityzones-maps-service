@@ -113,27 +113,35 @@ def process_task(task: dict):
     fp_geojson.close()
 
     # Extract data from PBF file
-    res = subprocess.run([
-        os.getenv('OSMIUM_PATH'),
-        'extract',
-        '-b',
-        f'{config["left"]},{config["bottom"]},{config["right"]},{config["top"]}',
-        os.getenv('PBF_FILE'),
-        '-o',
-        config['pois'],
-        '--overwrite'
-    ], capture_output=True)
+    try:
+        res = subprocess.run([
+            os.getenv('OSMIUM_PATH'),
+            'extract',
+            '-b',
+            f'{config["left"]},{config["bottom"]},{config["right"]},{config["top"]}',
+            os.getenv('PBF_FILE'),
+            '-o',
+            config['pois'],
+            '--overwrite'
+        ], capture_output=True, timeout=int(os.getenv('SUBPROC_TIMEOUT')))
+    except subprocess.TimeoutExpired:
+        logger("Timeout running osmium for the task's AoI.")
+        return
 
     if res.returncode != 0:
         logger(f'There was an error while extracting map data using {config["base_filename"]} coordinates.')
         return
 
     # Run riskzones.py
-    res = subprocess.run([
-        sys.executable,
-        'riskzones.py',
-        filename
-    ])
+    try:
+        res = subprocess.run([
+            sys.executable,
+            'riskzones.py',
+            filename
+        ], timeout=int(os.getenv('SUBPROC_TIMEOUT')))
+    except subprocess.TimeoutExpired:
+        logger("Timeout running RiskZones for the task.")
+        return
 
     if res.returncode != 0:
         logger(f'There was an error while running riskzones.py for {config["base_filename"]}.')
