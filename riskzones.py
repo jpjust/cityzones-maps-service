@@ -504,7 +504,7 @@ def get_number_of_zones_by_RL(grid: dict) -> dict:
     
     return nzones
     
-def get_number_of_edus_by_RL(grid: dict) -> dict:
+def get_number_of_edus_by_RL(grid: dict, n_edus: int) -> dict:
     """
     Calculate the number of EDUs that must be positioned in each RL.
     """
@@ -516,7 +516,7 @@ def get_number_of_edus_by_RL(grid: dict) -> dict:
 
     nedus = {}
     for i in range(1, grid['M'] + 1):
-        ni = (grid['n_edus'] * i * nzones[i]) / sum
+        ni = (n_edus * i * nzones[i]) / sum
         nedus[i] = int(ni)
 
     return nedus
@@ -541,17 +541,29 @@ def set_edus_positions_random(grid: dict):
     random.seed()
     zones_by_RL = get_zones_by_RL(grid)
     grid['edus'] = {}
-    edus = get_number_of_edus_by_RL(grid)
+    edus = get_number_of_edus_by_RL(grid, grid['n_edus'])
     
     for i in range(1, grid['M'] + 1):
         grid['edus'][i] = random.choices(zones_by_RL[i], k=edus[i])
 
-def reset_edus_flag(grid: dict):
+def reset_edus_flag(grid: dict, n_edus=None):
     """
-    Reset EDUs flag to prepare them for a positioning algorithm.
+    Reset EDUs flag.
     """
-    edus = get_number_of_edus_by_RL(grid)
+    for zone in grid['zones']:
+        zone['has_edu'] = False
+    
     grid['edus'] = {}
+    for i in range(1, grid['M'] + 1):
+        grid['edus'][i] = []                                            # Final list of EDUs in zone i
+
+def reset_edus_data(grid: dict, n_edus=None):
+    """
+    Reset EDUs data to prepare them for a positioning algorithm.
+    """
+    if n_edus == None:
+        n_edus = grid['n_edus']
+    edus = get_number_of_edus_by_RL(grid, n_edus)
     grid['At'] = {}
     grid['Ax'] = {}
     grid['radius'] = {}
@@ -559,9 +571,7 @@ def reset_edus_flag(grid: dict):
     grid['step_x'] = {}
     grid['step_y'] = {}
     grid['zone_in_y'] = {}
-
-    for zone in grid['zones']:
-        zone['has_edu'] = False
+    grid['min_dist'] = {}
 
     for i in range(1, grid['M'] + 1):
         if edus[i] == 0:
@@ -570,9 +580,9 @@ def reset_edus_flag(grid: dict):
         grid['Ax'][i] = numpy.round(grid['At'][i] / edus[i])            # Coverage area of an EDU
         grid['radius'][i] = numpy.sqrt(grid['Ax'][i]) / 2               # Radius of an EDU
         grid['step'][i] = int(2 * grid['radius'][i] + 1)                # Step distance on x and y directions
-        grid['edus'][i] = []                                            # Final list of EDUs in zone i
         grid['step_x'][i] = grid['step_y'][i] = 0                       # The steps are accounted individually for each RL
         grid['zone_in_y'][i] = False                                    # To check if there was any zone for a RL in any y
+        grid['min_dist'][i] = 2 * grid['radius'][i] + 1                 # Minimum distance an EDU must have from another in this RL
     grid['smallest_radius'] = grid['radius'][grid['M']]                 # Radius of the highest level
     grid['highest_radius'] = grid['radius'][1]                          # Radius of the lowest level
     
@@ -587,6 +597,7 @@ def set_edus_positions_uniform(grid, mode: int):
     Uniformly select zones for EDUs positioning.
     """
     reset_edus_flag(grid)
+    reset_edus_data(grid)
     
     print('Positioning EDUs...', end='\r')
 
@@ -656,15 +667,11 @@ def set_edus_positions_uniform_balanced(grid: dict):
 
                 try:
                     # Don't even try if we are still within the range of another EDU
-                    min_distance = 2 * grid['radius'][zone['RL']] + 1
-                    nearby_zones = get_zones_in_area(grid, id, int(numpy.ceil(min_distance)))
-
-                    for nearby_zone in nearby_zones:
-                        if not nearby_zone['has_edu']: continue
-                        if not nearby_zone['inside']: continue
-                        dist = calculate_distance_in_grid(grid, zone, nearby_zone)
-                        if dist < min_distance:
-                            raise SkipZone
+                    for i in range(1, grid['M'] + 1):
+                        for edu in grid['edus'][i]:
+                            dist = calculate_distance_in_grid(grid, zone, edu)
+                            if dist < grid['min_dist'][zone['RL']]:
+                                raise SkipZone
 
                     zone['has_edu'] = True
                     grid['edus'][zone['RL']].append(zone)
@@ -687,38 +694,71 @@ def set_edus_positions_uniform_restricted(grid: dict):
     """
     Restricted positioning mode.
     """
-    set_edus_positions_uniform_balanced(grid)
     print('Moving EDUs to permitted zones...')
 
-    # For each EDU check if it is in a permitted zone (only roads for now).
-    # If not, move it to the nearest permitted zone.
+    final_edus = {}
     for i in range(1, grid['M'] + 1):
-        zones_removal = []
+        final_edus[i] = []
 
-        for zone in grid['edus'][i]:
-            if zone['is_road']: continue
+    edus_total = 0
+    edus_remaining = grid['n_edus'] - edus_total
+    zz=0
+    # Repeat until all EDUs are positioned
+    while edus_remaining > 0:
+        print(f"zz: {zz}, restam {edus_remaining}")
+        reset_edus_flag(grid)
+        reset_edus_data(grid, edus_remaining)
+        set_edus_positions_uniform_balanced(grid)
+        zz += 1
 
-            zone_id = zone['id']
-            spiral_path = get_spiral_path(grid, grid['radius'][i])
-            for step in spiral_path:
-                zone_id += step
-                try:
-                    nearby_zone = grid['zones'][zone_id]
-                    if not nearby_zone['inside']: continue
-                    if not nearby_zone['is_road']: continue
-                    if nearby_zone['has_edu']: break
+        # For each EDU check if it is in a permitted zone (only roads for now).
+        # If not, move it to the nearest permitted zone.
+        for i in range(1, grid['M'] + 1):
+            zones_removal = []
 
-                    nearby_zone['has_edu'] = True
-                    grid['edus'][i].append(nearby_zone)
-                    zone['has_edu'] = False
-                    zones_removal.append(zone)
-                    break
-                except IndexError:
-                    continue
+            for zone in grid['edus'][i]:
+                if zone['is_road']: continue
+
+                # Mark the zone for EDU removal (it is not a road)
+                zone_id = zone['id']
+                zones_removal.append(zone)
+                zone['has_edu'] = False
+
+                # Find another zone within the RL radius to place the EDU
+                spiral_path = get_spiral_path(grid, grid['radius'][i])
+                for step in spiral_path:
+                    zone_id += step
+                    try:
+                        nearby_zone = grid['zones'][zone_id]
+                        if not nearby_zone['inside']: continue
+                        if not nearby_zone['is_road']: continue
+                        if nearby_zone['has_edu']: continue
+                        if nearby_zone in final_edus[i]: continue
+
+                        nearby_zone['has_edu'] = True
+                        grid['edus'][i].append(nearby_zone)
+                        break
+                    except IndexError:
+                        continue
+        
+            # Remove from grid['edus'] all zones that have been marked for removal
+            for zone in zones_removal:
+                grid['edus'][i].remove(zone)
+            
+        # Move all the positioned EDUs to the final structure
+        for i in range(1, grid['M'] + 1):
+            final_edus[i].extend(grid['edus'][i])
+            grid['edus'][i] = []
+
+        # Recalculate the total and remaining
+        edus_total = 0
+        for i in range(1, grid['M'] + 1):
+            edus_total += len(final_edus[i])
+        edus_remaining = grid['n_edus'] - edus_total
     
-        # Remove from grid['edus'] all zones that have not an EDU anymore
-        for zone in zones_removal:
-            grid['edus'][i].remove(zone)
+    # Positioning finished. Move final_edus to grid
+    for i in range(1, grid['M'] + 1):
+        grid['edus'][i] = [*final_edus[i]]
 
 def get_spiral_path(grid: dict, range_radius: int) -> list:
     """
