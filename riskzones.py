@@ -585,6 +585,7 @@ def reset_edus_data(grid: dict, n_edus=None):
         grid['min_dist'][i] = 2 * grid['radius'][i] + 1                 # Minimum distance an EDU must have from another in this RL
     grid['smallest_radius'] = grid['radius'][grid['M']]                 # Radius of the highest level
     grid['highest_radius'] = grid['radius'][1]                          # Radius of the lowest level
+    grid['search_range'] = -int(numpy.ceil(2 * grid['grid_x'] / grid['smallest_radius']))
     
     # Make sure there are no 0 radius
     if grid['smallest_radius'] == 0: grid['smallest_radius'] = 1
@@ -668,7 +669,7 @@ def set_edus_positions_uniform_balanced(grid: dict):
                 try:
                     # Don't even try if we are still within the range of another EDU
                     for i in range(1, grid['M'] + 1):
-                        for edu in grid['edus'][i]:
+                        for edu in grid['edus'][i][-1:grid['search_range']:-1]:
                             dist = calculate_distance_in_grid(grid, zone, edu)
                             if dist < grid['min_dist'][zone['RL']]:
                                 raise SkipZone
@@ -702,14 +703,16 @@ def set_edus_positions_uniform_restricted(grid: dict):
 
     edus_total = 0
     edus_remaining = grid['n_edus'] - edus_total
-    zz=0
+    n_run = 0
+
     # Repeat until all EDUs are positioned
     while edus_remaining > 0:
-        print(f"zz: {zz}, restam {edus_remaining}")
+        print(f"> Run #{n_run}, {edus_remaining} EDUs left.")
+
         reset_edus_flag(grid)
         reset_edus_data(grid, edus_remaining)
         set_edus_positions_uniform_balanced(grid)
-        zz += 1
+        n_run += 1
 
         # For each EDU check if it is in a permitted zone (only roads for now).
         # If not, move it to the nearest permitted zone.
