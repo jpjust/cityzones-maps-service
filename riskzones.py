@@ -707,7 +707,7 @@ def set_edus_positions_uniform_restricted(grid: dict):
 
     # Repeat until all EDUs are positioned
     while edus_remaining > 0:
-        print(f"> Run #{n_run}, {edus_remaining} EDUs left.")
+        print(f"\n> Run #{n_run}, {edus_remaining} EDUs left.")
 
         reset_edus_flag(grid)
         reset_edus_data(grid, edus_remaining)
