@@ -384,11 +384,14 @@ def move_zones_x(grid: dict, a: dict, b: dict, dist_x: int, dist_y: int):
         if id < 0 or id > len(grid['zones']):
             break
 
-        grid['zones'][id]['is_road'] = True
+        try:
+            grid['zones'][id]['is_road'] = True
 
-        # Update distance
-        prev_dist = dist
-        dist = calculate_distance(grid['zones'][id], grid['zones'][b])
+            # Update distance
+            prev_dist = dist
+            dist = calculate_distance(grid['zones'][id], grid['zones'][b])
+        except IndexError:
+            break
     
 def move_zones_y(grid: dict, a: dict, b: dict, dist_x: int, dist_y: int):
     """
@@ -423,11 +426,14 @@ def move_zones_y(grid: dict, a: dict, b: dict, dist_x: int, dist_y: int):
         if id < 0 or id > len(grid['zones']):
             break
 
-        grid['zones'][id]['is_road'] = True
+        try:
+            grid['zones'][id]['is_road'] = True
 
-        # Update distance
-        prev_dist = dist
-        dist = calculate_distance(grid['zones'][id], grid['zones'][b])
+            # Update distance
+            prev_dist = dist
+            dist = calculate_distance(grid['zones'][id], grid['zones'][b])
+        except IndexError:
+            break
 
 def calculate_risk_from_pois(grid: dict):
     """
