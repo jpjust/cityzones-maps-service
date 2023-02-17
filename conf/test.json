@@ -11,7 +11,18 @@
     "geojson": "geojson/test.geojson",
     "pois": "osm/test.osm",
     "pois_types": {
-        "amenity": ["hospital", "fire_station", "police"]
+        "amenity": {
+            "hospital": {
+                "w": 10.0
+            },
+            "fire_station": {
+                "w": 5.0
+            },
+            "police": {
+                "w": 2.0
+            }
+        },
+        "railway": {}
     },
     "edu_alg": "none",
     "output": "csv/test.csv",

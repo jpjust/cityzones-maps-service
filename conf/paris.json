@@ -10,8 +10,18 @@
     "geojson": "geojson/paris.geojson",
     "pois": "osm/paris_filtered.osm",
     "pois_types": {
-        "amenity": ["hospital", "fire_station", "police"],
-        "railway": ["station"]
+        "amenity": {
+            "hospital": {
+                "w": 10.0
+            },
+            "fire_station": {
+                "w": 5.0
+            },
+            "police": {
+                "w": 2.0
+            }
+        },
+        "railway": {}
     },
     "edu_alg": "restricted",
     "output": "csv/paris_M3.csv",
