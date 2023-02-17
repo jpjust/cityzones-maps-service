@@ -1,6 +1,6 @@
 # encoding: utf-8
 """
-Risk Zones classification
+CityZones Maps-service worker module
 Copyright (C) 2022 - 2023 João Paulo Just Peixoto
 
 This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 *******************************************************************************
 
-This script acts as a worker for the RiskZones Web application.
+This script acts as a worker for the CityZones application server.
 
 It will periodically request a task from the web service and run it with
 riskzones.py locally, sending the results back to the web service. The worker

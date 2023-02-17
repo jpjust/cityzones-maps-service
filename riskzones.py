@@ -1,6 +1,6 @@
 # encoding:utf-8
 """
-Risk Zones classification
+RiskZones classification
 Copyright (C) 2022 - 2023 João Paulo Just Peixoto
 
 This program is free software: you can redistribute it and/or modify
