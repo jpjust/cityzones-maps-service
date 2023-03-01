@@ -1,0 +1,12 @@
+[Unit]
+Description=CityZones Maps-service worker
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/env python3 /usr/bin/cityzones-worker.py
+Type=simple
+Restart=always
+
+[Install]
+WantedBy=default.target
+RequiredBy=network.target
