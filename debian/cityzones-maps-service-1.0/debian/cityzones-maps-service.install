@@ -1,0 +1,3 @@
+data/* /
+../../cityzones/* /lib/python3/dist-packages/cityzones
+../../cityzones-worker.py /usr/bin/

@@ -28,7 +28,7 @@ For the worker to work, you need to copy `.env.example` as `.env` and setup your
 
 To install all modules needed by riskzones and its worker, run:
 
-`python3 -m pip install osmpois geojson numpy requests requests-toolbelt`
+`python3 -m pip install python-dotenv geojson numpy requests requests-toolbelt`
 
 ## Memory limit
 
@@ -39,3 +39,7 @@ To avoid memory issues `riskzones.py` sets a memory limit. Edit `.env` in the ro
 There is a online web interface for CityZones: http://cityzones.just.pro.br
 
 This web application provides a GUI to request an AoI classification with RiskZones algorithm. All requests are processed by a remote worker and sent back to the online service. Visit the CityZones Web site to get more help.
+
+## Debian package
+
+The `debian` directory contains files regarding the Debian package generation. CD into `debian/cityzones-maps-service-1.0` and run `dpkg-buildpackage -us -uc` to build a Debian package.

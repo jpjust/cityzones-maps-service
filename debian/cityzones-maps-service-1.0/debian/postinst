@@ -1,0 +1,8 @@
+#!/bin/sh
+
+useradd cityzones -c "CityZones Maps-service" -d /nonexistent -M -s /bin/false -r
+chown -R cityzones: /var/cache/cityzones
+systemctl daemon-reload
+systemctl try-restart cityzones-maps
+
+exit 0

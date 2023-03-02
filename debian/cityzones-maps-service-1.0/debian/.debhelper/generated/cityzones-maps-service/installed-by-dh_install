@@ -1,0 +1,6 @@
+./data/etc
+./data/var
+./../../cityzones/__pycache__
+./../../cityzones/osmpois.py
+./../../cityzones/riskzones.py
+./../../cityzones-worker.py

@@ -1,0 +1,11 @@
+001d20febe2ddaf549865bab15dd35ec  lib/python3/dist-packages/cityzones/__pycache__/osmpois.cpython-310.pyc
+e17379634710cbe83435bf27fe581ad8  lib/python3/dist-packages/cityzones/__pycache__/riskzones.cpython-310.pyc
+68daed4a440a38fffc0e266913494651  lib/python3/dist-packages/cityzones/osmpois.py
+d45a0972585e310901a34a81f1e2c6a1  lib/python3/dist-packages/cityzones/riskzones.py
+24ad081432623d79f7316615f0c444f6  usr/bin/cityzones-worker.py
+e3d946b1c3d430174d6c786768b96a33  usr/share/doc-base/cityzones-maps-service.cityzones-maps-service
+4c1273a4c8b190ec4fc1639815a05aed  usr/share/doc/cityzones-maps-service/README.Debian
+2fd2af10371331ab592db20b2cc9a0ef  usr/share/doc/cityzones-maps-service/changelog.gz
+825b11783d4be2994013fdca2dd2b117  usr/share/doc/cityzones-maps-service/copyright
+181135e651c0db0bc4458188c142d3ed  var/cache/cityzones/README
+a2ed6073af2ad80406365a09c5ce5a85  var/cache/cityzones/tasks/README

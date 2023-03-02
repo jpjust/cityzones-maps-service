@@ -1,0 +1,14 @@
+cityzones-maps-service for Debian
+--------------------------------
+
+To run CityZones Maps-service as a system service, you must edit its
+configuration file at `/etc/cityzones/maps-service.conf` and set your
+API_KEY.
+
+If you do not have a key, contact me at joao.just@ifba.edu.br
+
+After setting your key, start the service running as root:
+
+systemctl start cityzones-maps
+
+ -- João Paulo Just Peixoto <just1982@gmail.com>  Wed, 01 Mar 2023 13:50:40 +0000

@@ -1,0 +1,14 @@
+Package: cityzones-maps-service
+Version: 1.0
+Architecture: all
+Maintainer: João Paulo Just Peixoto <just1982@gmail.com>
+Installed-Size: 107
+Depends: python3, python3-dotenv, python3-geojson, python3-numpy, python3-requests, python3-requests-toolbelt, osmium-tool
+Section: misc
+Priority: optional
+Homepage: https://cityzones.just.pro.br
+Description: CityZones Maps-service
+ The CityZones Maps-service is a Python 3 program that acts as a worker
+ for the CityZones Application Server. The worker will periodically request
+ a task from CityZones and perform all the processing locally, sending
+ back the results to the web server.

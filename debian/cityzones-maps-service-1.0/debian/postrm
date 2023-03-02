@@ -1,0 +1,5 @@
+#!/bin/sh
+
+userdel cityzones
+
+exit 0

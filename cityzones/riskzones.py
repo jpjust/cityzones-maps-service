@@ -32,10 +32,7 @@ risks:
                         positioning algorithm.
 """
 
-from dotenv import load_dotenv
-load_dotenv()
-
-import osmpois
+from cityzones import osmpois
 import time
 import json
 import geojson
@@ -45,6 +42,7 @@ import random
 import resource
 import numpy
 import multiprocessing as mp
+from dotenv import dotenv_values
 
 # Exception classes.
 class OutOfBounds(Exception):
@@ -60,10 +58,21 @@ EXIT_CACHE_CORRUPTED = 2
 EXIT_NO_ZONES = 3
 EXIT_NO_POIS = 4
 EXIT_NO_MEMORY = 5
+EXIT_NO_CONF = 6
+
+# Load current directory .env or default configuration file
+CONF_DEFAULT_PATH='/etc/cityzones/maps-service.conf'
+if os.path.exists('.env'):
+    config = dotenv_values('.env')
+elif os.path.exists(CONF_DEFAULT_PATH):
+    config = dotenv_values(CONF_DEFAULT_PATH)
+else:
+    print(f'No .env file in current path nor configuration file at {CONF_DEFAULT_PATH}. Please create a configuration fom .env.example.')
+    exit(EXIT_NO_CONF)
 
 # Resources limits
 RES_MEM_SOFT, RES_MEM_HARD = resource.getrlimit(resource.RLIMIT_DATA)
-RES_MEM_SOFT = int(os.getenv('MEM_LIMIT')) * (1024 ** 2) if os.getenv('MEM_LIMIT') != None else 1024 ** 3
+RES_MEM_SOFT = int(config['MEM_LIMIT']) * (1024 ** 2) if config['MEM_LIMIT'] != None else 1024 ** 3
 resource.setrlimit(resource.RLIMIT_DATA, (RES_MEM_SOFT, RES_MEM_HARD))
 
 # Maximum and minimum values for integers.

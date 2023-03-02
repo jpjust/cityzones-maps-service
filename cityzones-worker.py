@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # encoding: utf-8
 """
 CityZones Maps-service worker module
@@ -25,29 +26,38 @@ riskzones.py locally, sending the results back to the web service. The worker
 performs the classifications requested online.
 """
 
-from dotenv import load_dotenv
-load_dotenv()
-
+from cityzones import riskzones
 import os
 import sys
 import subprocess
 import json
 import requests
 import time
+from dotenv import dotenv_values
 from requests_toolbelt import MultipartEncoder
 from datetime import datetime
 
-sleep_time = int(os.getenv('SLEEP_INT'))
+# Load current directory .env or default configuration file
+CONF_DEFAULT_PATH='/etc/cityzones/maps-service.conf'
+if os.path.exists('.env'):
+    config = dotenv_values('.env')
+elif os.path.exists(CONF_DEFAULT_PATH):
+    config = dotenv_values(CONF_DEFAULT_PATH)
+else:
+    print(f'No .env file in current path nor configuration file at {CONF_DEFAULT_PATH}. Please create a configuration fom .env.example.')
+    exit(1)
+
+sleep_time = int(config['SLEEP_INT'])
 
 def logger(text: str):
-    print(f'{datetime.now().isoformat()}: {text}')
+    print(f'{datetime.now().isoformat()}: {text}', file=sys.stderr)
 
 def delete_task_files(task: dict):
     """
     Delete task files described in its config data.
     """
     fileslist = []
-    fileslist.append(f"{os.getenv('TASKS_DIR')}/{task['config']['base_filename']}.json")
+    fileslist.append(f"{config['TASKS_DIR']}/{task['config']['base_filename']}.json")
     fileslist.append(task['config']['geojson'])
     fileslist.append(task['config']['pois'])
     fileslist.append(task['config']['output'])
@@ -64,7 +74,7 @@ def get_task() -> dict:
     Request a task from the web app.
     """
     try:
-        res = requests.get(f'{os.getenv("API_URL")}/task', headers={'X-API-Key': os.getenv("API_KEY")})
+        res = requests.get(f'{config["API_URL"]}/task', headers={'X-API-Key': config["API_KEY"]})
     except requests.exceptions.ConnectionError:
         logger(f'There was an error trying to connect to the server.')
         return None
@@ -86,94 +96,94 @@ def process_task(task: dict):
     """
     Process a task.
     """
-    config = task['config']
+    taskcfg = task['config']
     geojson = task['geojson']
-    logger(f'Starting task {config["base_filename"]}...')
+    logger(f'Starting task {taskcfg["base_filename"]}...')
 
     # Apply directories path to configuration
     try:
-        config['geojson'] = f"{os.getenv('TASKS_DIR')}/{config['geojson']}"
-        config['pois'] = f"{os.getenv('TASKS_DIR')}/{config['pois']}"
-        config['output'] = f"{os.getenv('OUT_DIR')}/{config['output']}"
-        config['output_edus'] = f"{os.getenv('OUT_DIR')}/{config['output_edus']}"
-        config['output_roads'] = f"{os.getenv('OUT_DIR')}/{config['output_roads']}"
-        config['res_data'] = f"{os.getenv('OUT_DIR')}/{config['res_data']}"
-        filename = f"{os.getenv('TASKS_DIR')}/{config['base_filename']}.json"
+        taskcfg['geojson'] = f"{config['TASKS_DIR']}/{taskcfg['geojson']}"
+        taskcfg['pois'] = f"{config['TASKS_DIR']}/{taskcfg['pois']}"
+        taskcfg['output'] = f"{config['OUT_DIR']}/{taskcfg['output']}"
+        taskcfg['output_edus'] = f"{config['OUT_DIR']}/{taskcfg['output_edus']}"
+        taskcfg['output_roads'] = f"{config['OUT_DIR']}/{taskcfg['output_roads']}"
+        taskcfg['res_data'] = f"{config['OUT_DIR']}/{taskcfg['res_data']}"
+        filename = f"{config['TASKS_DIR']}/{taskcfg['base_filename']}.json"
     except KeyError:
         logger('A key is missing in task JSON file. Aborting!')
         return
 
     # Write temp configuration files
     fp_config = open(filename, 'w')
-    json.dump(config, fp_config)
+    json.dump(taskcfg, fp_config)
     fp_config.close()
 
-    fp_geojson = open(f"{config['geojson']}", 'w')
+    fp_geojson = open(f"{taskcfg['geojson']}", 'w')
     json.dump(geojson, fp_geojson)
     fp_geojson.close()
 
     # Extract data from PBF file
     try:
         res = subprocess.run([
-            os.getenv('OSMIUM_PATH'),
+            config['OSMIUM_PATH'],
             'extract',
             '-b',
-            f'{config["left"]},{config["bottom"]},{config["right"]},{config["top"]}',
-            os.getenv('PBF_FILE'),
+            f'{taskcfg["left"]},{taskcfg["bottom"]},{taskcfg["right"]},{taskcfg["top"]}',
+            config['PBF_FILE'],
             '-o',
-            config['pois'],
+            taskcfg['pois'],
             '--overwrite'
-        ], capture_output=True, timeout=int(os.getenv('SUBPROC_TIMEOUT')))
+        ], capture_output=True, timeout=int(config['SUBPROC_TIMEOUT']))
     except subprocess.TimeoutExpired:
         logger("Timeout running osmium for the task's AoI.")
         return
 
     if res.returncode != 0:
-        logger(f'There was an error while extracting map data using {config["base_filename"]} coordinates.')
+        logger(f'There was an error while extracting map data using {taskcfg["base_filename"]} coordinates.')
         return
 
     # Run riskzones.py
     try:
         res = subprocess.run([
             sys.executable,
-            'riskzones.py',
+            riskzones.__file__,
             filename
-        ], timeout=int(os.getenv('SUBPROC_TIMEOUT')))
+        ], timeout=int(config['SUBPROC_TIMEOUT']))
     except subprocess.TimeoutExpired:
         logger("Timeout running RiskZones for the task.")
         return
 
     if res.returncode != 0:
-        logger(f'There was an error while running riskzones.py for {config["base_filename"]}.')
+        logger(f'There was an error while running riskzones.py for {taskcfg["base_filename"]}.')
         return
 
     # Post results to the web app
     encoder = MultipartEncoder(
         fields={
-            'map': ('map.csv', open(config['output'], 'rb'), 'text/csv'),
-            'edus': ('edus.csv', open(config['output_edus'], 'rb'), 'text/csv'),
-            'roads': ('roads.csv', open(config['output_roads'], 'rb'), 'text/csv'),
-            'res_data': ('res_data.json', open(config['res_data'], 'rb'), 'application/json'),
+            'map': ('map.csv', open(taskcfg['output'], 'rb'), 'text/csv'),
+            'edus': ('edus.csv', open(taskcfg['output_edus'], 'rb'), 'text/csv'),
+            'roads': ('roads.csv', open(taskcfg['output_roads'], 'rb'), 'text/csv'),
+            'res_data': ('res_data.json', open(taskcfg['res_data'], 'rb'), 'application/json'),
         }
     )
 
     logger(f'Sending data to web service...')
     try:
         req = requests.post(
-            f'{os.getenv("API_URL")}/result/{task["id"]}',
+            f'{config["API_URL"]}/result/{task["id"]}',
             headers={
                 'Content-type': encoder.content_type,
-                'X-API-Key': os.getenv("API_KEY")
+                'X-API-Key': config["API_KEY"]
             },
             data=encoder
         )
 
         if req.status_code == 201:
-            logger(f'Results for {config["base_filename"]} sent successfully.')
+            logger(f'Results for {taskcfg["base_filename"]} sent successfully.')
         elif req.status_code == 401:
             logger('Not authorized! Check API_KEY.')
         else:
-            logger(f'The server reported an error for {config["base_filename"]} data.')
+            logger(f'The server reported an error for {taskcfg["base_filename"]} data.')
         
     except requests.exceptions.ConnectionError:
         logger(f'There was an error trying to connect to the server.')
@@ -181,10 +191,18 @@ def process_task(task: dict):
 if __name__ == '__main__':
     # Create the queue and output directories
     try:
-        os.makedirs(os.getenv('TASKS_DIR'))
-        os.makedirs(os.getenv('OUT_DIR'))
+        os.makedirs(config['TASKS_DIR'])
+        os.makedirs(config['OUT_DIR'])
     except FileExistsError:
         pass
+
+    # Check if the PBF file exists. If not, download from Planet OSM
+    if not os.path.exists(config['PBF_FILE']):
+        PBF_URL = 'https://planet.openstreetmap.org/pbf/planet-latest.osm.pbf'
+        print(f'{config["PBF_FILE"]} not found. Downloading from {PBF_URL}...')
+        with requests.get(PBF_URL, stream=True) as r:
+            with open(config['PBF_FILE'], 'wb') as f:
+                f.write(r.content)
 
     # Main loop
     while True:

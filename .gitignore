@@ -18,7 +18,7 @@ lib/
 lib64/
 parts/
 sdist/
-var/
+# var/
 wheels/
 pip-wheel-metadata/
 share/python-wheels/
@@ -138,4 +138,7 @@ csv/
 paris.osm
 
 # Worker temp files directory
-tasks/
+/tasks
+
+# Debian packaging
+debian/cityzones-maps-service_1.0*
