@@ -42,4 +42,4 @@ This web application provides a GUI to request an AoI classification with RiskZo
 
 ## Debian package
 
-The `debian` directory contains files regarding the Debian package generation. CD into `debian/cityzones-maps-service-1.0` and run `dpkg-buildpackage -us -uc` to build a Debian package.
+The `debian` directory contains files regarding the Debian package generation. CD into `debian/cityzones-maps-service-1.0` and run `dpkg-buildpackage -uc -b` to build a Debian package.
