@@ -2,7 +2,7 @@
 
 useradd cityzones -c "CityZones Maps-service" -d /nonexistent -M -s /bin/false -r
 chown -R cityzones: /var/cache/cityzones
-wget -qO- https://apt.just.pro.br/jpjust_public.asc | sudo tee /etc/apt/trusted.gpg.d/cityzones.asc
+wget -qO- https://apt.just.pro.br/jpjust_public.asc | tee /etc/apt/trusted.gpg.d/cityzones.asc
 systemctl daemon-reload
 systemctl try-restart cityzones-maps
 
