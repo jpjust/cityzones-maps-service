@@ -1,5 +1,0 @@
-./data/etc
-./data/var
-./../../cityzones/osmpois.py
-./../../cityzones/riskzones.py
-./../../cityzones-worker.py

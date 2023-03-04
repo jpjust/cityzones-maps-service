@@ -1,2 +1,0 @@
-This is the default directory for the OpenStreetMap Planet PBF file.
-If you remove the PBF file in this directory, the worker will download it again.
