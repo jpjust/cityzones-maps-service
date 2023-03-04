@@ -141,4 +141,7 @@ paris.osm
 /tasks
 
 # Debian packaging
-debian/cityzones-maps-service_1.0*
+debian/cityzones-maps-service_*
+debian/cityzones-maps-service/debian/.debhelper
+debian/cityzones-maps-service/debian/cityzones-maps-service
+debian/cityzones-maps-service/debian/files
