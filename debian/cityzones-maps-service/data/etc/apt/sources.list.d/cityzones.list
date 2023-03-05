@@ -1,2 +1,2 @@
 # CityZones apt repository
-deb https://apt.just.pro.br/cityzones/ bookworm main
+deb [arch=amd64] https://apt.just.pro.br/cityzones/ bookworm main
