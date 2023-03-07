@@ -8,7 +8,7 @@
             "name": "Python: Risk Zones in Porto",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/riskzones.py",
+            "program": "${workspaceFolder}/cityzones/riskzones.py",
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": [
@@ -19,7 +19,7 @@
             "name": "Python: Risk Zones in Paris",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/riskzones.py",
+            "program": "${workspaceFolder}/cityzones/riskzones.py",
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": [
@@ -30,7 +30,7 @@
             "name": "Python: Risk Zones in Paris Island",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/riskzones.py",
+            "program": "${workspaceFolder}/cityzones/riskzones.py",
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": [
@@ -41,7 +41,7 @@
             "name": "Python: Risk Zones in Eiffel AoI",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/riskzones.py",
+            "program": "${workspaceFolder}/cityzones/riskzones.py",
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": [
@@ -52,7 +52,7 @@
             "name": "Python: Risk Zones in Feira",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/riskzones.py",
+            "program": "${workspaceFolder}/cityzones/riskzones.py",
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": [
@@ -63,7 +63,7 @@
             "name": "Python: Risk Zones in Test Area",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/riskzones.py",
+            "program": "${workspaceFolder}/cityzones/riskzones.py",
             "console": "integratedTerminal",
             "justMyCode": true,
             "args": [
