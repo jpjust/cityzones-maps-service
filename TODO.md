@@ -15,3 +15,7 @@ Data can be stored in a binary format so riskzones can read it sequencially and 
 # AoI without PoIs
 
 If the selected AoI has no PoIs, let's return an all-red classification. This is more appropriate than just returning an error.
+
+# Requests timeout
+
+Add timeout settings to web requests.
