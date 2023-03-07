@@ -869,7 +869,8 @@ if __name__ == '__main__':
                 if geojson_collection.features[0].geometry.type == 'Polygon':
                     polygons.append(geojson_collection.features[0].geometry.coordinates[0])
                 elif geojson_collection.features[0].geometry.type == 'MultiPolygon':
-                    polygons = geojson_collection.features[0].geometry.coordinates[0]
+                    for polygon in geojson_collection.features[0].geometry.coordinates:
+                        polygons.append(polygon[0])
 
             add_polygon(grid, polygons)
             print(f'{grid["pol_points"]} points form the AoI polygon.')
