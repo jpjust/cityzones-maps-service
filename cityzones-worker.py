@@ -48,6 +48,7 @@ else:
     exit(1)
 
 sleep_time = int(config['SLEEP_INT'])
+request_timeout = int(config['NET_TIMEOUT'])
 
 def logger(text: str):
     print(f'{datetime.now().isoformat()}: {text}', file=sys.stderr)
@@ -74,9 +75,12 @@ def get_task() -> dict:
     Request a task from the web app.
     """
     try:
-        res = requests.get(f'{config["API_URL"]}/task', headers={'X-API-Key': config["API_KEY"]})
+        res = requests.get(f'{config["API_URL"]}/task', headers={'X-API-Key': config["API_KEY"]}, timeout=request_timeout)
     except requests.exceptions.ConnectionError:
         logger(f'There was an error trying to connect to the server.')
+        return None
+    except requests.exceptions.ReadTimeout:
+        logger(f'Conenction timed-out while requesting a task.')
         return None
 
     if res.status_code == 204:
@@ -175,7 +179,8 @@ def process_task(task: dict):
                 'Content-type': encoder.content_type,
                 'X-API-Key': config["API_KEY"]
             },
-            data=encoder
+            data=encoder,
+            timeout=request_timeout
         )
 
         if req.status_code == 201:
@@ -187,6 +192,9 @@ def process_task(task: dict):
         
     except requests.exceptions.ConnectionError:
         logger(f'There was an error trying to connect to the server.')
+    except requests.exceptions.ReadTimeout:
+        logger(f'Conenction timed-out while sending the results.')
+
     
 if __name__ == '__main__':
     # Create the queue and output directories
@@ -200,9 +208,13 @@ if __name__ == '__main__':
     if not os.path.exists(config['PBF_FILE']):
         PBF_URL = 'https://planet.openstreetmap.org/pbf/planet-latest.osm.pbf'
         print(f'{config["PBF_FILE"]} not found. Downloading from {PBF_URL}...')
-        with requests.get(PBF_URL, stream=True) as r:
-            with open(config['PBF_FILE'], 'wb') as f:
-                f.write(r.content)
+        try:
+            with requests.get(PBF_URL, stream=True, timeout=request_timeout) as r:
+                with open(config['PBF_FILE'], 'wb') as f:
+                    f.write(r.content)
+        except requests.exceptions.ReadTimeout:
+            logger(f'Conenction timed-out while downloading PBF file. Cannot continue without the full planet PBF.')
+            sys.exit(1)
 
     # Main loop
     while True:
