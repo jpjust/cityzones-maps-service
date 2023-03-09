@@ -40,7 +40,7 @@ import sys
 import os
 import random
 import resource
-import numpy
+import math
 import multiprocessing as mp
 from dotenv import dotenv_values
 
@@ -130,12 +130,12 @@ def calculate_distance(a: dict, b: dict) -> float:
     """
     Calculate the distance from a to b using haversine formula.
     """
-    lat1 = numpy.radians(a['lat'])
-    lat2 = numpy.radians(b['lat'])
-    lon1 = numpy.radians(a['lon'])
-    lon2 = numpy.radians(b['lon'])
+    lat1 = math.radians(a['lat'])
+    lat2 = math.radians(b['lat'])
+    lon1 = math.radians(a['lon'])
+    lon2 = math.radians(b['lon'])
     r = 6378137
-    return 2 * r * numpy.arcsin(numpy.sqrt(numpy.sin((lat2 - lat1) / 2) ** 2 + numpy.cos(lat1) * numpy.cos(lat2) * numpy.sin((lon2 - lon1) / 2) ** 2))
+    return 2 * r * math.asin(math.sqrt(math.sin((lat2 - lat1) / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin((lon2 - lon1) / 2) ** 2))
 
 def calculate_distance_in_grid(grid: dict, a: dict, b: dict) -> int:
     """
@@ -145,38 +145,31 @@ def calculate_distance_in_grid(grid: dict, a: dict, b: dict) -> int:
     x2 = b['id'] % grid['grid_x']
     y1 = int(a['id'] / grid['grid_x'])
     y2 = int(b['id'] / grid['grid_x'])
-    return numpy.sqrt(abs(x2 - x1) ** 2 + abs(y2 - y1) ** 2)
+    return math.sqrt(abs(x2 - x1) ** 2 + abs(y2 - y1) ** 2)
 
 def init_zones(grid: dict):
     """
     Initialize every zone in the grid.
     """
     print('Initializing data structure for zones... ', end='')
-    try:
-        grid['zones'].clear()
-        grid['zones_inside'].clear()
+    grid['zones'].clear()
+    grid['zones_inside'].clear()
 
-        for j in range(grid['grid_y']):
-            for i in range(grid['grid_x']):
-                zone = {
-                    'id': j * grid['grid_x'] + i,
-                    'lat': (j / grid['grid_y'] * grid['height']) + grid['bottom'] + grid['zone_center']['y'],
-                    'lon': (i / grid['grid_x'] * grid['width']) + grid['left'] + grid['zone_center']['x'],
-                    'risk': 1.0,
-                    'RL': grid['M'],
-                    'inside': True,
-                    'has_edu': False,
-                    'is_road': False
-                }
+    for j in range(grid['grid_y']):
+        for i in range(grid['grid_x']):
+            zone = {
+                'id': j * grid['grid_x'] + i,
+                'lat': (j / grid['grid_y'] * grid['height']) + grid['bottom'] + grid['zone_center']['y'],
+                'lon': (i / grid['grid_x'] * grid['width']) + grid['left'] + grid['zone_center']['x'],
+                'risk': 1.0,
+                'RL': grid['M'],
+                'inside': True,
+                'has_edu': False,
+                'is_road': False
+            }
 
-                grid['zones'].append(zone)
-                grid['zones_inside'].append(zone['id'])
-
-    except MemoryError:
-        print('--- Memory limit reached! ---')
-        print(f'riskzones is configured to use at most {RES_MEM_SOFT} bytes of memory.')
-        print('If you think this limit is too low, you can raise it by setting the value of RES_MEM_SOFT in this script.')
-        exit(EXIT_NO_MEMORY)
+            grid['zones'].append(zone)
+            grid['zones_inside'].append(zone['id'])
     
     print('Done!')
 
@@ -296,6 +289,17 @@ def check_zone_in_polygon(zone: dict, polygon: list) -> bool:
     
     return intersec % 2 == 1
 
+def sign(x: float) -> int:
+    """
+    Return the signal of x.
+    """
+    if x < 0:
+        return -1
+    elif x > 0:
+        return 1
+    else:
+        return 0
+
 def check_intersection(line1: dict, line2: dict) -> bool:
     """
     Check if line1 and line2 intersects.
@@ -309,10 +313,10 @@ def check_intersection(line1: dict, line2: dict) -> bool:
     c1 = line1['p1']['lat']
     c2 = line2['p1']['lat'] - a2 * line2['p1']['lon']
     
-    f1_1 = numpy.sign(b1 * line2['p1']['lat'] + c1)
-    f1_2 = numpy.sign(b1 * line2['p2']['lat'] + c1)
-    f2_1 = numpy.sign(a2 * line1['p1']['lon'] + b2 * line1['p1']['lat'] + c2)
-    f2_2 = numpy.sign(a2 * line1['p2']['lon'] + b2 * line1['p2']['lat'] + c2)
+    f1_1 = sign(b1 * line2['p1']['lat'] + c1)
+    f1_2 = sign(b1 * line2['p2']['lat'] + c1)
+    f2_1 = sign(a2 * line1['p1']['lon'] + b2 * line1['p1']['lat'] + c2)
+    f2_2 = sign(a2 * line1['p2']['lon'] + b2 * line1['p2']['lat'] + c2)
 
     return f1_1 != f1_2 and f2_1 != f2_2
 
@@ -503,7 +507,7 @@ def calculate_RL(grid: dict):
         if grid['zones'][id]['risk'] == 0:
             grid['zones'][id]['RL'] = 1
         else:
-            rl = grid['M'] - numpy.minimum(abs(int(numpy.log(grid['zones'][id]['risk']))), grid['M'] - 1)
+            rl = grid['M'] - min(abs(int(math.log(grid['zones'][id]['risk']))), grid['M'] - 1)
             grid['zones'][id]['RL'] = int(rl)
 
 def get_number_of_zones_by_RL(grid: dict) -> dict:
@@ -592,15 +596,15 @@ def reset_edus_data(grid: dict, n_edus=None):
         if edus[i] == 0:
             edus[i] = 1
         grid['At'][i] = get_number_of_zones_by_RL(grid)[i]              # Area of the whole RL
-        grid['Ax'][i] = numpy.round(grid['At'][i] / edus[i])            # Coverage area of an EDU
-        grid['radius'][i] = numpy.sqrt(grid['Ax'][i]) / 2               # Radius of an EDU
+        grid['Ax'][i] = round(grid['At'][i] / edus[i])                  # Coverage area of an EDU
+        grid['radius'][i] = math.sqrt(grid['Ax'][i]) / 2                # Radius of an EDU
         grid['step'][i] = int(2 * grid['radius'][i] + 1)                # Step distance on x and y directions
         grid['step_x'][i] = grid['step_y'][i] = 0                       # The steps are accounted individually for each RL
         grid['zone_in_y'][i] = False                                    # To check if there was any zone for a RL in any y
         grid['min_dist'][i] = 2 * grid['radius'][i] + 1                 # Minimum distance an EDU must have from another in this RL
     grid['smallest_radius'] = grid['radius'][grid['M']]                 # Radius of the highest level
     grid['highest_radius'] = grid['radius'][1]                          # Radius of the lowest level
-    grid['search_range'] = -int(numpy.ceil(2 * grid['grid_x'] / grid['smallest_radius']))
+    grid['search_range'] = -int(math.ceil(2 * grid['grid_x'] / grid['smallest_radius']))
     
     # Make sure there are no 0 radius
     if grid['smallest_radius'] == 0: grid['smallest_radius'] = 1
@@ -836,159 +840,166 @@ if __name__ == '__main__':
     conf = json.load(fp)
     fp.close()
 
-    # Create a new grid and initialize its zones
-    grid = create_riskzones_grid(
-        conf['left'], conf['bottom'], conf['right'], conf['top'],
-        conf['zone_size'], conf['M'], conf['edus']
-    )
-    init_zones(grid)
+    try:
+        # Create a new grid and initialize its zones
+        grid = create_riskzones_grid(
+            conf['left'], conf['bottom'], conf['right'], conf['top'],
+            conf['zone_size'], conf['M'], conf['edus']
+        )
+        init_zones(grid)
 
-    # Get PoIs and roads from OSM file
-    pois, roads = osmpois.extract_pois(conf['pois'], conf['pois_types'])
+        # Get PoIs and roads from OSM file
+        pois, roads = osmpois.extract_pois(conf['pois'], conf['pois_types'])
 
-    # Load cache file if enabled
-    cache_filename = f'{os.path.splitext(sys.argv[1])[0]}.cache'
-    if conf['cache_zones'] == True and os.path.isfile(cache_filename):
-        try:
-            print(f'Loading cache file {cache_filename}...')
-            fp = open(cache_filename, 'r')
-            load_zones(grid, json.load(fp))
+        # Load cache file if enabled
+        cache_filename = f'{os.path.splitext(sys.argv[1])[0]}.cache'
+        if conf['cache_zones'] == True and os.path.isfile(cache_filename):
+            try:
+                print(f'Loading cache file {cache_filename}...')
+                fp = open(cache_filename, 'r')
+                load_zones(grid, json.load(fp))
+                fp.close()
+            except json.JSONDecodeError:
+                print('The cache file is corrupted. Delete it and run the program again.')
+                exit(EXIT_CACHE_CORRUPTED)
+        else:
+            # GeoJSON file
+            try:
+                fp = open(conf['geojson'], 'r')
+                geojson_collection = geojson.load(fp)
+                fp.close()
+
+                polygons = []
+                if geojson_collection.type == 'FeatureCollection':
+                    if geojson_collection.features[0].geometry.type == 'Polygon':
+                        polygons.append(geojson_collection.features[0].geometry.coordinates[0])
+                    elif geojson_collection.features[0].geometry.type == 'MultiPolygon':
+                        for polygon in geojson_collection.features[0].geometry.coordinates:
+                            polygons.append(polygon[0])
+
+                add_polygon(grid, polygons)
+                print(f'{grid["pol_points"]} points form the AoI polygon.')
+
+                time_begin = time.perf_counter()
+                init_zones_by_polygon(grid)
+                if len(grid['zones_inside']) == 0:
+                    print('No zones to classify!')
+                    exit(EXIT_NO_ZONES)
+
+                init_pois_by_polygon(grid, pois)
+                if len(grid['pois']) == 0:
+                    print('No PoIs inside the AoI!')
+            except KeyError:
+                print('WARNING: No GeoJSON file specified. Not filtering by AoI polygon.')
+                grid['pois'] = pois
+            except FileNotFoundError:
+                print(f'WARNING: GeoJSON file {conf["geojson"]} not found. Not filtering by AoI polygon.')
+                grid['pois'] = pois
+
+            # Calculate risks
+            calculate_risk_from_pois(grid)
+
+            # Output elapsed time
+            time_classification = time.perf_counter() - time_begin
+            print(f'Classification time: {round(time_classification, 3)} seconds.')
+
+        # Write cache file
+        if conf['cache_zones'] == True and not os.path.isfile(cache_filename):
+            print('Writing cache file... ', end='')
+            fp = open(cache_filename, 'w')
+            json.dump(grid['zones'], fp)
             fp.close()
-        except json.JSONDecodeError:
-            print('The cache file is corrupted. Delete it and run the program again.')
-            exit(EXIT_CACHE_CORRUPTED)
-    else:
-        # GeoJSON file
-        try:
-            fp = open(conf['geojson'], 'r')
-            geojson_collection = geojson.load(fp)
-            fp.close()
+            print('Done!')
 
-            polygons = []
-            if geojson_collection.type == 'FeatureCollection':
-                if geojson_collection.features[0].geometry.type == 'Polygon':
-                    polygons.append(geojson_collection.features[0].geometry.coordinates[0])
-                elif geojson_collection.features[0].geometry.type == 'MultiPolygon':
-                    for polygon in geojson_collection.features[0].geometry.coordinates:
-                        polygons.append(polygon[0])
+        # Run EDUs positioning algorithm
+        time_begin = time.perf_counter()
 
-            add_polygon(grid, polygons)
-            print(f'{grid["pol_points"]} points form the AoI polygon.')
+        add_roads(grid, roads)
+        print(f'{grid["roads_points"]} allowed zones.')
 
-            time_begin = time.perf_counter()
-            init_zones_by_polygon(grid)
-            if len(grid['zones_inside']) == 0:
-                print('No zones to classify!')
-                exit(EXIT_NO_ZONES)
-
-            init_pois_by_polygon(grid, pois)
-            if len(grid['pois']) == 0:
-                print('No PoIs inside the AoI!')
-        except KeyError:
-            print('WARNING: No GeoJSON file specified. Not filtering by AoI polygon.')
-            grid['pois'] = pois
-        except FileNotFoundError:
-            print(f'WARNING: GeoJSON file {conf["geojson"]} not found. Not filtering by AoI polygon.')
-            grid['pois'] = pois
-
-        # Calculate risks
-        calculate_risk_from_pois(grid)
+        if conf['edu_alg'] == 'random':
+            set_edus_positions_random(grid)
+        elif conf['edu_alg'] == 'balanced':
+            set_edus_positions_uniform(grid, UNBALANCED)
+        elif conf['edu_alg'] == 'enhanced':
+            set_edus_positions_uniform(grid, BALANCED)
+        elif conf['edu_alg'] == 'restricted':
+            set_edus_positions_uniform(grid, RESTRICTED)
 
         # Output elapsed time
-        time_classification = time.perf_counter() - time_begin
-        print(f'Classification time: {round(time_classification, 3)} seconds.')
+        time_positioning = time.perf_counter() - time_begin
+        print(f'Positioning time: {round(time_positioning, 3)} seconds.')
 
-    # Write cache file
-    if conf['cache_zones'] == True and not os.path.isfile(cache_filename):
-        print('Writing cache file... ', end='')
-        fp = open(cache_filename, 'w')
-        json.dump(grid['zones'], fp)
-        fp.close()
-        print('Done!')
+        print('Writing output CSV files... ', end='')
 
-    # Run EDUs positioning algorithm
-    time_begin = time.perf_counter()
+        # Write a JSON file with results data
+        if 'res_data' in conf.keys():
+            n_edus = 0
+            for i in range(1, grid['M'] + 1):
+                n_edus += len(grid['edus'][i])
 
-    add_roads(grid, roads)
-    print(f'{grid["roads_points"]} allowed zones.')
+            res_data = {
+                'n_zones': len(grid['zones_inside']),
+                'n_pois': len(grid['pois']),
+                'n_edus': n_edus,
+                'time_classification': time_classification,
+                'time_positioning': time_positioning
+            }
 
-    if conf['edu_alg'] == 'random':
-        set_edus_positions_random(grid)
-    elif conf['edu_alg'] == 'balanced':
-        set_edus_positions_uniform(grid, UNBALANCED)
-    elif conf['edu_alg'] == 'enhanced':
-        set_edus_positions_uniform(grid, BALANCED)
-    elif conf['edu_alg'] == 'restricted':
-        set_edus_positions_uniform(grid, RESTRICTED)
+            fp = open(conf['res_data'], 'w')
+            json.dump(res_data, fp)
+            fp.close()
 
-    # Output elapsed time
-    time_positioning = time.perf_counter() - time_begin
-    print(f'Positioning time: {round(time_positioning, 3)} seconds.')
-
-    print('Writing output CSV files... ', end='')
-
-    # Write a JSON file with results data
-    if 'res_data' in conf.keys():
-        n_edus = 0
-        for i in range(1, grid['M'] + 1):
-            n_edus += len(grid['edus'][i])
-
-        res_data = {
-            'n_zones': len(grid['zones_inside']),
-            'n_pois': len(grid['pois']),
-            'n_edus': n_edus,
-            'time_classification': time_classification,
-            'time_positioning': time_positioning
-        }
-
-        fp = open(conf['res_data'], 'w')
-        json.dump(res_data, fp)
-        fp.close()
-
-    # Write a CSV file with risk zones
-    row = 0
-    data = 'system:index,class,.geo\n'
-    grid['zones_inside'].sort()
-
-    for id in grid['zones_inside']:
-        coordinates = f'[{grid["zones"][id]["lon"]},{grid["zones"][id]["lat"]}]'
-        data += f'{row:020},{grid["zones"][id]["RL"]},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
-        row += 1
-
-    fp = open(conf['output'], 'w')
-    fp.write(data)
-    fp.close()
-    
-    # Write a CSV file with EDUs positions
-    if 'output_edus' in conf.keys():
+        # Write a CSV file with risk zones
         row = 0
-        data = 'system:index,.geo\n'
-
-        for i in range(1, grid['M'] + 1):
-            for zone in grid['edus'][i]:
-                coordinates = f'[{zone["lon"]},{zone["lat"]}]'
-                data += f'{row:020},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
-                row += 1
-
-        fp = open(conf['output_edus'], 'w')
-        fp.write(data)
-        fp.close()
-
-    # Write a CSV file with forbidden zones
-    if 'output_roads' in conf.keys():
-        row = 0
-        data = 'system:index,.geo\n'
+        data = 'system:index,class,.geo\n'
+        grid['zones_inside'].sort()
 
         for id in grid['zones_inside']:
-            zone = grid['zones'][id]
-            if zone['is_road']:
-                coordinates = f'[{zone["lon"]},{zone["lat"]}]'
-                data += f'{row:020},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
-                row += 1
+            coordinates = f'[{grid["zones"][id]["lon"]},{grid["zones"][id]["lat"]}]'
+            data += f'{row:020},{grid["zones"][id]["RL"]},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
+            row += 1
 
-        fp = open(conf['output_roads'], 'w')
+        fp = open(conf['output'], 'w')
         fp.write(data)
         fp.close()
+        
+        # Write a CSV file with EDUs positions
+        if 'output_edus' in conf.keys():
+            row = 0
+            data = 'system:index,.geo\n'
 
-    print('Done.')
-    exit(EXIT_OK)
+            for i in range(1, grid['M'] + 1):
+                for zone in grid['edus'][i]:
+                    coordinates = f'[{zone["lon"]},{zone["lat"]}]'
+                    data += f'{row:020},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
+                    row += 1
+
+            fp = open(conf['output_edus'], 'w')
+            fp.write(data)
+            fp.close()
+
+        # Write a CSV file with forbidden zones
+        if 'output_roads' in conf.keys():
+            row = 0
+            data = 'system:index,.geo\n'
+
+            for id in grid['zones_inside']:
+                zone = grid['zones'][id]
+                if zone['is_road']:
+                    coordinates = f'[{zone["lon"]},{zone["lat"]}]'
+                    data += f'{row:020},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
+                    row += 1
+
+            fp = open(conf['output_roads'], 'w')
+            fp.write(data)
+            fp.close()
+
+        print('Done.')
+        exit(EXIT_OK)
+
+    except MemoryError:
+        print('--- Memory limit reached! ---')
+        print(f'riskzones is configured to use at most {RES_MEM_SOFT} bytes of memory.')
+        print('If you think this limit is too low, you can raise it by setting the value of RES_MEM_SOFT in this script.')
+        exit(EXIT_NO_MEMORY)

@@ -28,7 +28,7 @@ For the worker to work, you need to copy `.env.example` as `.env` and setup your
 
 To install all modules needed by riskzones and its worker, run:
 
-`python3 -m pip install python-dotenv geojson numpy requests requests-toolbelt`
+`python3 -m pip install python-dotenv geojson requests requests-toolbelt`
 
 ## Memory limit
 
