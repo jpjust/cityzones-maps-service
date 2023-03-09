@@ -884,7 +884,6 @@ if __name__ == '__main__':
             init_pois_by_polygon(grid, pois)
             if len(grid['pois']) == 0:
                 print('No PoIs inside the AoI!')
-                exit(EXIT_NO_POIS)
         except KeyError:
             print('WARNING: No GeoJSON file specified. Not filtering by AoI polygon.')
             grid['pois'] = pois
