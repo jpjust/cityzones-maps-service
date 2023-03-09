@@ -1,4 +1,10 @@
-cityzones-maps-service (1.0-0) bookworm; urgency=medium
+cityzones-maps-service (1.0-1) stable; urgency=medium
+
+  * Add time-out to web requests.
+
+ -- João Paulo Just Peixoto <just1982@gmail.com>  Wed, 09 Mar 2023 11:06:00 +0000
+
+cityzones-maps-service (1.0-0) stable; urgency=medium
 
   * Initial Release.
 
