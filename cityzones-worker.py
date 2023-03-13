@@ -65,6 +65,7 @@ def delete_task_files(task: dict):
     fileslist.append(task['config']['output_edus'])
     fileslist.append(task['config']['output_roads'])
     fileslist.append(task['config']['res_data'])
+    fileslist.append(task['config']['extract'])
 
     for file in fileslist:
         if os.path.isfile(file):
@@ -107,6 +108,7 @@ def process_task(task: dict):
     # Apply directories path to configuration
     try:
         taskcfg['geojson'] = f"{config['TASKS_DIR']}/{taskcfg['geojson']}"
+        taskcfg['extract'] = f"{config['TASKS_DIR']}/extract-{taskcfg['pois']}"
         taskcfg['pois'] = f"{config['TASKS_DIR']}/{taskcfg['pois']}"
         taskcfg['output'] = f"{config['OUT_DIR']}/{taskcfg['output']}"
         taskcfg['output_edus'] = f"{config['OUT_DIR']}/{taskcfg['output_edus']}"
@@ -127,6 +129,7 @@ def process_task(task: dict):
     fp_geojson.close()
 
     # Extract data from PBF file
+    logger('Extracting AoI from PBF file...')
     try:
         res = subprocess.run([
             config['OSMIUM_PATH'],
@@ -135,7 +138,7 @@ def process_task(task: dict):
             f'{taskcfg["left"]},{taskcfg["bottom"]},{taskcfg["right"]},{taskcfg["top"]}',
             config['PBF_FILE'],
             '-o',
-            taskcfg['pois'],
+            taskcfg['extract'],
             '--overwrite'
         ], capture_output=True, timeout=int(config['SUBPROC_TIMEOUT']))
     except subprocess.TimeoutExpired:
@@ -144,6 +147,28 @@ def process_task(task: dict):
 
     if res.returncode != 0:
         logger(f'There was an error while extracting map data using {taskcfg["base_filename"]} coordinates.')
+        return
+
+    # Filter data from PBF file
+    logger('Filtering PBF file...')
+    try:
+        res = subprocess.run([
+            config['OSMIUM_PATH'],
+            'tags-filter',
+            '-o',
+            taskcfg['pois'],
+            '--overwrite',
+            taskcfg['extract'],
+            'w/highway',
+            'amenity=hospital,police,fire_station',
+            'railway=station'
+        ], capture_output=True, timeout=int(config['SUBPROC_TIMEOUT']))
+    except subprocess.TimeoutExpired:
+        logger("Timeout running osmium for the task's AoI.")
+        return
+
+    if res.returncode != 0:
+        logger(f'There was an error while filtering map data using {taskcfg["base_filename"]} coordinates.')
         return
 
     # Run riskzones.py
