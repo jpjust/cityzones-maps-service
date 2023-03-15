@@ -108,7 +108,7 @@ def process_task(task: dict):
     # Apply directories path to configuration
     try:
         taskcfg['geojson'] = f"{config['TASKS_DIR']}/{taskcfg['geojson']}"
-        taskcfg['extract'] = f"{config['TASKS_DIR']}/extract-{taskcfg['pois']}"
+        taskcfg['extract'] = f"{config['OUT_DIR']}/extract_{taskcfg['pois']}"
         taskcfg['pois'] = f"{config['TASKS_DIR']}/{taskcfg['pois']}"
         taskcfg['output'] = f"{config['OUT_DIR']}/{taskcfg['output']}"
         taskcfg['output_edus'] = f"{config['OUT_DIR']}/{taskcfg['output_edus']}"
@@ -140,7 +140,7 @@ def process_task(task: dict):
             '-o',
             taskcfg['extract'],
             '--overwrite'
-        ], capture_output=True, timeout=int(config['SUBPROC_TIMEOUT']))
+        ], timeout=int(config['SUBPROC_TIMEOUT']))
     except subprocess.TimeoutExpired:
         logger("Timeout running osmium for the task's AoI.")
         return
@@ -162,7 +162,7 @@ def process_task(task: dict):
             'w/highway',
             'amenity=hospital,police,fire_station',
             'railway=station'
-        ], capture_output=True, timeout=int(config['SUBPROC_TIMEOUT']))
+        ], timeout=int(config['SUBPROC_TIMEOUT']))
     except subprocess.TimeoutExpired:
         logger("Timeout running osmium for the task's AoI.")
         return
