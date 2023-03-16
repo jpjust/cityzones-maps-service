@@ -32,7 +32,11 @@ risks:
                         positioning algorithm.
 """
 
-from cityzones import osmpois
+try:
+    import osmpois
+except ModuleNotFoundError:
+    from cityzones import osmpois
+
 import time
 import json
 import geojson
@@ -83,6 +87,7 @@ MAX_NUM = 10 ** 10
 UNBALANCED = 1
 BALANCED = 2
 RESTRICTED = 3
+RESTRICTED_PLUS = 4
 
 # Multiprocessing
 MP_WORKERS=None  # If None, will use a value returned by the system
@@ -107,7 +112,7 @@ def create_riskzones_grid(left: float, bottom: float, right: float, top: float, 
         'zones': [],
         'zones_inside': [],
         'pois': [],
-        'roads': [],
+        #'roads': [],
         'roads_points': 0,
         'polygons': []
     }
@@ -522,7 +527,21 @@ def get_number_of_zones_by_RL(grid: dict) -> dict:
         nzones[grid['zones'][id]['RL']] += 1
     
     return nzones
+
+def get_number_of_roads_by_RL(grid: dict) -> dict:
+    """
+    Calculate the number of zones on roads by RL.
+    """
+    nzones = {}
+    for i in range(1, grid['M'] + 1):
+        nzones[i] = 0
     
+    for id in grid['zones_inside']:
+        if grid['zones'][id]['is_road']:
+            nzones[grid['zones'][id]['RL']] += 1
+    
+    return nzones
+
 def get_number_of_edus_by_RL(grid: dict, n_edus: int) -> dict:
     """
     Calculate the number of EDUs that must be positioned in each RL.
@@ -553,6 +572,20 @@ def get_zones_by_RL(grid: dict) -> dict:
     
     return zones_by_RL
 
+def get_roads_by_RL(grid: dict) -> dict:
+    """
+    Get a dict of zones on roads by RL.
+    """
+    roads_by_RL = {}
+    for i in range(grid['M'] + 1):
+        roads_by_RL[i] = []
+
+    for id in grid['zones_inside']:
+        if grid['zones'][id]['is_road']:
+            roads_by_RL[grid['zones'][id]['RL']].append(grid['zones'][id])
+    
+    return roads_by_RL
+
 def set_edus_positions_random(grid: dict):
     """
     Randomly select zones for EDUs positioning.
@@ -576,7 +609,7 @@ def reset_edus_flag(grid: dict, n_edus=None):
     for i in range(1, grid['M'] + 1):
         grid['edus'][i] = []                                            # Final list of EDUs in zone i
 
-def reset_edus_data(grid: dict, n_edus=None):
+def reset_edus_data(grid: dict, n_edus=None, use_roads=False):
     """
     Reset EDUs data to prepare them for a positioning algorithm.
     """
@@ -595,9 +628,12 @@ def reset_edus_data(grid: dict, n_edus=None):
     for i in range(1, grid['M'] + 1):
         if edus[i] == 0:
             edus[i] = 1
-        grid['At'][i] = get_number_of_zones_by_RL(grid)[i]              # Area of the whole RL
+        if use_roads:
+            grid['At'][i] = get_number_of_roads_by_RL(grid)[i]          # Roads of the whole RL
+        else:
+            grid['At'][i] = get_number_of_zones_by_RL(grid)[i]          # Area of the whole RL
         grid['Ax'][i] = round(grid['At'][i] / edus[i])                  # Coverage area of an EDU
-        grid['radius'][i] = math.sqrt(grid['Ax'][i]) / 2                # Radius of an EDU
+        grid['radius'][i] = max(math.sqrt(grid['Ax'][i]) / 2, 1)        # Radius of an EDU
         grid['step'][i] = int(2 * grid['radius'][i] + 1)                # Step distance on x and y directions
         grid['step_x'][i] = grid['step_y'][i] = 0                       # The steps are accounted individually for each RL
         grid['zone_in_y'][i] = False                                    # To check if there was any zone for a RL in any y
@@ -627,6 +663,8 @@ def set_edus_positions_uniform(grid, mode: int):
         set_edus_positions_uniform_balanced(grid)
     elif mode == RESTRICTED:
         set_edus_positions_uniform_restricted(grid)
+    elif mode == RESTRICTED_PLUS:
+        set_edus_positions_uniform_restricted_plus(grid)
     
     print('Positioning EDUs... 100.00%')
         
@@ -782,6 +820,55 @@ def set_edus_positions_uniform_restricted(grid: dict):
     for i in range(1, grid['M'] + 1):
         grid['edus'][i] = [*final_edus[i]]
 
+def set_edus_positions_uniform_restricted_plus(grid: dict):
+    """
+    Restricted+ positioning mode.
+    """
+    reset_edus_data(grid, use_roads=True)
+    print('Chosen positioning method: uniform restricted+.')
+    y = int(grid['smallest_radius'])
+    while y < grid['grid_y']:
+        x = 0
+        try:
+            while x < grid['grid_x']:
+                while True:
+                    # Get the zone in this coordinate by its ID
+                    id = grid['grid_x'] * y + x
+                    zone = grid['zones'][id]
+
+                    # The zone must be inside the AoI, otherwise, check the next zone
+                    if zone['inside'] and zone['is_road']:
+                        break
+                    elif x >= grid['grid_x']:
+                        raise OutOfBounds
+                    else:
+                        x += 1
+
+                try:
+                    # Don't even try if we are still within the range of another EDU
+                    for i in range(1, grid['M'] + 1):
+                        for edu in grid['edus'][i][-1:grid['search_range']:-1]:
+                            dist = calculate_distance_in_grid(grid, zone, edu)
+                            if dist < grid['min_dist'][zone['RL']]:
+                                raise SkipZone
+
+                    zone['has_edu'] = True
+                    grid['edus'][zone['RL']].append(zone)
+                    x += int(grid['smallest_radius'] * 2)
+                
+                except SkipZone:
+                    x += 1
+            
+                prog = (id / len(grid['zones'])) * 100
+                print(f'Positioning EDUs... {prog:.2f}%', end='\r')
+
+        except IndexError:
+            pass
+        except OutOfBounds:
+            pass
+        
+        y += 1
+
 def get_spiral_path(grid: dict, range_radius: int) -> list:
     """
     Compute a spiral path for zone search whithin a range.
@@ -925,15 +1012,18 @@ if __name__ == '__main__':
             set_edus_positions_uniform(grid, BALANCED)
         elif conf['edu_alg'] == 'restricted':
             set_edus_positions_uniform(grid, RESTRICTED)
+        elif conf['edu_alg'] == 'restricted_plus':
+            set_edus_positions_uniform(grid, RESTRICTED_PLUS)
 
         # Output elapsed time
         time_positioning = time.perf_counter() - time_begin
         print(f'Positioning time: {round(time_positioning, 3)} seconds.')
 
-        print('Writing output CSV files... ', end='')
+        print('Writing output CSV files... ')
 
         # Write a JSON file with results data
         if 'res_data' in conf.keys():
+            print('- Results metadata')
             n_edus = 0
             for i in range(1, grid['M'] + 1):
                 n_edus += len(grid['edus'][i])
@@ -951,48 +1041,48 @@ if __name__ == '__main__':
             fp.close()
 
         # Write a CSV file with risk zones
+        print('- Map data')
         row = 0
         data = 'system:index,class,.geo\n'
         grid['zones_inside'].sort()
 
+        fp = open(conf['output'], 'w')
         for id in grid['zones_inside']:
             coordinates = f'[{grid["zones"][id]["lon"]},{grid["zones"][id]["lat"]}]'
-            data += f'{row:020},{grid["zones"][id]["RL"]},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
+            data = f'{row:020},{grid["zones"][id]["RL"]},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
+            fp.write(data)
             row += 1
-
-        fp = open(conf['output'], 'w')
-        fp.write(data)
         fp.close()
         
         # Write a CSV file with EDUs positions
         if 'output_edus' in conf.keys():
+            print('- EDUs data')
             row = 0
             data = 'system:index,.geo\n'
 
+            fp = open(conf['output_edus'], 'w')
             for i in range(1, grid['M'] + 1):
                 for zone in grid['edus'][i]:
                     coordinates = f'[{zone["lon"]},{zone["lat"]}]'
-                    data += f'{row:020},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
+                    data = f'{row:020},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
+                    fp.write(data)
                     row += 1
-
-            fp = open(conf['output_edus'], 'w')
-            fp.write(data)
             fp.close()
 
         # Write a CSV file with forbidden zones
         if 'output_roads' in conf.keys():
+            print('- Roads data')
             row = 0
             data = 'system:index,.geo\n'
 
+            fp = open(conf['output_roads'], 'w')
             for id in grid['zones_inside']:
                 zone = grid['zones'][id]
                 if zone['is_road']:
                     coordinates = f'[{zone["lon"]},{zone["lat"]}]'
-                    data += f'{row:020},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
+                    data = f'{row:020},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
+                    fp.write(data)
                     row += 1
-
-            fp = open(conf['output_roads'], 'w')
-            fp.write(data)
             fp.close()
 
         print('Done.')
