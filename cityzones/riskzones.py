@@ -112,7 +112,6 @@ def create_riskzones_grid(left: float, bottom: float, right: float, top: float, 
         'zones': [],
         'zones_inside': [],
         'pois': [],
-        #'roads': [],
         'roads_points': 0,
         'polygons': []
     }
@@ -170,7 +169,8 @@ def init_zones(grid: dict):
                 'RL': grid['M'],
                 'inside': True,
                 'has_edu': False,
-                'is_road': False
+                'is_road': False,
+                'urban_prob': 0
             }
 
             grid['zones'].append(zone)
@@ -542,11 +542,28 @@ def get_number_of_roads_by_RL(grid: dict) -> dict:
     
     return nzones
 
-def get_number_of_edus_by_RL(grid: dict, n_edus: int) -> dict:
+def get_urban_area_by_RL(grid: dict) -> dict:
+    """
+    Calculate the number of zones with at least 50% probability of being in an urban area.
+    """
+    nzones = {}
+    for i in range(1, grid['M'] + 1):
+        nzones[i] = 0
+    
+    for id in grid['zones_inside']:
+        if grid['zones'][id]['urban_prob'] >= 0.5:
+            nzones[grid['zones'][id]['RL']] += 1
+    
+    return nzones
+
+def get_number_of_edus_by_RL(grid: dict, n_edus: int, use_roads=False) -> dict:
     """
     Calculate the number of EDUs that must be positioned in each RL.
     """
-    nzones = get_number_of_zones_by_RL(grid)
+    if use_roads:
+        nzones = get_number_of_roads_by_RL(grid)
+    else:
+        nzones = get_number_of_zones_by_RL(grid)
     
     sum = 0
     for i in range(1, grid['M'] + 1):
@@ -586,6 +603,56 @@ def get_roads_by_RL(grid: dict) -> dict:
     
     return roads_by_RL
 
+def set_area_urban_probability(grid: dict):
+    """
+    Search the whole grid area and calculate the urban probability of each zone by its surroudings roads.
+    """
+    for zone in grid['zones']:
+        zone['urban_prob'] = 0
+    
+    # The reducing_factor defines how much % the next zone will loose in urban probability
+    # comparing to the preivous zone. Considering quarters of an 100 meters wide average,
+    # the reducing_factor will be of 1% per meter.
+    reducing_factor = grid['zone_size'] / 100
+
+    # Left to right
+    for y in range(grid['grid_y']):
+        prob = 0
+        for x in range(grid['grid_x']):
+            id = grid['grid_x'] * y + x
+            prob = set_zone_urban_probability(grid['zones'][id], prob, reducing_factor)
+
+    # Right to left
+    for y in range(grid['grid_y']):
+        prob = 0
+        for x in range(grid['grid_x'] - 1, -1, -1):
+            id = grid['grid_x'] * y + x
+            prob = set_zone_urban_probability(grid['zones'][id], prob, reducing_factor)
+
+    # Bottom up
+    for x in range(grid['grid_x']):
+        prob = 0
+        for y in range(grid['grid_y']):
+            id = grid['grid_x'] * y + x
+            prob = set_zone_urban_probability(grid['zones'][id], prob, reducing_factor)
+
+    # Top down
+    for x in range(grid['grid_x']):
+        prob = 0
+        for y in range(grid['grid_y'] - 1, -1, -1):
+            id = grid['grid_x'] * y + x
+            prob = set_zone_urban_probability(grid['zones'][id], prob, reducing_factor)
+
+def set_zone_urban_probability(zone: dict, prob: float, reducing_factor: float):
+    """
+    Set zone's urban probability and return the value for the next zone based on reducing_factor.
+    """
+    if zone['is_road']:
+        prob = 1
+    
+    zone['urban_prob'] = max(zone['urban_prob'], prob)
+    return max(prob - reducing_factor, 0)  # Can't have negative probabilities
+
 def set_edus_positions_random(grid: dict):
     """
     Randomly select zones for EDUs positioning.
@@ -615,7 +682,7 @@ def reset_edus_data(grid: dict, n_edus=None, use_roads=False):
     """
     if n_edus == None:
         n_edus = grid['n_edus']
-    edus = get_number_of_edus_by_RL(grid, n_edus)
+    edus = get_number_of_edus_by_RL(grid, n_edus, use_roads)
     grid['At'] = {}
     grid['Ax'] = {}
     grid['radius'] = {}
@@ -629,7 +696,8 @@ def reset_edus_data(grid: dict, n_edus=None, use_roads=False):
         if edus[i] == 0:
             edus[i] = 1
         if use_roads:
-            grid['At'][i] = get_number_of_roads_by_RL(grid)[i]          # Roads of the whole RL
+            set_area_urban_probability(grid)
+            grid['At'][i] = get_urban_area_by_RL(grid)[i]               # Urban area of the whole RL
         else:
             grid['At'][i] = get_number_of_zones_by_RL(grid)[i]          # Area of the whole RL
         grid['Ax'][i] = round(grid['At'][i] / edus[i])                  # Coverage area of an EDU
