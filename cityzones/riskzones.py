@@ -1142,6 +1142,7 @@ if __name__ == '__main__':
                 'n_zones': len(grid['zones_inside']),
                 'n_pois': len(grid['pois_inside']),
                 'n_edus': n_edus,
+                'n_zones_by_rl': get_number_of_zones_by_RL(grid),
                 'time_classification': time_classification,
                 'time_positioning': time_positioning
             }
