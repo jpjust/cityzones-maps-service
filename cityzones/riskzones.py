@@ -574,6 +574,7 @@ def get_number_of_edus_by_RL(grid: dict, n_edus: int, use_roads=False) -> dict:
         ni = (n_edus * i * nzones[i]) / sum
         nedus[i] = int(ni)
 
+    print(f'>>> nedus = {nedus}')
     return nedus
 
 def get_zones_by_RL(grid: dict) -> dict:
@@ -612,8 +613,8 @@ def set_area_urban_probability(grid: dict):
     
     # The reducing_factor defines how much % the next zone will loose in urban probability
     # comparing to the preivous zone. Considering quarters of an 100 meters wide average,
-    # the reducing_factor will be of 1% per meter.
-    reducing_factor = grid['zone_size'] / 100
+    # the reducing_factor will be of 0.5% per meter.
+    reducing_factor = grid['zone_size'] / 200
 
     # Left to right
     for y in range(grid['grid_y']):
@@ -892,50 +893,79 @@ def set_edus_positions_uniform_restricted_plus(grid: dict):
     """
     Restricted+ positioning mode.
     """
-    reset_edus_data(grid, use_roads=True)
     print('Chosen positioning method: uniform restricted+.')
-    y = int(grid['smallest_radius'])
-    while y < grid['grid_y']:
-        x = 0
-        try:
-            while x < grid['grid_x']:
-                while True:
-                    # Get the zone in this coordinate by its ID
-                    id = grid['grid_x'] * y + x
-                    zone = grid['zones'][id]
 
-                    # The zone must be inside the AoI, otherwise, check the next zone
-                    if zone['inside'] and zone['is_road']:
-                        break
-                    elif x >= grid['grid_x']:
-                        raise OutOfBounds
-                    else:
+    final_edus = {}
+    for i in range(1, grid['M'] + 1):
+        final_edus[i] = []
+
+    edus_total = 0
+    edus_remaining = grid['n_edus'] - edus_total
+    n_run = 0
+
+    # Repeat until all EDUs are positioned
+    while edus_remaining > 0:
+        print(f"\n> Run #{n_run}, {edus_remaining} EDUs left.")
+        n_run += 1
+        reset_edus_flag(grid)
+        reset_edus_data(grid, edus_remaining, use_roads=True)
+        y = int(grid['smallest_radius'])
+        while y < grid['grid_y']:
+            x = 0
+            try:
+                while x < grid['grid_x']:
+                    while True:
+                        # Get the zone in this coordinate by its ID
+                        id = grid['grid_x'] * y + x
+                        zone = grid['zones'][id]
+
+                        # The zone must be inside the AoI and be a road, otherwise, check the next zone
+                        if zone['inside'] and zone['is_road']:
+                            break
+                        elif x >= grid['grid_x']:
+                            raise OutOfBounds
+                        else:
+                            x += 1
+
+                    try:
+                        # Don't even try if we are still within the range of another EDU
+                        for i in range(1, grid['M'] + 1):
+                            for edu in grid['edus'][i][-1:grid['search_range']:-1]:
+                                dist = calculate_distance_in_grid(grid, zone, edu)
+                                if dist < grid['min_dist'][zone['RL']]:
+                                    raise SkipZone
+
+                        zone['has_edu'] = True
+                        grid['edus'][zone['RL']].append(zone)
+                        x += int(grid['smallest_radius'] * 2)
+                    
+                    except SkipZone:
                         x += 1
-
-                try:
-                    # Don't even try if we are still within the range of another EDU
-                    for i in range(1, grid['M'] + 1):
-                        for edu in grid['edus'][i][-1:grid['search_range']:-1]:
-                            dist = calculate_distance_in_grid(grid, zone, edu)
-                            if dist < grid['min_dist'][zone['RL']]:
-                                raise SkipZone
-
-                    zone['has_edu'] = True
-                    grid['edus'][zone['RL']].append(zone)
-                    x += int(grid['smallest_radius'] * 2)
                 
-                except SkipZone:
-                    x += 1
-            
-                prog = (id / len(grid['zones'])) * 100
-                print(f'Positioning EDUs... {prog:.2f}%', end='\r')
+                    prog = (id / len(grid['zones'])) * 100
+                    print(f'Positioning EDUs... {prog:.2f}%', end='\r')
 
-        except IndexError:
-            pass
-        except OutOfBounds:
-            pass
+            except IndexError:
+                pass
+            except OutOfBounds:
+                pass
+            
+            y += 1
         
-        y += 1
+        # Move all the positioned EDUs to the final structure
+        for i in range(1, grid['M'] + 1):
+            final_edus[i].extend(grid['edus'][i])
+            grid['edus'][i] = []
+
+        # Recalculate the total and remaining
+        edus_total = 0
+        for i in range(1, grid['M'] + 1):
+            edus_total += len(final_edus[i])
+        edus_remaining = grid['n_edus'] - edus_total
+    
+    # Positioning finished. Move final_edus to grid
+    for i in range(1, grid['M'] + 1):
+        grid['edus'][i] = [*final_edus[i]]
 
 def get_spiral_path(grid: dict, range_radius: int) -> list:
     """
