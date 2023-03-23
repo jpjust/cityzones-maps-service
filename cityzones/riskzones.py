@@ -574,7 +574,6 @@ def get_number_of_edus_by_RL(grid: dict, n_edus: int, use_roads=False) -> dict:
         ni = (n_edus * i * nzones[i]) / sum
         nedus[i] = int(ni)
 
-    print(f'>>> nedus = {nedus}')
     return nedus
 
 def get_zones_by_RL(grid: dict) -> dict:
