@@ -112,6 +112,7 @@ def create_riskzones_grid(left: float, bottom: float, right: float, top: float, 
         'zones': [],
         'zones_inside': [],
         'pois': [],
+        'pois_inside': [],
         'roads_points': 0,
         'polygons': []
     }
@@ -223,27 +224,27 @@ def init_zones_by_polygon(grid: dict):
     print('Done!')
     print(f'{len(grid["zones_inside"])} of {len(grid["zones"])} zones inside the polygon.')
 
-def init_pois_by_polygon(grid: dict, pois: list) -> list:
+def init_pois_by_polygon(grid: dict) -> list:
     """
     Check every PoI if it is inside the polygon area.
     """
     print(f'Checking PoIs inside the polygon... ', end='')
 
-    grid['pois'].clear()
     pois_results = []
+    grid['pois_inside'].clear()
     
     with mp.Pool(processes=MP_WORKERS) as pool:
         payload = []
-        for poi in pois:
+        for poi in grid['pois']:
             payload.append((poi, grid['polygons']))
         pois_results = pool.starmap(check_zone_in_polygon_set, payload)
     
     for poi in pois_results:
         if poi['inside'] == True:
-            grid['pois'].append(poi)
+            grid['pois_inside'].append(poi)
 
     print('Done!')
-    print(f'{len(grid["pois"])} of {len(pois)} PoIs inside the polygon.')
+    print(f'{len(grid["pois_inside"])} of {len(grid["pois"])} PoIs inside the polygon.')
 
 def check_zone_in_polygon_set(zone: dict, polygons: dict) -> bool:
     """
@@ -324,6 +325,17 @@ def check_intersection(line1: dict, line2: dict) -> bool:
     f2_2 = sign(a2 * line1['p2']['lon'] + b2 * line1['p2']['lat'] + c2)
 
     return f1_1 != f1_2 and f2_1 != f2_2
+
+def add_pois(grid: dict, pois: list):
+    """
+    Add PoIs into the grid object.
+    """
+    grid['pois'].clear()
+    grid['pois_inside'].clear()
+    
+    for poi in pois:
+        grid['pois'].append(poi)
+        grid['pois_inside'].append(poi)
 
 def add_roads(grid: dict, roads: list):
     """
@@ -457,7 +469,7 @@ def calculate_risk_from_pois(grid: dict):
     """
     Calculate the risk perception considering all PoIs.
     """
-    if len(grid['pois']) == 0:
+    if len(grid['pois_inside']) == 0:
         return
 
     print(f'Calculating risk perception... ', end='')
@@ -465,7 +477,7 @@ def calculate_risk_from_pois(grid: dict):
     with mp.Pool(processes=MP_WORKERS) as pool:
         payload = []
         for id in grid['zones_inside']:
-            payload.append((grid['zones'][id], grid['pois']))
+            payload.append((grid['zones'][id], grid['pois_inside']))
         risks = pool.starmap(calculate_risk_of_zone, payload)
     
     for risk in risks:
@@ -1034,6 +1046,8 @@ if __name__ == '__main__':
 
         # Get PoIs and roads from OSM file
         pois, roads = osmpois.extract_pois(conf['pois'], conf['pois_types'])
+        add_pois(grid, pois)
+        add_roads(grid, roads)
 
         # Load cache file if enabled
         cache_filename = f'{os.path.splitext(sys.argv[1])[0]}.cache'
@@ -1070,15 +1084,15 @@ if __name__ == '__main__':
                     print('No zones to classify!')
                     exit(EXIT_NO_ZONES)
 
-                init_pois_by_polygon(grid, pois)
-                if len(grid['pois']) == 0:
+                if not conf.get('pois_use_all'):
+                    init_pois_by_polygon(grid)
+                
+                if len(grid['pois_inside']) == 0:
                     print('No PoIs inside the AoI!')
             except KeyError:
                 print('WARNING: No GeoJSON file specified. Not filtering by AoI polygon.')
-                grid['pois'] = pois
             except FileNotFoundError:
                 print(f'WARNING: GeoJSON file {conf["geojson"]} not found. Not filtering by AoI polygon.')
-                grid['pois'] = pois
 
             # Calculate risks
             calculate_risk_from_pois(grid)
@@ -1098,7 +1112,6 @@ if __name__ == '__main__':
         # Run EDUs positioning algorithm
         time_begin = time.perf_counter()
 
-        add_roads(grid, roads)
         print(f'{grid["roads_points"]} allowed zones.')
 
         if conf['edu_alg'] == 'random':
@@ -1127,7 +1140,7 @@ if __name__ == '__main__':
 
             res_data = {
                 'n_zones': len(grid['zones_inside']),
-                'n_pois': len(grid['pois']),
+                'n_pois': len(grid['pois_inside']),
                 'n_edus': n_edus,
                 'time_classification': time_classification,
                 'time_positioning': time_positioning
