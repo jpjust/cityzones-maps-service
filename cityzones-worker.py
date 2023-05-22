@@ -27,6 +27,7 @@ performs the classifications requested online.
 """
 
 from cityzones import riskzones
+from cityzones import overpass
 import os
 import sys
 import subprocess
@@ -128,48 +129,20 @@ def process_task(task: dict):
     json.dump(geojson, fp_geojson)
     fp_geojson.close()
 
-    # Extract data from PBF file
-    logger('Extracting AoI from PBF file...')
+    # Extract data from Overpass API
+    logger('Extracting AoI from Overpass API...')
     try:
-        res = subprocess.run([
-            config['OSMIUM_PATH'],
-            'extract',
-            '-b',
-            f'{taskcfg["left"]},{taskcfg["bottom"]},{taskcfg["right"]},{taskcfg["top"]}',
-            config['PBF_FILE'],
-            '-o',
-            taskcfg['extract'],
-            '--overwrite'
-        ], timeout=int(config['SUBPROC_TIMEOUT']))
-    except subprocess.TimeoutExpired:
-        logger("Timeout running osmium for the task's AoI.")
-        return
+        osm_xml = overpass.get_osm(taskcfg["bottom"], taskcfg["left"], taskcfg["top"], taskcfg["right"], request_timeout)
+    except requests.exceptions.ConnectionError:
+        logger(f'There was an error trying to connect to the Overpass server.')
+        return None
+    except requests.exceptions.ReadTimeout:
+        logger(f'Conenction timed-out while requesting data from Overpass.')
+        return None
 
-    if res.returncode != 0:
-        logger(f'There was an error while extracting map data using {taskcfg["base_filename"]} coordinates.')
-        return
-
-    # Filter data from PBF file
-    logger('Filtering PBF file...')
-    try:
-        res = subprocess.run([
-            config['OSMIUM_PATH'],
-            'tags-filter',
-            '-o',
-            taskcfg['pois'],
-            '--overwrite',
-            taskcfg['extract'],
-            'w/highway',
-            'amenity=hospital,police,fire_station',
-            'railway=station'
-        ], timeout=int(config['SUBPROC_TIMEOUT']))
-    except subprocess.TimeoutExpired:
-        logger("Timeout running osmium for the task's AoI.")
-        return
-
-    if res.returncode != 0:
-        logger(f'There was an error while filtering map data using {taskcfg["base_filename"]} coordinates.')
-        return
+    fp = open(taskcfg['pois'], 'w')
+    fp.write(osm_xml)
+    fp.close()
 
     # Run riskzones.py
     try:
@@ -183,7 +156,7 @@ def process_task(task: dict):
         return
 
     if res.returncode != 0:
-        logger(f'There was an error while running riskzones.py for {taskcfg["base_filename"]}.')
+        logger(f'There was an error while running riskzones.py for {taskcfg["base_filename"]}. Return code: {res.returncode}')
         return
 
     # Post results to the web app
@@ -228,18 +201,6 @@ if __name__ == '__main__':
         os.makedirs(config['OUT_DIR'])
     except FileExistsError:
         pass
-
-    # Check if the PBF file exists. If not, download from Planet OSM
-    if not os.path.exists(config['PBF_FILE']):
-        PBF_URL = 'https://planet.openstreetmap.org/pbf/planet-latest.osm.pbf'
-        print(f'{config["PBF_FILE"]} not found. Downloading from {PBF_URL}...')
-        try:
-            with requests.get(PBF_URL, stream=True, timeout=request_timeout) as r:
-                with open(config['PBF_FILE'], 'wb') as f:
-                    f.write(r.content)
-        except requests.exceptions.ReadTimeout:
-            logger(f'Conenction timed-out while downloading PBF file. Cannot continue without the full planet PBF.')
-            sys.exit(1)
 
     # Main loop
     while True:

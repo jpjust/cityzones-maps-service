@@ -1,7 +1,7 @@
 # encoding:utf-8
 """
 RiskZones classification
-Copyright (C) 2022 João Paulo Just Peixoto
+Copyright (C) 2022 - 2023 João Paulo Just Peixoto
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -97,7 +97,7 @@ def extract_pois(file: str, pois_types: dict) -> tuple[list, list]:
         # (depending on the boundaries of the exported OSM file, some
         # nodes may be out of the map)
         for node in way_nodes:
-            if node in nodes:
+            if node in nodes and 'lat' in nodes[node].keys() and 'lon' in nodes[node].keys():
                 way_data['lat'] = float(nodes[node]['lat'])
                 way_data['lon'] = float(nodes[node]['lon'])
                 break
@@ -138,7 +138,7 @@ def extract_pois(file: str, pois_types: dict) -> tuple[list, list]:
         # (depending on the boundaries of the exported OSM file, some
         # ways may be out of the map)
         for way in relation_ways:
-            if way in ways:
+            if way in ways and 'lat' in ways[way].keys() and 'lon' in ways[way].keys():
                 relation_data['lat'] = float(ways[way]['lat'])
                 relation_data['lon'] = float(ways[way]['lon'])
                 break

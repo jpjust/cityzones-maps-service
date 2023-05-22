@@ -1,3 +1,10 @@
+cityzones-maps-service (1.2-0) stable; urgency=medium
+
+  * Add support for Overpass API.
+  * Downloading the whole PBF file is no more needed.
+
+ -- João Paulo Just Peixoto <just1982@gmail.com>  Mon, 22 May 2023 18:04:20 -0300
+
 cityzones-maps-service (1.1-0) stable; urgency=medium
 
   * Implement Restricted+ positioning algorithm.
