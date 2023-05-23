@@ -21,7 +21,7 @@ import requests
 
 API_ENDPOINT = 'https://overpass-api.de/api/interpreter'
 
-def get_osm(bottom: float, left: float, top: float, right: float, request_timeout: int) -> str:
+def get_osm_from_bbox(bottom: float, left: float, top: float, right: float, request_timeout: int) -> str:
     """
     Query Overpass API and request the OSM from the bounding box specified by the parameters.
     The OSM data will arrive in XML format.
@@ -30,6 +30,44 @@ def get_osm(bottom: float, left: float, top: float, right: float, request_timeou
       nwr({bottom},{left},{top},{right});
       out;
     '''
+
+    res = requests.get(API_ENDPOINT, data=query, timeout=request_timeout)
+    return res.content.decode()
+
+def get_osm_from_polygon(polygon: list, request_timeout: int) -> str:
+    """
+    Query Overpass API and request the OSM from the polygon specified by the parameters.
+    The OSM data will arrive in XML format.
+    """
+    poly = ''
+    for coordinate in polygon:
+        poly += f'{coordinate[1]} {coordinate[0]} '
+    
+    query = f'''
+      nwr(poly:"{poly.strip()}");
+      out;
+    '''
+
+    res = requests.get(API_ENDPOINT, data=query, timeout=request_timeout)
+    return res.content.decode()
+
+def get_osm_from_geojson(geo_json: dict, request_timeout: int) -> str:
+    """
+    Query Overpass API and request the OSM from the coordinates in the GeoJSON specified by the parameters.
+    The OSM data will arrive in XML format.
+    """
+    poly_list = []
+    polygons = geo_json['features'][0]['geometry']['coordinates']
+    for polygon in polygons:
+        poly_list.append(polygon[0])
+    
+    query = '(\n'
+    for polygon in poly_list:
+        for coordinate in polygon:
+            poly += f'{coordinate[0]} {coordinate[1]} '
+        query += f'  nwr(poly:"{poly.strip()}");\n'
+    
+    query += ')\nout;\n'
 
     res = requests.get(API_ENDPOINT, data=query, timeout=request_timeout)
     return res.content.decode()
