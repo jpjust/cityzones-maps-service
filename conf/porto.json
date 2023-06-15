@@ -3,7 +3,7 @@
     "bottom": 41.1352,
     "right": -8.5405,
     "top": 41.1939,
-    "zone_size": 10,
+    "zone_size": 30,
     "cache_zones": true,
     "M": 3,
     "edus": 300,
@@ -27,8 +27,9 @@
             }
         }
     },
-    "edu_alg": "restricted",
+    "edu_alg": "none",
     "output": "csv/porto_M3.csv",
-    "output_edus": "csv/porto_edus_restricted.csv",
-    "output_roads": "csv/porto_roads.csv"
+    "output_edus": "csv/porto_edus_none.csv",
+    "output_roads": "csv/porto_roads.csv",
+    "output_elevation": "csv/porto_elevation.csv"
 }

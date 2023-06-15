@@ -4,7 +4,7 @@
     "right": -38.9349,
     "top": -12.2298,
     "zone_size": 10,
-    "cache_zones": false,
+    "cache_zones": true,
     "M": 3,
     "edus": 300,
     "max_workers": 6,
@@ -27,5 +27,6 @@
     "edu_alg": "none",
     "output": "csv/test.csv",
     "output_edus": "csv/test_edus.csv",
-    "output_roads": "csv/test_roads.csv"
+    "output_roads": "csv/test_roads.csv",
+    "output_elevation": "csv/test_elevation.csv"
 }

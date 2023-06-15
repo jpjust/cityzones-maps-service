@@ -34,8 +34,10 @@ risks:
 
 try:
     import osmpois
+    import elevation
 except ModuleNotFoundError:
     from cityzones import osmpois
+    from cityzones import elevation
 
 import time
 import json
@@ -483,9 +485,6 @@ def calculate_risk_from_pois(grid: dict):
     for risk in risks:
         grid['zones'][risk[0]]['risk'] = risk[1]
 
-    normalize_risks(grid)
-    calculate_RL(grid)
-
     print('Done!')
 
 def calculate_risk_of_zone(zone: dict, pois: list) -> float:
@@ -498,6 +497,59 @@ def calculate_risk_of_zone(zone: dict, pois: list) -> float:
         sum += poi['weight'] / (calculate_distance(zone, poi) ** 2)
 
     return (zone['id'], 1 / sum)
+
+def calculate_risk_from_elevation(grid: dict):
+    """
+    Calculate the risk perception considering the zones elevation.
+    """
+    if len(grid['pois_inside']) == 0:
+        return
+
+    print(f'Calculating risk from elevation... ', end='')
+
+    normalize_elevation(grid)
+    with mp.Pool(processes=MP_WORKERS) as pool:
+        payload = []
+        for id in grid['zones_inside']:
+            payload.append((grid['zones'][id],))
+        risks = pool.starmap(calculate_risk_of_zone_elevation, payload)
+    
+    for risk in risks:
+        grid['zones'][risk[0]]['risk_elevation'] = risk[1]
+
+    print('Done!')
+
+def calculate_risk_of_zone_elevation(zone: dict) -> float:
+    """
+    Calculate the risk perception considering the zone elevation.
+    """
+    H = 1 / (math.e ** zone['elevation_normalized'])
+    return (zone['id'], H)
+
+def normalize_elevation(grid: dict):
+    """
+    Normalize elevation values in zones.
+    """
+
+    # Get max and min values
+    hmax = hmin = grid['zones'][0]['elevation']
+    for id in grid['zones_inside']:
+        zone = grid['zones'][id]
+
+        if zone['elevation'] > hmax:
+            hmax = zone['elevation']
+
+        if zone['elevation'] < hmin:
+            hmin = zone['elevation']
+    
+    # Middle value
+    m = (hmax - hmin) / 2 + hmin
+    m_top = hmax - m
+
+    # Normalization
+    for id in grid['zones_inside']:
+        zone = grid['zones'][id]
+        zone['elevation_normalized'] = (zone['elevation'] - m) / m_top
 
 def normalize_risks(grid: dict):
     """
@@ -515,7 +567,7 @@ def normalize_risks(grid: dict):
 
     for id in grid['zones_inside']:
         grid['zones'][id]['risk'] = (grid['zones'][id]['risk'] - min) / amplitude
-    
+
 def calculate_RL(grid: dict):
     """
     Calculate the RL according to risk perception.
@@ -524,7 +576,8 @@ def calculate_RL(grid: dict):
         if grid['zones'][id]['risk'] == 0:
             grid['zones'][id]['RL'] = 1
         else:
-            rl = grid['M'] - min(abs(int(math.log(grid['zones'][id]['risk']))), grid['M'] - 1)
+            combined_risk = grid['zones'][id]['risk'] * grid['zones'][id]['risk_elevation']
+            rl = grid['M'] - min(abs(int(math.log(combined_risk))), grid['M'] - 1)
             grid['zones'][id]['RL'] = int(rl)
 
 def get_number_of_zones_by_RL(grid: dict) -> dict:
@@ -1094,8 +1147,18 @@ if __name__ == '__main__':
             except FileNotFoundError:
                 print(f'WARNING: GeoJSON file {conf["geojson"]} not found. Not filtering by AoI polygon.')
 
-            # Calculate risks
+            # Init zones elevation data
+            elevation.init_zones(grid)
+            
+            # Calculate risks regarding distance from PoIs
             calculate_risk_from_pois(grid)
+
+            # Calculate risks regarding elevation
+            calculate_risk_from_elevation(grid)
+
+            # Normalize risks and finish classification
+            normalize_risks(grid)
+            calculate_RL(grid)
 
             # Output elapsed time
             time_classification = time.perf_counter() - time_begin
@@ -1153,11 +1216,12 @@ if __name__ == '__main__':
 
         # Write a CSV file with risk zones
         print('- Map data')
-        row = 0
-        data = 'system:index,class,.geo\n'
-        grid['zones_inside'].sort()
-
         fp = open(conf['output'], 'w')
+
+        data = 'system:index,class,.geo\n'
+        fp.write(data)
+        grid['zones_inside'].sort()
+        row = 0
         for id in grid['zones_inside']:
             coordinates = f'[{grid["zones"][id]["lon"]},{grid["zones"][id]["lat"]}]'
             data = f'{row:020},{grid["zones"][id]["RL"]},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
@@ -1168,10 +1232,11 @@ if __name__ == '__main__':
         # Write a CSV file with EDUs positions
         if 'output_edus' in conf.keys():
             print('- EDUs data')
-            row = 0
-            data = 'system:index,.geo\n'
-
             fp = open(conf['output_edus'], 'w')
+
+            data = 'system:index,.geo\n'
+            fp.write(data)
+            row = 0
             for i in range(1, grid['M'] + 1):
                 for zone in grid['edus'][i]:
                     coordinates = f'[{zone["lon"]},{zone["lat"]}]'
@@ -1183,10 +1248,11 @@ if __name__ == '__main__':
         # Write a CSV file with forbidden zones
         if 'output_roads' in conf.keys():
             print('- Roads data')
-            row = 0
-            data = 'system:index,.geo\n'
-
             fp = open(conf['output_roads'], 'w')
+            
+            data = 'system:index,.geo\n'
+            fp.write(data)
+            row = 0
             for id in grid['zones_inside']:
                 zone = grid['zones'][id]
                 if zone['is_road']:
@@ -1194,6 +1260,21 @@ if __name__ == '__main__':
                     data = f'{row:020},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
                     fp.write(data)
                     row += 1
+            fp.close()
+        
+        # Write a CSV file with elevation data
+        if 'output_elevation' in conf.keys():
+            print('- Elevation data')
+            fp = open(conf['output_elevation'], 'w')
+            
+            data = 'system:index,elevation,.geo\n'
+            fp.write(data)
+            row = 0
+            for id in grid['zones_inside']:
+                coordinates = f'[{grid["zones"][id]["lon"]},{grid["zones"][id]["lat"]}]'
+                data = f'{row:020},{int(grid["zones"][id]["elevation"])},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
+                fp.write(data)
+                row += 1
             fp.close()
 
         print('Done.')

@@ -3,7 +3,7 @@
     "bottom": -12.3252,
     "right": -38.8686,
     "top": -12.1316,
-    "zone_size": 10,
+    "zone_size": 100,
     "cache_zones": true,
     "M": 3,
     "edus": 300,
@@ -23,7 +23,9 @@
         },
         "railway": {}
     },
+    "edu_alg": "none",
     "output": "csv/feira.csv",
     "output_edus": "csv/feira_edus.csv",
-    "output_roads": "csv/feira_roads.csv"
+    "output_roads": "csv/feira_roads.csv",
+    "output_elevation": "csv/feira_elevation.csv"
 }
