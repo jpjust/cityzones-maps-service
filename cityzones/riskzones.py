@@ -33,11 +33,15 @@ risks:
 """
 
 try:
+    import utils
     import osmpois
     import elevation
+    import connectivity
 except ModuleNotFoundError:
+    from cityzones import utils
     from cityzones import osmpois
     from cityzones import elevation
+    from cityzones import connectivity
 
 import time
 import json
@@ -124,35 +128,14 @@ def create_riskzones_grid(left: float, bottom: float, right: float, top: float, 
         grid['edus'][m] = []
 
     # Grid setup
-    w = calculate_distance({'lat': top, 'lon': left}, {'lat': top, 'lon': right})
-    h = calculate_distance({'lat': top, 'lon': left}, {'lat': bottom, 'lon': left})
+    w = utils.__calculate_distance({'lat': top, 'lon': left}, {'lat': top, 'lon': right})
+    h = utils.__calculate_distance({'lat': top, 'lon': left}, {'lat': bottom, 'lon': left})
     grid['grid_x'] = int(w / zone_size)
     grid['grid_y'] = int(h / zone_size)
     grid['zone_center'] = {'x': grid['width'] / grid['grid_x'] / 2, 'y': grid['height'] / grid['grid_y'] / 2}
     print(f'Grid size: {grid["grid_x"]}x{grid["grid_y"]}')
 
     return grid
-
-def calculate_distance(a: dict, b: dict) -> float:
-    """
-    Calculate the distance from a to b using haversine formula.
-    """
-    lat1 = math.radians(a['lat'])
-    lat2 = math.radians(b['lat'])
-    lon1 = math.radians(a['lon'])
-    lon2 = math.radians(b['lon'])
-    r = 6378137
-    return 2 * r * math.asin(math.sqrt(math.sin((lat2 - lat1) / 2) ** 2 + math.cos(lat1) * math.cos(lat2) * math.sin((lon2 - lon1) / 2) ** 2))
-
-def calculate_distance_in_grid(grid: dict, a: dict, b: dict) -> int:
-    """
-    Calculate the distance from a to b in the grid.
-    """
-    x1 = a['id'] % grid['grid_x']
-    x2 = b['id'] % grid['grid_x']
-    y1 = int(a['id'] / grid['grid_x'])
-    y2 = int(b['id'] / grid['grid_x'])
-    return math.sqrt(abs(x2 - x1) ** 2 + abs(y2 - y1) ** 2)
 
 def init_zones(grid: dict):
     """
@@ -405,7 +388,7 @@ def move_zones_x(grid: dict, a: dict, b: dict, dist_x: int, dist_y: int):
     
     # While getting near to the destination zone, keep moving.
     # If we start to get far, stop!
-    prev_dist = dist = calculate_distance(grid['zones'][id], grid['zones'][b])
+    prev_dist = dist = utils.__calculate_distance(grid['zones'][id], grid['zones'][b])
     while dist <= prev_dist:
         id += num_x
         delta_y = delta_y + step_y
@@ -421,7 +404,7 @@ def move_zones_x(grid: dict, a: dict, b: dict, dist_x: int, dist_y: int):
 
             # Update distance
             prev_dist = dist
-            dist = calculate_distance(grid['zones'][id], grid['zones'][b])
+            dist = utils.__calculate_distance(grid['zones'][id], grid['zones'][b])
         except IndexError:
             break
     
@@ -447,7 +430,7 @@ def move_zones_y(grid: dict, a: dict, b: dict, dist_x: int, dist_y: int):
 
     # While getting near to the destination zone, keep moving.
     # If we start to get far, stop!
-    prev_dist = dist = calculate_distance(grid['zones'][id], grid['zones'][b])
+    prev_dist = dist = utils.__calculate_distance(grid['zones'][id], grid['zones'][b])
     while dist <= prev_dist:
         id += num_y
         delta_x = delta_x + step_x
@@ -463,7 +446,7 @@ def move_zones_y(grid: dict, a: dict, b: dict, dist_x: int, dist_y: int):
 
             # Update distance
             prev_dist = dist
-            dist = calculate_distance(grid['zones'][id], grid['zones'][b])
+            dist = utils.__calculate_distance(grid['zones'][id], grid['zones'][b])
         except IndexError:
             break
 
@@ -494,7 +477,7 @@ def calculate_risk_of_zone(zone: dict, pois: list) -> float:
     sum = 0
 
     for poi in pois:
-        sum += poi['weight'] / (calculate_distance(zone, poi) ** 2)
+        sum += poi['weight'] / (utils.__calculate_distance(zone, poi) ** 2)
 
     return (zone['id'], 1 / sum)
 
@@ -860,7 +843,7 @@ def set_edus_positions_uniform_balanced(grid: dict):
                     # Don't even try if we are still within the range of another EDU
                     for i in range(1, grid['M'] + 1):
                         for edu in grid['edus'][i][-1:grid['search_range']:-1]:
-                            dist = calculate_distance_in_grid(grid, zone, edu)
+                            dist = utils.__calculate_distance_in_grid(grid, zone, edu)
                             if dist < grid['min_dist'][zone['RL']]:
                                 raise SkipZone
 
@@ -995,7 +978,7 @@ def set_edus_positions_uniform_restricted_plus(grid: dict):
                         # Don't even try if we are still within the range of another EDU
                         for i in range(1, grid['M'] + 1):
                             for edu in grid['edus'][i][-1:grid['search_range']:-1]:
-                                dist = calculate_distance_in_grid(grid, zone, edu)
+                                dist = utils.__calculate_distance_in_grid(grid, zone, edu)
                                 if dist < grid['min_dist'][zone['RL']]:
                                     raise SkipZone
 
