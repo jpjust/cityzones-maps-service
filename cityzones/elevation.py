@@ -23,6 +23,8 @@ elevation.
 
 After creating a grid object, use the following functions to calculate zone
 risks:
+
+- elevation.init_zones(grid)
 """
 
 from config import *
