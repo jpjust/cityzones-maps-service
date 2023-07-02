@@ -30,6 +30,13 @@ import requests
 import json
 import utils
 import os
+import fcntl
+
+# Length of each line in index
+LINE_LEN = 34
+
+# Multiprocessing
+MP_WORKERS=None  # If None, will use a value returned by the system
 
 def init_zones(grid: dict, nets: list, aps: list, weight: dict):
     """
@@ -67,39 +74,123 @@ def __index_cell_list_file(in_file: str, out_file: str):
     """
     Create an index from the original OpenCellID file.
     """
+
+    # First we need to filter the database to keep only coordinates and range
     fp_in = open(in_file, 'r')
-    radios = []
+    fp_out = os.open(out_file, os.O_CREAT | os.O_TRUNC | os.O_WRONLY)
+    lines = 0
 
     for line in fp_in:
         try:
-            radio, mcc, net, area, cell, unit, lon, lat, range, samples, changeable, created, updated, averageSignal = line.strip().split(',')
-            range = int(range)
-            if range == 0:
+            radio, mcc, net, area, cell, unit, lon, lat, r, samples, changeable, created, updated, averageSignal = line.strip().split(',')
+            r = int(r)
+            if r == 0:
+                # Let's discard no range cells
                 continue
 
             lat = float(lat)
             lon = float(lon)
 
-            radios.append({
-                'lat': lat,
-                'lon': lon,
-                'range': range
-            })
+            os.write(fp_out, f'{lat:012.7f},{lon:012.7f},{r:07d}\n'.encode())
+            lines += 1
             
         except ValueError:
             pass
     
     fp_in.close()
+    os.close(fp_out)
+    fp_out = os.open(out_file, os.O_RDWR | os.O_SYNC)
 
-    radios.sort(key=lambda radio: radio['lon'])
-    radios.sort(key=lambda radio: radio['lat'])
+    # Now we do a quick sort in the output file
+    __qsort_file(fp_out, 0, lines - 1, 1)
+    __qsort_file(fp_out, 0, lines - 1, 0)
+    os.close(fp_out)
 
-    fp_out = open(out_file, 'w')
-    for radio in radios:
-        fp_out.write(f'{radio["lat"]:019.7f},{radio["lon"]:019.7f},{radio["range"]:019d}\n')
+def __qsort_file(fp: int, p: int, r: int, key_idx: int):
+    if p < r:
+        (p, r, q) = __qsort_partition_file(fp, p, r, key_idx)
+        __qsort_file(fp, p, q - 1, key_idx)
+        __qsort_file(fp, q + 1, r, key_idx)
 
-    fp_out.close()
+def __qsort_file_mp(fp: int, p: int, r: int, key_idx: int):
+    payload = [(fp, p, r, key_idx)]
 
+    while len(payload) > 0:
+        print(f'payload = {payload}')
+        with mp.Pool(processes=len(payload)) as pool:
+            qlist = pool.starmap(__qsort_partition_file, payload)
+        
+        payload.clear()
+        print(f'qlist = {qlist}')
+        for (p, r, q) in qlist:
+            if p < q - 1: payload.append((fp, p, q - 1, key_idx))
+            if q + 1 < r: payload.append((fp, q + 1, r, key_idx))
+
+        os.fsync(fp)
+
+def __qsort_file_iterative(fp: int, p: int, r: int, key_idx: int):
+    slices = [{'p': p, 'r': r}]
+
+    while True:
+        if len(slices) == 0:
+            break
+
+        slice = slices.pop(0)
+        sp = slice['p']
+        sr = slice['r']
+
+        if sp < sr:
+            q = __qsort_partition_file(fp, sp, sr, key_idx)
+            slices.append({'p': sp, 'r': q - 1})
+            slices.append({'p': q + 1, 'r': sr})
+
+def __qsort_partition_file(fp: int, p: int, r: int, key_idx: int) -> int:
+    """
+    Partition the lines between p and r.
+    Return the new index of the pivot.
+    """
+    os.lseek(fp, r * LINE_LEN, os.SEEK_SET)
+    pivot = os.read(fp, LINE_LEN)
+    key_pivot = pivot.decode().strip().split(',')
+    
+    print(f'partitioning from {p} to {r}. pivot = {key_pivot[key_idx]}')
+    
+    i = p - 1
+    for j in range(p, r):
+        os.lseek(fp, j * LINE_LEN, os.SEEK_SET)
+        A = os.read(fp, LINE_LEN)
+        key_A = A.decode().strip().split(',')
+        
+        if key_A[key_idx] <= key_pivot[key_idx]:
+            i += 1
+            __swap_lines_file(fp, i, j)
+    
+    q = i + 1
+    __swap_lines_file(fp, q, r)
+    return (p, r, q)
+
+def __swap_lines_file(fp: int, line1: int, line2: int):
+    """
+    Swap lines 1 and 2 in file fp.
+    """
+    # os.lockf(fp, os.F_LOCK, 0)
+    # fcntl.flock(fp, fcntl.LOCK_EX)
+
+    # Read both lines
+    # os.lseek(fp, line1 * LINE_LEN, os.SEEK_SET)
+    data_line1 = os.pread(fp, LINE_LEN, line1 * LINE_LEN)
+    # os.lseek(fp, line2 * LINE_LEN, os.SEEK_SET)
+    data_line2 = os.pread(fp, LINE_LEN, line2 * LINE_LEN)
+
+    # Write lines back
+    # os.lseek(fp, line1 * LINE_LEN, os.SEEK_SET)
+    os.pwrite(fp, data_line2, line1 * LINE_LEN)
+    # os.lseek(fp, line2 * LINE_LEN, os.SEEK_SET)
+    os.pwrite(fp, data_line1, line2 * LINE_LEN)
+
+    # os.lockf(fp, os.F_ULOCK, 0)
+    # fcntl.flock(fp, fcntl.LOCK_UN)
+    
 def __get_radios_from_index(index_file: str, bottom: float, left: float, top: float, right: float) -> list:
     """
     Read the index and return the radios whiting the latitude boundaries.
@@ -107,7 +198,6 @@ def __get_radios_from_index(index_file: str, bottom: float, left: float, top: fl
     fp = os.open(index_file, os.O_RDONLY)
     len = os.stat(fp).st_size
 
-    LINE_LEN = 60
     lines = len / LINE_LEN
     start = end = 0
 
@@ -116,7 +206,7 @@ def __get_radios_from_index(index_file: str, bottom: float, left: float, top: fl
     os.lseek(fp, i * LINE_LEN, os.SEEK_SET)
     pos = i * LINE_LEN
     while True:
-        lat, lon, range = os.read(fp, LINE_LEN).decode().strip().split(',')
+        lat, lon, radius = os.read(fp, LINE_LEN).decode().strip().split(',')
         diff = abs(float(lat) - bottom)
 
         if float(lat) == bottom or i == 1 or diff <= 0.01:
@@ -138,7 +228,7 @@ def __get_radios_from_index(index_file: str, bottom: float, left: float, top: fl
     os.lseek(fp, i * LINE_LEN, os.SEEK_SET)
     pos = i * LINE_LEN
     while True:
-        lat, lon, range = os.read(fp, LINE_LEN).decode().strip().split(',')
+        lat, lon, radius = os.read(fp, LINE_LEN).decode().strip().split(',')
         diff = abs(float(lat) - top)
 
         if float(lat) == top or i == 1 or diff <= 0.01:
@@ -159,13 +249,13 @@ def __get_radios_from_index(index_file: str, bottom: float, left: float, top: fl
     os.lseek(fp, start, os.SEEK_SET)
     radios = []
     while (start < end):
-        lat, lon, range = os.read(fp, LINE_LEN).decode().strip().split(',')
+        lat, lon, radius = os.read(fp, LINE_LEN).decode().strip().split(',')
         start += LINE_LEN
 
         radios.append({
             'lat': float(lat),
             'lon': float(lon),
-            'range': int(range)
+            'range': int(radius)
         })
 
     os.close(fp)
