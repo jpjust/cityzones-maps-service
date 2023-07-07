@@ -1132,6 +1132,9 @@ if __name__ == '__main__':
 
             # Init zones elevation data
             elevation.init_zones(grid)
+
+            # Init zones connectivity data
+            connectivity.init_zones(grid, {'S': 1, 'T': 1, 'R': 1, 'C': 1})
             
             # Calculate risks regarding distance from PoIs
             calculate_risk_from_pois(grid)
@@ -1250,12 +1253,25 @@ if __name__ == '__main__':
             print('- Elevation data')
             fp = open(conf['output_elevation'], 'w')
             
-            data = 'system:index,elevation,.geo\n'
+            data = 'id,elevation,lat,lon\n'
             fp.write(data)
             row = 0
             for id in grid['zones_inside']:
-                coordinates = f'[{grid["zones"][id]["lon"]},{grid["zones"][id]["lat"]}]'
-                data = f'{row:020},{int(grid["zones"][id]["elevation"])},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
+                data = f'{row},{float(grid["zones"][id]["elevation"])},{grid["zones"][id]["lat"]},{grid["zones"][id]["lon"]}\n'
+                fp.write(data)
+                row += 1
+            fp.close()
+        
+        # Write a CSV file with connectivity data
+        if 'output_connectivity' in conf.keys():
+            print('- Connectivity data')
+            fp = open(conf['output_connectivity'], 'w')
+            
+            data = 'id,connectivity,lat,lon\n'
+            fp.write(data)
+            row = 0
+            for id in grid['zones_inside']:
+                data = f'{row},{float(grid["zones"][id]["dpconn"])},{grid["zones"][id]["lat"]},{grid["zones"][id]["lon"]}\n'
                 fp.write(data)
                 row += 1
             fp.close()
