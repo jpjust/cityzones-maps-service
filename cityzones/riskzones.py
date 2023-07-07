@@ -1204,13 +1204,12 @@ if __name__ == '__main__':
         print('- Map data')
         fp = open(conf['output'], 'w')
 
-        data = 'system:index,class,.geo\n'
+        data = 'id,class,lat,lon\n'
         fp.write(data)
         grid['zones_inside'].sort()
         row = 0
         for id in grid['zones_inside']:
-            coordinates = f'[{grid["zones"][id]["lon"]},{grid["zones"][id]["lat"]}]'
-            data = f'{row:020},{grid["zones"][id]["RL"]},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
+            data = f'{row},{grid["zones"][id]["RL"]},{grid["zones"][id]["lat"]},{grid["zones"][id]["lon"]}\n'
             fp.write(data)
             row += 1
         fp.close()
@@ -1220,13 +1219,13 @@ if __name__ == '__main__':
             print('- EDUs data')
             fp = open(conf['output_edus'], 'w')
 
-            data = 'system:index,.geo\n'
+            data = 'id,lat,lon\n'
             fp.write(data)
             row = 0
             for i in range(1, grid['M'] + 1):
                 for zone in grid['edus'][i]:
                     coordinates = f'[{zone["lon"]},{zone["lat"]}]'
-                    data = f'{row:020},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
+                    data = f'{row},{zone["lat"]},{zone["lon"]}\n'
                     fp.write(data)
                     row += 1
             fp.close()
@@ -1236,14 +1235,13 @@ if __name__ == '__main__':
             print('- Roads data')
             fp = open(conf['output_roads'], 'w')
             
-            data = 'system:index,.geo\n'
+            data = 'id,lat,lon\n'
             fp.write(data)
             row = 0
             for id in grid['zones_inside']:
                 zone = grid['zones'][id]
                 if zone['is_road']:
-                    coordinates = f'[{zone["lon"]},{zone["lat"]}]'
-                    data = f'{row:020},"{{""type"":""Point"",""coordinates"":{coordinates}}}"\n'
+                    data = f'{row},{zone["lat"]},{zone["lon"]}\n'
                     fp.write(data)
                     row += 1
             fp.close()
