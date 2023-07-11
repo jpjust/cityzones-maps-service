@@ -7,6 +7,15 @@ import sys
 TABLE_NAME = 'cells'
 BATCH_SIZE = 10000
 
+radios_ids = {
+    'GSM': 1,
+    'CDMA': 2,
+    'UMTS': 3,
+    'LTE': 4,
+    'NR': 5,
+    'Wi-Fi': 6
+}
+
 fp = open(sys.argv[1], 'r')
 i = 0
 
@@ -24,7 +33,7 @@ for line in fp:
 
         if i % BATCH_SIZE == 0:
             print(';')
-            print(f'INSERT INTO `{TABLE_NAME}` VALUES (NULL, ST_GeomFromText("POINT({lon} {lat})"), {r}, 1)', end='')
+            print(f'INSERT INTO `{TABLE_NAME}` VALUES (NULL, ST_GeomFromText("POINT({lon} {lat})"), {r}, {radios_ids[radio]})', end='')
         else:
             print(f', (NULL, ST_GeomFromText("POINT({lon} {lat})"), {r}, 1)', end='')
         
