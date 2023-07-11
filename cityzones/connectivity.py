@@ -31,14 +31,14 @@ import json
 import utils
 import os
 
-API_ENDPOINT = 'https://cityzones.just.pro.br/api/cells'
-
 # Load current directory .env or default configuration file
 CONF_DEFAULT_PATH='/etc/cityzones/maps-service.conf'
 if os.path.exists('.env'):
     config = dotenv_values('.env')
 elif os.path.exists(CONF_DEFAULT_PATH):
     config = dotenv_values(CONF_DEFAULT_PATH)
+
+API_ENDPOINT = f'{config["API_URL"]}/cells'
 
 def init_zones(grid: dict, weight: dict):
     """
@@ -76,7 +76,7 @@ def __coverage(zone: dict, ap: dict):
     return utils.__calculate_distance(zone, ap) <= ap['range']
 
 def __get_cells_within_bbox(left: float, top: float, right: float, bottom: float) -> list:
-    res = requests.get(f'{API_ENDPOINT}/{left}/{top}/{right}/{bottom}', headers={'accept': 'application/json', 'X-API-Key': config["API_KEY"]}, timeout=600)
+    res = requests.get(f'{API_ENDPOINT}/{left}/{top}/{right}/{bottom}', headers={'accept': 'application/json', 'X-API-Key': config["API_KEY"]}, timeout=int(config['NET_TIMEOUT']))
 
     if res.status_code != 200:
         raise Exception

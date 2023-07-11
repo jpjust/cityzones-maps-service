@@ -28,9 +28,17 @@ risks:
 """
 
 from config import *
-import multiprocessing as mp
+from dotenv import dotenv_values
 import requests
 import json
+import os
+
+# Load current directory .env or default configuration file
+CONF_DEFAULT_PATH='/etc/cityzones/maps-service.conf'
+if os.path.exists('.env'):
+    config = dotenv_values('.env')
+elif os.path.exists(CONF_DEFAULT_PATH):
+    config = dotenv_values(CONF_DEFAULT_PATH)
 
 API_ENDPOINT = 'https://api.open-elevation.com/api/v1/lookup'
 COORD_SET_SIZE = 500
@@ -67,7 +75,7 @@ def init_zones(grid: dict):
         request = {
             'locations': coord
         }
-        res = requests.post(API_ENDPOINT, data=json.dumps(request), headers={'Content-Type': 'application/json'}, timeout=60)
+        res = requests.post(API_ENDPOINT, data=json.dumps(request), headers={'Content-Type': 'application/json'}, timeout=int(config['NET_TIMEOUT']))
 
         if res.status_code != 200:
             raise Exception
