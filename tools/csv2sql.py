@@ -5,7 +5,7 @@
 import sys
 
 TABLE_NAME = 'cells'
-BATCH_SIZE = 1000
+BATCH_SIZE = 10000
 
 fp = open(sys.argv[1], 'r')
 i = 0
