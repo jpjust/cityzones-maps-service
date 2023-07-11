@@ -27,9 +27,10 @@
             }
         }
     },
-    "edu_alg": "none",
+    "connectivity_threshold": 0.05,
+    "edu_alg": "restricted_plus",
     "output": "csv/porto_M3.csv",
-    "output_edus": "csv/porto_edus_none.csv",
+    "output_edus": "csv/porto_edus_restricted_plus.csv",
     "output_roads": "csv/porto_roads.csv",
     "output_elevation": "csv/porto_elevation.csv",
     "output_connectivity": "csv/porto_connectivity.csv"

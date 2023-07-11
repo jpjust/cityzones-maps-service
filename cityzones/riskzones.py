@@ -70,6 +70,11 @@ EXIT_NO_POIS = 4
 EXIT_NO_MEMORY = 5
 EXIT_NO_CONF = 6
 
+# EDUs types
+EDU_SCALAR = 1
+EDU_MULTIMEDIA = 2
+EDU_GENERIC = 3
+
 # Load current directory .env or default configuration file
 CONF_DEFAULT_PATH='/etc/cityzones/maps-service.conf'
 if os.path.exists('.env'):
@@ -94,6 +99,7 @@ UNBALANCED = 1
 BALANCED = 2
 RESTRICTED = 3
 RESTRICTED_PLUS = 4
+CONNECTED = 5
 
 # Multiprocessing
 MP_WORKERS=None  # If None, will use a value returned by the system
@@ -155,6 +161,7 @@ def init_zones(grid: dict):
                 'RL': grid['M'],
                 'inside': True,
                 'has_edu': False,
+                'edu_type': EDU_GENERIC,
                 'is_road': False,
                 'urban_prob': 0
             }
@@ -576,7 +583,7 @@ def get_number_of_zones_by_RL(grid: dict) -> dict:
     
     return nzones
 
-def get_number_of_roads_by_RL(grid: dict) -> dict:
+def get_number_of_roads_by_RL(grid: dict, connectivity_threshold: int = 0) -> dict:
     """
     Calculate the number of zones on roads by RL.
     """
@@ -604,12 +611,12 @@ def get_urban_area_by_RL(grid: dict) -> dict:
     
     return nzones
 
-def get_number_of_edus_by_RL(grid: dict, n_edus: int, use_roads=False) -> dict:
+def get_number_of_edus_by_RL(grid: dict, n_edus: int, use_roads=False, connectivity_threshold: int = 0) -> dict:
     """
     Calculate the number of EDUs that must be positioned in each RL.
     """
     if use_roads:
-        nzones = get_number_of_roads_by_RL(grid)
+        nzones = get_number_of_roads_by_RL(grid, connectivity_threshold=connectivity_threshold)
     else:
         nzones = get_number_of_zones_by_RL(grid)
     
@@ -724,13 +731,13 @@ def reset_edus_flag(grid: dict, n_edus=None):
     for i in range(1, grid['M'] + 1):
         grid['edus'][i] = []                                            # Final list of EDUs in zone i
 
-def reset_edus_data(grid: dict, n_edus=None, use_roads=False):
+def reset_edus_data(grid: dict, n_edus=None, use_roads=False, connectivity_threshold: int = 0):
     """
     Reset EDUs data to prepare them for a positioning algorithm.
     """
     if n_edus == None:
         n_edus = grid['n_edus']
-    edus = get_number_of_edus_by_RL(grid, n_edus, use_roads)
+    edus = get_number_of_edus_by_RL(grid, n_edus, use_roads, connectivity_threshold)
     grid['At'] = {}
     grid['Ax'] = {}
     grid['radius'] = {}
@@ -764,7 +771,7 @@ def reset_edus_data(grid: dict, n_edus=None, use_roads=False):
 
     grid['zones'].sort(key=lambda zone : zone['id'])
 
-def set_edus_positions_uniform(grid, mode: int):
+def set_edus_positions_uniform(grid, mode: int, connectivity_threshold: int = 0):
     """
     Uniformly select zones for EDUs positioning.
     """
@@ -780,7 +787,7 @@ def set_edus_positions_uniform(grid, mode: int):
     elif mode == RESTRICTED:
         set_edus_positions_uniform_restricted(grid)
     elif mode == RESTRICTED_PLUS:
-        set_edus_positions_uniform_restricted_plus(grid)
+        set_edus_positions_uniform_restricted_plus(grid, connectivity_threshold)
     
     print('Positioning EDUs... 100.00%')
         
@@ -936,11 +943,11 @@ def set_edus_positions_uniform_restricted(grid: dict):
     for i in range(1, grid['M'] + 1):
         grid['edus'][i] = [*final_edus[i]]
 
-def set_edus_positions_uniform_restricted_plus(grid: dict):
+def set_edus_positions_uniform_restricted_plus(grid: dict, connectivity_threshold: int = 0, edus_type: int = EDU_GENERIC):
     """
     Restricted+ positioning mode.
     """
-    print('Chosen positioning method: uniform restricted+.')
+    print(f'Chosen positioning method: uniform restricted+ (connectivity threshold: {connectivity_threshold}).')
 
     final_edus = {}
     for i in range(1, grid['M'] + 1):
@@ -955,7 +962,7 @@ def set_edus_positions_uniform_restricted_plus(grid: dict):
         print(f"\n> Run #{n_run}, {edus_remaining} EDUs left.")
         n_run += 1
         reset_edus_flag(grid)
-        reset_edus_data(grid, edus_remaining, use_roads=True)
+        reset_edus_data(grid, edus_remaining, use_roads=True, connectivity_threshold=connectivity_threshold)
         y = int(grid['smallest_radius'])
         while y < grid['grid_y']:
             x = 0
@@ -966,9 +973,23 @@ def set_edus_positions_uniform_restricted_plus(grid: dict):
                         id = grid['grid_x'] * y + x
                         zone = grid['zones'][id]
 
-                        # The zone must be inside the AoI and be a road, otherwise, check the next zone
+                        # The zone must be inside the AoI, be a road and have a minimum connectivity, otherwise, check the next zone
                         if zone['inside'] and zone['is_road']:
-                            break
+                            if edus_type == EDU_SCALAR:
+                                set_edu_type = EDU_SCALAR
+                                break
+                            elif edus_type == EDU_MULTIMEDIA and zone['dpconn'] >= connectivity_threshold:
+                                set_edu_type = EDU_MULTIMEDIA
+                                break
+                            elif edus_type == EDU_GENERIC:
+                                if zone['dpconn'] >= connectivity_threshold:
+                                    set_edu_type = EDU_MULTIMEDIA
+                                else:
+                                    set_edu_type = EDU_SCALAR
+                                break
+                            else:
+                                x += 1
+
                         elif x >= grid['grid_x']:
                             raise OutOfBounds
                         else:
@@ -983,6 +1004,7 @@ def set_edus_positions_uniform_restricted_plus(grid: dict):
                                     raise SkipZone
 
                         zone['has_edu'] = True
+                        zone['edu_type'] = set_edu_type
                         grid['edus'][zone['RL']].append(zone)
                         x += int(grid['smallest_radius'] * 2)
                     
@@ -1160,6 +1182,10 @@ if __name__ == '__main__':
 
         # Run EDUs positioning algorithm
         time_begin = time.perf_counter()
+        if 'connectivity_threshold' in conf.keys():
+            connectivity_threshold = float(conf['connectivity_threshold'])
+        else:
+            connectivity_threshold = 0
 
         print(f'{grid["roads_points"]} allowed zones.')
 
@@ -1172,7 +1198,7 @@ if __name__ == '__main__':
         elif conf['edu_alg'] == 'restricted':
             set_edus_positions_uniform(grid, RESTRICTED)
         elif conf['edu_alg'] == 'restricted_plus':
-            set_edus_positions_uniform(grid, RESTRICTED_PLUS)
+            set_edus_positions_uniform(grid, RESTRICTED_PLUS, connectivity_threshold)
 
         # Output elapsed time
         time_positioning = time.perf_counter() - time_begin
@@ -1219,13 +1245,13 @@ if __name__ == '__main__':
             print('- EDUs data')
             fp = open(conf['output_edus'], 'w')
 
-            data = 'id,lat,lon\n'
+            data = 'id,type,lat,lon\n'
             fp.write(data)
             row = 0
             for i in range(1, grid['M'] + 1):
                 for zone in grid['edus'][i]:
                     coordinates = f'[{zone["lon"]},{zone["lat"]}]'
-                    data = f'{row},{zone["lat"]},{zone["lon"]}\n'
+                    data = f'{row},{zone["edu_type"]},{zone["lat"]},{zone["lon"]}\n'
                     fp.write(data)
                     row += 1
             fp.close()
