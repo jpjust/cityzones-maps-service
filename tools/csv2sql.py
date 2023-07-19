@@ -35,7 +35,7 @@ for line in fp:
             print(';')
             print(f'INSERT INTO `{TABLE_NAME}` VALUES (NULL, ST_GeomFromText("POINT({lon} {lat})"), {r}, {radios_ids[radio]})', end='')
         else:
-            print(f', (NULL, ST_GeomFromText("POINT({lon} {lat})"), {r}, 1)', end='')
+            print(f', (NULL, ST_GeomFromText("POINT({lon} {lat})"), {r}, {radios_ids[radio]})', end='')
         
         i += 1
     except ValueError:
