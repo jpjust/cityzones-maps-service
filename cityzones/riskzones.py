@@ -35,11 +35,13 @@ risks:
 try:
     import utils
     import osmpois
+    import overpass
     import elevation
     import connectivity
 except ModuleNotFoundError:
     from cityzones import utils
     from cityzones import osmpois
+    from cityzones import overpass
     from cityzones import elevation
     from cityzones import connectivity
 
@@ -1103,6 +1105,12 @@ if __name__ == '__main__':
         init_zones(grid)
 
         # Get PoIs and roads from OSM file
+        if 'pois' not in conf.keys():
+            fpois = open('/tmp/cityzones_pois.osm', 'w')
+            fpois.write(overpass.get_osm_from_bbox(conf['bottom'], conf['left'], conf['top'], conf['right'], int(config['NET_TIMEOUT'])))
+            fpois.close()
+            conf['pois'] = '/tmp/cityzones_pois.osm'
+        
         pois, roads = osmpois.extract_pois(conf['pois'], conf['pois_types'])
         add_pois(grid, pois)
         add_roads(grid, roads)
@@ -1156,7 +1164,15 @@ if __name__ == '__main__':
             elevation.init_zones(grid)
 
             # Init zones connectivity data
-            connectivity.init_zones(grid, {'S': 1, 'T': 1, 'R': 1, 'C': 1})
+            connectivity.init_zones(grid, {
+                'weight': { 'S': 1, 'T': 1, 'R': 1, 'C': 1 },
+                1: { 'S': 0, 'T': 0, 'R': 0, 'C': 0 },
+                2: { 'S': 0, 'T': 0, 'R': 0, 'C': 0 },
+                3: { 'S': 3, 'T': 3, 'R': 3, 'C': 3 },
+                4: { 'S': 3, 'T': 4, 'R': 4, 'C': 3 },
+                5: { 'S': 4, 'T': 5, 'R': 5, 'C': 5 },
+                6: { 'S': 2, 'T': 4, 'R': 2, 'C': 2 },
+            })
             
             # Calculate risks regarding distance from PoIs
             calculate_risk_from_pois(grid)

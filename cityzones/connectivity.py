@@ -40,7 +40,7 @@ elif os.path.exists(CONF_DEFAULT_PATH):
 
 API_ENDPOINT = f'{config["API_URL"]}/cells'
 
-def init_zones(grid: dict, weight: dict):
+def init_zones(grid: dict, params: dict):
     """
     Initialize every zone in the grid and set their DPConn.
     """
@@ -51,19 +51,26 @@ def init_zones(grid: dict, weight: dict):
         zone['dpconn'] = 0
 
     # Calculate the weighted sum of the networks types parameters
-    sum_nets = 0
     cells = __get_cells_within_bbox(grid['left'], grid['top'], grid['right'], grid['bottom'])
-    for cell in cells:
-        # sum_nets += weight['S'] * cell['s'] + weight['T'] * cell['t'] + weight['R'] * cell['r'] - weight['C'] * cell['c']
-        sum_nets += 1 # For now, every network will have the same weight
+    types = set()
 
+    # Collect types
+    for cell in cells:
+        types.add(cell['type'])
+
+    # Compute sum_nets
+    sum_nets = 0
+    for type in types:
+        sum_nets += params['weight']['S'] * params[type]['S'] + params['weight']['T'] * params[type]['T'] + params['weight']['R'] * params[type]['R'] - params['weight']['C'] * params[type]['C']
+
+    # Compute DPConn for each cell
     for id in grid['zones_inside']:
         zone = grid['zones'][id]
 
         sum_coverage = 0
         for cell in cells:
-            # sum_coverage += __coverage(zone, cell) * (weight['S'] * cell['s'] + weight['T'] * cell['t'] + weight['R'] * cell['r'] - weight['C'] * cell['c'])
-            sum_coverage += __coverage(zone, cell) # For now, every network will have the same weight
+            cell_params = params['weight']['S'] * params[cell['type']]['S'] + params['weight']['T'] * params[cell['type']]['T'] + params['weight']['R'] * params[cell['type']]['R'] - params['weight']['C'] * params[cell['type']]['C']
+            sum_coverage += __coverage(zone, cell) * cell_params
         
         zone['dpconn'] = sum_coverage / sum_nets
 
