@@ -60,6 +60,17 @@
             ]
         },
         {
+            "name": "Python: Risk Zones in Barcelona",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/cityzones/riskzones.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "conf/barcelona.json"
+            ]
+        },
+        {
             "name": "Python: Risk Zones in Test Area",
             "type": "python",
             "request": "launch",
