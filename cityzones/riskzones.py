@@ -958,10 +958,12 @@ def set_edus_positions_uniform_restricted_plus(grid: dict, connectivity_threshol
     edus_total = 0
     edus_remaining = grid['n_edus'] - edus_total
     n_run = 0
+    edu_positioned = True
 
     # Repeat until all EDUs are positioned
-    while edus_remaining > 0:
+    while edus_remaining > 0 and edu_positioned == True:
         print(f"\n> Run #{n_run}, {edus_remaining} EDUs left.")
+        edu_positioned = False
         n_run += 1
         reset_edus_flag(grid)
         reset_edus_data(grid, edus_remaining, use_roads=True, connectivity_threshold=connectivity_threshold)
@@ -1008,6 +1010,7 @@ def set_edus_positions_uniform_restricted_plus(grid: dict, connectivity_threshol
                         zone['has_edu'] = True
                         zone['edu_type'] = set_edu_type
                         grid['edus'][zone['RL']].append(zone)
+                        edu_positioned = True
                         x += int(grid['smallest_radius'] * 2)
                     
                     except SkipZone:
@@ -1307,11 +1310,11 @@ if __name__ == '__main__':
             print('- Connectivity data')
             fp = open(conf['output_connectivity'], 'w')
             
-            data = 'id,connectivity,lat,lon\n'
+            data = 'id,connectivity,nets,lat,lon\n'
             fp.write(data)
             row = 0
             for id in grid['zones_inside']:
-                data = f'{row},{float(grid["zones"][id]["dpconn"])},{grid["zones"][id]["lat"]},{grid["zones"][id]["lon"]}\n'
+                data = f'{row},{float(grid["zones"][id]["dpconn"])},\"{grid["zones"][id]["dpconn_nets"]}\",{grid["zones"][id]["lat"]},{grid["zones"][id]["lon"]}\n'
                 fp.write(data)
                 row += 1
             fp.close()
