@@ -66,8 +66,25 @@
             "program": "${workspaceFolder}/cityzones/riskzones.py",
             "console": "integratedTerminal",
             "justMyCode": true,
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+            },
             "args": [
                 "conf/barcelona.json"
+            ]
+        },
+        {
+            "name": "Python: Risk Zones in Barcelona Metro",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/cityzones/riskzones.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+            },
+            "args": [
+                "conf/barcelona_metro.json"
             ]
         },
         {

@@ -3,7 +3,7 @@
   "bottom": 41.3017913,
   "right": 2.2451809000000003,
   "top": 41.483383700000005,
-  "zone_size": 300,
+  "zone_size": 60,
   "cache_zones": true,
   "M": 3,
   "edus": 300,
@@ -22,7 +22,7 @@
     },
     "railway": {}
   },
-  "connectivity_threshold": 0.5,
+  "connectivity_threshold": 0.8,
   "edu_alg": "restricted_plus",
   "output": "csv/barcelona_M3.csv",
   "output_edus": "csv/barcelona_edus_restricted_plus.csv",
