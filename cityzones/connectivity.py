@@ -30,6 +30,7 @@ import requests
 import json
 import utils
 import os
+import multiprocessing as mp
 
 # Load current directory .env or default configuration file
 CONF_DEFAULT_PATH='/etc/cityzones/maps-service.conf'
@@ -49,6 +50,7 @@ def init_zones(grid: dict, params: dict):
     # Initialize grid structure
     for zone in grid['zones']:
         zone['dpconn'] = 0
+        zone['dpconn_nets'] = 0
 
     # Calculate the weighted sum of the networks types parameters
     cells = __get_cells_within_bbox(grid['left'], grid['top'], grid['right'], grid['bottom'])
@@ -63,18 +65,54 @@ def init_zones(grid: dict, params: dict):
     for type in types:
         sum_nets += params['weight']['S'] * params[type]['S'] + params['weight']['T'] * params[type]['T'] + params['weight']['R'] * params[type]['R'] - params['weight']['C'] * params[type]['C']
 
-    # Compute DPConn for each cell
-    for id in grid['zones_inside']:
-        zone = grid['zones'][id]
+    # # Compute DPConn for each cell
+    # for id in grid['zones_inside']:
+    #     zone = grid['zones'][id]
+    #     nets_types = set()
 
-        sum_coverage = 0
-        for cell in cells:
-            cell_params = params['weight']['S'] * params[cell['type']]['S'] + params['weight']['T'] * params[cell['type']]['T'] + params['weight']['R'] * params[cell['type']]['R'] - params['weight']['C'] * params[cell['type']]['C']
-            sum_coverage += __coverage(zone, cell) * cell_params
+    #     sum_coverage = 0
+    #     for cell in cells:
+    #         if __coverage(zone, cell) == True:
+    #             nets_types.add(cell['type'])
+
+    #     for type in nets_types:
+    #         cell_params = params['weight']['S'] * params[type]['S'] + params['weight']['T'] * params[type]['T'] + params['weight']['R'] * params[type]['R'] - params['weight']['C'] * params[type]['C']
+    #         sum_coverage += cell_params
         
-        zone['dpconn'] = sum_coverage / sum_nets
+    #     zone['dpconn'] = sum_coverage / sum_nets
+    #     zone['dpconn_nets'] = str(nets_types)
+    
+    #################################
+    # Compute DPConn for each cell
+    with mp.Pool(processes=MP_WORKERS) as pool:
+        payload = []
+        for id in grid['zones_inside']:
+            zone = grid['zones'][id]
+            payload.append((zone, cells, sum_nets, params))
+        res = pool.starmap(__compute_zone_dpcoon, payload)
+    
+    for data in res:
+        grid['zones'][data[0]]['dpconn'] = data[1]
+        grid['zones'][data[0]]['dpconn_nets'] = data[2]
 
     print('Done!')
+
+def __compute_zone_dpcoon(zone: dict, cells: list, sum_nets: float, params: dict) -> float:
+    nets_types = set()
+    sum_coverage = 0
+
+    for cell in cells:
+        if __coverage(zone, cell) == True:
+            nets_types.add(cell['type'])
+
+    for type in nets_types:
+        cell_params = params['weight']['S'] * params[type]['S'] + params['weight']['T'] * params[type]['T'] + params['weight']['R'] * params[type]['R'] - params['weight']['C'] * params[type]['C']
+        sum_coverage += cell_params
+    
+    zone['dpconn'] = sum_coverage / sum_nets
+    zone['dpconn_nets'] = str(nets_types)
+
+    return (zone['id'], zone['dpconn'], zone['dpconn_nets'])
 
 def __coverage(zone: dict, ap: dict):
     """
