@@ -8,6 +8,7 @@
   "M": 3,
   "edus": 300,
   "geojson": "geojson/barcelona.geojson",
+  "pois": "osm/barcelona.osm",
   "pois_types": {
     "amenity": {
       "police": {
@@ -22,7 +23,7 @@
     },
     "railway": {}
   },
-  "connectivity_threshold": 0.8,
+  "connectivity_threshold": 0.9,
   "edu_alg": "restricted_plus",
   "output": "csv/barcelona_M3.csv",
   "output_edus": "csv/barcelona_edus_restricted_plus.csv",
