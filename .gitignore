@@ -145,3 +145,6 @@ debian/cityzones-maps-service_*
 debian/cityzones-maps-service/debian/.debhelper
 debian/cityzones-maps-service/debian/cityzones-maps-service
 debian/cityzones-maps-service/debian/files
+
+# Temp
+tmp/
