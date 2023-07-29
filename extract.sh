@@ -53,8 +53,8 @@ osmosis --read-pbf file=france.osm.pbf --bounding-box top=48.9281 left=2.1842 bo
 # Just set the elements you want to keep through the --keep argument.
 ##########
 
-# Emergency buildings or police, hospital, fire stations
-osmfilter osm/feira.osm --keep="emergency=yes OR amenity=police =hospital =fire_station" -o=osm/feira_filtered.osm
+# Highways, Emergency buildings or police, hospital, fire stations
+osmfilter osm/feira.osm --keep="highway= OR emergency=yes OR amenity=police =hospital =fire_station" -o=osm/feira_filtered.osm
 
 # Only police depts
 osmfilter osm/feira.osm --keep="amenity=police" -o=osm/feira_police.osm
