@@ -191,11 +191,14 @@ def add_polygon(grid: dict, polygons: list):
     """
     Add the polygons in the list into the grid.
     """
+    print('Adding polygons... ', end='')
     grid['polygons'].clear()
     grid['pol_points'] = 0
     for polygon in polygons:
         grid['polygons'].append(polygon)
         grid['pol_points'] += len(polygon)
+    
+    print('Done!')
 
 def init_zones_by_polygon(grid: dict):
     """
@@ -324,17 +327,22 @@ def add_pois(grid: dict, pois: list):
     """
     Add PoIs into the grid object.
     """
+    print('Adding PoIs... ', end='')
     grid['pois'].clear()
     grid['pois_inside'].clear()
     
     for poi in pois:
         grid['pois'].append(poi)
         grid['pois_inside'].append(poi)
+    
+    print('Done!')
 
 def add_roads(grid: dict, roads: list):
     """
     Add roads to zones list.
     """
+    print('Adding roads... ', end='')
+
     for road in roads:
         # Ignore points outside the grid
         if road['start']['lat'] < grid['bottom'] or road['start']['lat'] > grid['top'] \
@@ -364,6 +372,8 @@ def add_roads(grid: dict, roads: list):
     for zone in grid['zones']:
         if zone['is_road']:
             grid['roads_points'] += 1
+    
+    print('Done!')
 
 def coordinates_to_id(grid: dict, lat, lon):
     """
@@ -978,7 +988,7 @@ def set_edus_positions_uniform_restricted_plus(grid: dict, connectivity_threshol
                         zone = grid['zones'][id]
 
                         # The zone must be inside the AoI, be a road and have a minimum connectivity, otherwise, check the next zone
-                        if zone['inside'] and zone['is_road']:
+                        if zone['inside'] and zone['is_road'] and zone['dpconn'] > 0:
                             if edus_type == EDU_SCALAR:
                                 set_edu_type = EDU_SCALAR
                                 break
@@ -1109,10 +1119,12 @@ if __name__ == '__main__':
 
         # Get PoIs and roads from OSM file
         if 'pois' not in conf.keys():
-            fpois = open('/tmp/cityzones_pois.osm', 'w')
-            fpois.write(overpass.get_osm_from_bbox(conf['bottom'], conf['left'], conf['top'], conf['right'], int(config['NET_TIMEOUT'])))
-            fpois.close()
+            print('Getting PoIs from Overpass... ', end='')
+            # fpois = open('/tmp/cityzones_pois.osm', 'w')
+            overpass.get_osm_from_bbox('/tmp/cityzones_pois.osm', conf['bottom'], conf['left'], conf['top'], conf['right'], int(config['NET_TIMEOUT']))
+            # fpois.close()
             conf['pois'] = '/tmp/cityzones_pois.osm'
+            print('Done!')
         
         pois, roads = osmpois.extract_pois(conf['pois'], conf['pois_types'])
         add_pois(grid, pois)
@@ -1164,17 +1176,29 @@ if __name__ == '__main__':
                 print(f'WARNING: GeoJSON file {conf["geojson"]} not found. Not filtering by AoI polygon.')
 
             # Init zones elevation data
-            elevation.init_zones(grid)
+            try:
+                elevation.init_zones(grid)
+            except Exception:
+                print('Error trying to get elevation data!')
 
             # Init zones connectivity data
+            # connectivity.init_zones(grid, {
+            #     'weight': { 'S': 1, 'T': 1, 'R': 1, 'C': 1 },
+            #     1: { 'S': 0, 'T': 0, 'R': 0, 'C': 0 },
+            #     2: { 'S': 0, 'T': 0, 'R': 0, 'C': 0 },
+            #     3: { 'S': 3, 'T': 3, 'R': 3, 'C': 3 },
+            #     4: { 'S': 3, 'T': 4, 'R': 4, 'C': 3 },
+            #     5: { 'S': 4, 'T': 5, 'R': 5, 'C': 5 },
+            #     6: { 'S': 2, 'T': 4, 'R': 2, 'C': 2 },
+            # })
             connectivity.init_zones(grid, {
                 'weight': { 'S': 1, 'T': 1, 'R': 1, 'C': 1 },
                 1: { 'S': 0, 'T': 0, 'R': 0, 'C': 0 },
                 2: { 'S': 0, 'T': 0, 'R': 0, 'C': 0 },
-                3: { 'S': 3, 'T': 3, 'R': 3, 'C': 3 },
-                4: { 'S': 3, 'T': 4, 'R': 4, 'C': 3 },
-                5: { 'S': 4, 'T': 5, 'R': 5, 'C': 5 },
-                6: { 'S': 2, 'T': 4, 'R': 2, 'C': 2 },
+                3: { 'S': 0, 'T': 0, 'R': 0, 'C': 0 },
+                4: { 'S': 3, 'T': 4, 'R': 4, 'C': 3 }, # Total: 8
+                5: { 'S': 0, 'T': 0, 'R': 0, 'C': 0 },
+                6: { 'S': 2, 'T': 4, 'R': 2, 'C': 2 }, # Total: 6
             })
             
             # Calculate risks regarding distance from PoIs

@@ -21,7 +21,7 @@ import requests
 
 API_ENDPOINT = 'https://overpass-api.de/api/interpreter'
 
-def get_osm_from_bbox(bottom: float, left: float, top: float, right: float, request_timeout: int) -> str:
+def get_osm_from_bbox(filename: str, bottom: float, left: float, top: float, right: float, request_timeout: int) -> str:
     """
     Query Overpass API and request the OSM from the bounding box specified by the parameters.
     The OSM data will arrive in XML format.
@@ -31,10 +31,14 @@ def get_osm_from_bbox(bottom: float, left: float, top: float, right: float, requ
       out;
     '''
 
-    res = requests.get(API_ENDPOINT, data=query, timeout=request_timeout)
-    return res.content.decode()
+    res = requests.get(API_ENDPOINT, data=query, stream=True, timeout=request_timeout)
+    with open(filename, 'wb') as fp:
+        for chunk in res.iter_content():
+            fp.write(chunk)
 
-def get_osm_from_polygon(polygon: list, request_timeout: int) -> str:
+    return res.status_code
+
+def get_osm_from_polygon(filename: str, polygon: list, request_timeout: int) -> str:
     """
     Query Overpass API and request the OSM from the polygon specified by the parameters.
     The OSM data will arrive in XML format.
@@ -49,9 +53,13 @@ def get_osm_from_polygon(polygon: list, request_timeout: int) -> str:
     '''
 
     res = requests.get(API_ENDPOINT, data=query, timeout=request_timeout)
-    return res.content.decode()
+    with open(filename, 'wb') as fp:
+        for chunk in res.iter_content():
+            fp.write(chunk)
 
-def get_osm_from_geojson(geo_json: dict, request_timeout: int) -> str:
+    return res.status_code
+
+def get_osm_from_geojson(filename: str, geo_json: dict, request_timeout: int) -> str:
     """
     Query Overpass API and request the OSM from the coordinates in the GeoJSON specified by the parameters.
     The OSM data will arrive in XML format.
@@ -70,4 +78,8 @@ def get_osm_from_geojson(geo_json: dict, request_timeout: int) -> str:
     query += ')\nout;\n'
 
     res = requests.get(API_ENDPOINT, data=query, timeout=request_timeout)
-    return res.content.decode()
+    with open(filename, 'wb') as fp:
+        for chunk in res.iter_content():
+            fp.write(chunk)
+
+    return res.status_code
