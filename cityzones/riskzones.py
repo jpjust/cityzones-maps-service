@@ -578,7 +578,10 @@ def calculate_RL(grid: dict):
         if grid['zones'][id]['risk'] == 0:
             grid['zones'][id]['RL'] = 1
         else:
-            combined_risk = grid['zones'][id]['risk'] * grid['zones'][id]['risk_elevation']
+            combined_risk = grid['zones'][id]['risk']
+            if 'risk_elevation' in grid['zones'][id].keys():
+                combined_risk *= grid['zones'][id]['risk_elevation']
+                
             rl = grid['M'] - min(abs(int(math.log(combined_risk))), grid['M'] - 1)
             grid['zones'][id]['RL'] = int(rl)
 
