@@ -1,0 +1,32 @@
+{
+  "left": 2.1435933852442304,
+  "bottom": 41.38655248097348,
+  "right": 2.196880809145455,
+  "top": 41.40694711615939,
+  "zone_size": 10,
+  "cache_zones": true,
+  "M": 3,
+  "edus": 300,
+  "geojson": "geojson/barcelona_small.geojson",
+  "pois_types": {
+    "amenity": {
+      "police": {
+        "w": 2.0
+      },
+      "hospital": {
+        "w": 10.0
+      },
+      "fire_station": {
+        "w": 5.0
+      }
+    },
+    "railway": {}
+  },
+  "connectivity_threshold": 0.9,
+  "edu_alg": "restricted_plus",
+  "output": "csv/barcelona_small_M3.csv",
+  "output_edus": "csv/barcelona_small_edus_restricted_plus.csv",
+  "output_roads": "csv/barcelona_small_roads.csv",
+  "output_elevation": "csv/barcelona_small_elevation.csv",
+  "output_connectivity": "csv/barcelona_small_connectivity.csv"
+}

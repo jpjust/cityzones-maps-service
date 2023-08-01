@@ -3,7 +3,7 @@
   "bottom": 41.3017913,
   "right": 2.2451809000000003,
   "top": 41.483383700000005,
-  "zone_size": 60,
+  "zone_size": 50,
   "cache_zones": true,
   "M": 3,
   "edus": 300,

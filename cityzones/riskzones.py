@@ -1205,7 +1205,7 @@ if __name__ == '__main__':
             calculate_risk_from_pois(grid)
 
             # Calculate risks regarding elevation
-            calculate_risk_from_elevation(grid)
+            #calculate_risk_from_elevation(grid)
 
             # Normalize risks and finish classification
             normalize_risks(grid)
