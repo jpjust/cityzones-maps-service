@@ -74,7 +74,7 @@
             ]
         },
         {
-            "name": "Python: Risk Zones in Barcelona Metro",
+            "name": "Python: Risk Zones in Barcelona Small",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/cityzones/riskzones.py",
@@ -84,7 +84,7 @@
                 "PYDEVD_DISABLE_FILE_VALIDATION": "1",
             },
             "args": [
-                "conf/barcelona_metro.json"
+                "conf/barcelona_small.json"
             ]
         },
         {

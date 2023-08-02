@@ -73,9 +73,8 @@ EXIT_NO_MEMORY = 5
 EXIT_NO_CONF = 6
 
 # EDUs types
-EDU_SCALAR = 1
-EDU_MULTIMEDIA = 2
-EDU_GENERIC = 3
+EDU_LOOSE = 1
+EDU_TIGHT = 2
 
 # Load current directory .env or default configuration file
 CONF_DEFAULT_PATH='/etc/cityzones/maps-service.conf'
@@ -106,7 +105,7 @@ CONNECTED = 5
 # Multiprocessing
 MP_WORKERS=None  # If None, will use a value returned by the system
 
-def create_riskzones_grid(left: float, bottom: float, right: float, top: float, zone_size: int, M: int, n_edus: int) -> dict:
+def create_riskzones_grid(left: float, bottom: float, right: float, top: float, zone_size: int, M: int, n_edus: dict) -> dict:
     """
     Create a riskzones grid object for futher manipulation.
     """
@@ -119,7 +118,8 @@ def create_riskzones_grid(left: float, bottom: float, right: float, top: float, 
         'width': abs(right - left),
         'height': abs(top - bottom),
         'M': M,
-        'n_edus': n_edus,
+        'n_edus_loose': n_edus['loose'],
+        'n_edus_tight': n_edus['tight'],
         'edus': {},
         'polygons': [],
         'pol_points': 0,
@@ -163,7 +163,7 @@ def init_zones(grid: dict):
                 'RL': grid['M'],
                 'inside': True,
                 'has_edu': False,
-                'edu_type': EDU_GENERIC,
+                'edu_type': EDU_LOOSE,
                 'is_road': False,
                 'urban_prob': 0
             }
@@ -581,7 +581,7 @@ def calculate_RL(grid: dict):
             combined_risk = grid['zones'][id]['risk']
             if 'risk_elevation' in grid['zones'][id].keys():
                 combined_risk *= grid['zones'][id]['risk_elevation']
-                
+
             rl = grid['M'] - min(abs(int(math.log(combined_risk))), grid['M'] - 1)
             grid['zones'][id]['RL'] = int(rl)
 
@@ -730,7 +730,7 @@ def set_edus_positions_random(grid: dict):
     random.seed()
     zones_by_RL = get_zones_by_RL(grid)
     grid['edus'] = {}
-    edus = get_number_of_edus_by_RL(grid, grid['n_edus'])
+    edus = get_number_of_edus_by_RL(grid, grid['n_edus_loose'] + grid['n_edus_tight'])
     
     for i in range(1, grid['M'] + 1):
         grid['edus'][i] = random.choices(zones_by_RL[i], k=edus[i])
@@ -751,7 +751,7 @@ def reset_edus_data(grid: dict, n_edus=None, use_roads=False, connectivity_thres
     Reset EDUs data to prepare them for a positioning algorithm.
     """
     if n_edus == None:
-        n_edus = grid['n_edus']
+        n_edus = grid['n_edus_loose'] + grid['n_edus_tight']
     edus = get_number_of_edus_by_RL(grid, n_edus, use_roads, connectivity_threshold)
     grid['At'] = {}
     grid['Ax'] = {}
@@ -802,7 +802,8 @@ def set_edus_positions_uniform(grid, mode: int, connectivity_threshold: int = 0)
     elif mode == RESTRICTED:
         set_edus_positions_uniform_restricted(grid)
     elif mode == RESTRICTED_PLUS:
-        set_edus_positions_uniform_restricted_plus(grid, connectivity_threshold)
+        set_edus_positions_uniform_restricted_plus(grid, grid['n_edus_tight'], connectivity_threshold, EDU_TIGHT)
+        set_edus_positions_uniform_restricted_plus(grid, grid['n_edus_loose'], 0, EDU_LOOSE)
     
     print('Positioning EDUs... 100.00%')
         
@@ -897,7 +898,7 @@ def set_edus_positions_uniform_restricted(grid: dict):
         final_edus[i] = []
 
     edus_total = 0
-    edus_remaining = grid['n_edus'] - edus_total
+    edus_remaining = grid['n_edus_loose'] + grid['n_edus_tight'] - edus_total
     n_run = 0
 
     # Repeat until all EDUs are positioned
@@ -952,13 +953,13 @@ def set_edus_positions_uniform_restricted(grid: dict):
         edus_total = 0
         for i in range(1, grid['M'] + 1):
             edus_total += len(final_edus[i])
-        edus_remaining = grid['n_edus'] - edus_total
+        edus_remaining = grid['n_edus_loose'] + grid['n_edus_tight'] - edus_total
     
     # Positioning finished. Move final_edus to grid
     for i in range(1, grid['M'] + 1):
         grid['edus'][i] = [*final_edus[i]]
 
-def set_edus_positions_uniform_restricted_plus(grid: dict, connectivity_threshold: int = 0, edus_type: int = EDU_GENERIC):
+def set_edus_positions_uniform_restricted_plus(grid: dict, n_edus: int, connectivity_threshold: int = 0, edus_type: int = EDU_LOOSE):
     """
     Restricted+ positioning mode.
     """
@@ -969,9 +970,13 @@ def set_edus_positions_uniform_restricted_plus(grid: dict, connectivity_threshol
         final_edus[i] = []
 
     edus_total = 0
-    edus_remaining = grid['n_edus'] - edus_total
+    edus_remaining = n_edus - edus_total
     n_run = 0
     edu_positioned = True
+
+    # Record previously positioned EDUs
+    for i in range(1, grid['M'] + 1):
+        final_edus[i].extend(grid['edus'][i])
 
     # Repeat until all EDUs are positioned
     while edus_remaining > 0 and edu_positioned == True:
@@ -990,23 +995,9 @@ def set_edus_positions_uniform_restricted_plus(grid: dict, connectivity_threshol
                         id = grid['grid_x'] * y + x
                         zone = grid['zones'][id]
 
-                        # The zone must be inside the AoI, be a road and have a minimum connectivity, otherwise, check the next zone
-                        if zone['inside'] and zone['is_road'] and zone['dpconn'] > 0:
-                            if edus_type == EDU_SCALAR:
-                                set_edu_type = EDU_SCALAR
-                                break
-                            elif edus_type == EDU_MULTIMEDIA and zone['dpconn'] >= connectivity_threshold:
-                                set_edu_type = EDU_MULTIMEDIA
-                                break
-                            elif edus_type == EDU_GENERIC:
-                                if zone['dpconn'] >= connectivity_threshold:
-                                    set_edu_type = EDU_MULTIMEDIA
-                                else:
-                                    set_edu_type = EDU_SCALAR
-                                break
-                            else:
-                                x += 1
-
+                        # The zone must be inside the AoI, be a road and have some connectivity, otherwise, check the next zone
+                        if zone['inside'] and zone['is_road'] and zone['dpconn'] > connectivity_threshold:
+                            break
                         elif x >= grid['grid_x']:
                             raise OutOfBounds
                         else:
@@ -1021,7 +1012,7 @@ def set_edus_positions_uniform_restricted_plus(grid: dict, connectivity_threshol
                                     raise SkipZone
 
                         zone['has_edu'] = True
-                        zone['edu_type'] = set_edu_type
+                        zone['edu_type'] = edus_type
                         grid['edus'][zone['RL']].append(zone)
                         edu_positioned = True
                         x += int(grid['smallest_radius'] * 2)
@@ -1048,11 +1039,11 @@ def set_edus_positions_uniform_restricted_plus(grid: dict, connectivity_threshol
         edus_total = 0
         for i in range(1, grid['M'] + 1):
             edus_total += len(final_edus[i])
-        edus_remaining = grid['n_edus'] - edus_total
+        edus_remaining = n_edus - edus_total
     
     # Positioning finished. Move final_edus to grid
     for i in range(1, grid['M'] + 1):
-        grid['edus'][i] = [*final_edus[i]]
+        grid['edus'][i].extend(final_edus[i])
 
 def get_spiral_path(grid: dict, range_radius: int) -> list:
     """
@@ -1179,10 +1170,11 @@ if __name__ == '__main__':
                 print(f'WARNING: GeoJSON file {conf["geojson"]} not found. Not filtering by AoI polygon.')
 
             # Init zones elevation data
-            try:
-                elevation.init_zones(grid)
-            except Exception:
-                print('Error trying to get elevation data!')
+            if 'output_elevation' in conf.keys():
+                try:
+                    elevation.init_zones(grid)
+                except Exception:
+                    print('Error trying to get elevation data!')
 
             # Init zones connectivity data
             # connectivity.init_zones(grid, {
@@ -1208,7 +1200,8 @@ if __name__ == '__main__':
             calculate_risk_from_pois(grid)
 
             # Calculate risks regarding elevation
-            #calculate_risk_from_elevation(grid)
+            if 'output_elevation' in conf.keys():
+                calculate_risk_from_elevation(grid)
 
             # Normalize risks and finish classification
             normalize_risks(grid)

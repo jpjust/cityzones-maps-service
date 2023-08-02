@@ -6,7 +6,10 @@
   "zone_size": 10,
   "cache_zones": true,
   "M": 3,
-  "edus": 300,
+  "edus": {
+    "loose": 200,
+    "tight": 100
+  },
   "geojson": "geojson/barcelona_small.geojson",
   "pois_types": {
     "amenity": {
@@ -22,11 +25,10 @@
     },
     "railway": {}
   },
-  "connectivity_threshold": 0.9,
+  "connectivity_threshold": 0.6,
   "edu_alg": "restricted_plus",
   "output": "csv/barcelona_small_M3.csv",
   "output_edus": "csv/barcelona_small_edus_restricted_plus.csv",
   "output_roads": "csv/barcelona_small_roads.csv",
-  "output_elevation": "csv/barcelona_small_elevation.csv",
   "output_connectivity": "csv/barcelona_small_connectivity.csv"
 }
