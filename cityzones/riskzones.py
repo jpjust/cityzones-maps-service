@@ -52,6 +52,7 @@ import sys
 import os
 import random
 import resource
+import subprocess
 import math
 import multiprocessing as mp
 from dotenv import dotenv_values
@@ -71,8 +72,10 @@ EXIT_NO_ZONES = 3
 EXIT_NO_POIS = 4
 EXIT_NO_MEMORY = 5
 EXIT_NO_CONF = 6
+EXIT_OSMFILTER_TIMEOUT = 7
 
 # EDUs types
+EDU_NONE = 0
 EDU_LOOSE = 1
 EDU_TIGHT = 2
 
@@ -163,7 +166,7 @@ def init_zones(grid: dict):
                 'RL': grid['M'],
                 'inside': True,
                 'has_edu': False,
-                'edu_type': EDU_LOOSE,
+                'edu_type': EDU_NONE,
                 'is_road': False,
                 'urban_prob': 0
             }
@@ -741,6 +744,7 @@ def reset_edus_flag(grid: dict, n_edus=None):
     """
     for zone in grid['zones']:
         zone['has_edu'] = False
+        zone['edu_type'] = EDU_NONE
     
     grid['edus'] = {}
     for i in range(1, grid['M'] + 1):
@@ -965,38 +969,29 @@ def set_edus_positions_uniform_restricted_plus(grid: dict, n_edus: int, connecti
     """
     print(f'Chosen positioning method: uniform restricted+ (connectivity threshold: {connectivity_threshold}).')
 
-    final_edus = {}
-    for i in range(1, grid['M'] + 1):
-        final_edus[i] = []
-
     edus_total = 0
-    edus_remaining = n_edus - edus_total
+    edus_remaining = n_edus
     n_run = 0
     edu_positioned = True
-
-    # Record previously positioned EDUs
-    for i in range(1, grid['M'] + 1):
-        final_edus[i].extend(grid['edus'][i])
 
     # Repeat until all EDUs are positioned
     while edus_remaining > 0 and edu_positioned == True:
         print(f"\n> Run #{n_run}, {edus_remaining} EDUs left.")
         edu_positioned = False
         n_run += 1
-        reset_edus_flag(grid)
-        reset_edus_data(grid, edus_remaining, use_roads=True, connectivity_threshold=connectivity_threshold)
+        reset_edus_data(grid, n_edus * n_run, use_roads=True, connectivity_threshold=connectivity_threshold)
         y = int(grid['smallest_radius'])
-        while y < grid['grid_y']:
+        while edus_remaining > 0 and y < grid['grid_y']:
             x = 0
             try:
-                while x < grid['grid_x']:
+                while edus_remaining > 0 and x < grid['grid_x']:
                     while True:
                         # Get the zone in this coordinate by its ID
                         id = grid['grid_x'] * y + x
                         zone = grid['zones'][id]
 
                         # The zone must be inside the AoI, be a road and have some connectivity, otherwise, check the next zone
-                        if zone['inside'] and zone['is_road'] and zone['dpconn'] > connectivity_threshold:
+                        if zone['inside'] and zone['is_road'] and zone['dpconn'] > connectivity_threshold and not zone['has_edu']:
                             break
                         elif x >= grid['grid_x']:
                             raise OutOfBounds
@@ -1015,6 +1010,8 @@ def set_edus_positions_uniform_restricted_plus(grid: dict, n_edus: int, connecti
                         zone['edu_type'] = edus_type
                         grid['edus'][zone['RL']].append(zone)
                         edu_positioned = True
+                        edus_remaining -= 1
+                        edus_total += 1
                         x += int(grid['smallest_radius'] * 2)
                     
                     except SkipZone:
@@ -1030,20 +1027,7 @@ def set_edus_positions_uniform_restricted_plus(grid: dict, n_edus: int, connecti
             
             y += 1
         
-        # Move all the positioned EDUs to the final structure
-        for i in range(1, grid['M'] + 1):
-            final_edus[i].extend(grid['edus'][i])
-            grid['edus'][i] = []
-
-        # Recalculate the total and remaining
-        edus_total = 0
-        for i in range(1, grid['M'] + 1):
-            edus_total += len(final_edus[i])
-        edus_remaining = n_edus - edus_total
-    
-    # Positioning finished. Move final_edus to grid
-    for i in range(1, grid['M'] + 1):
-        grid['edus'][i].extend(final_edus[i])
+    print(f'\nPositioned {edus_total}/{n_edus} EDUs.')
 
 def get_spiral_path(grid: dict, range_radius: int) -> list:
     """
@@ -1112,14 +1096,28 @@ if __name__ == '__main__':
         init_zones(grid)
 
         # Get PoIs and roads from OSM file
-        if 'pois' not in conf.keys():
+        if 'pois' not in conf.keys() or not os.path.isfile(conf['pois']):
+            pois_file_tmp = '/tmp/cityzones_pois-unfiltered.osm'
+            if 'pois' not in conf.keys():
+                conf['pois'] = '/tmp/cityzones_pois.osm'
+                
             print('Getting PoIs from Overpass... ', end='')
-            # fpois = open('/tmp/cityzones_pois.osm', 'w')
-            overpass.get_osm_from_bbox('/tmp/cityzones_pois.osm', conf['bottom'], conf['left'], conf['top'], conf['right'], int(config['NET_TIMEOUT']))
-            # fpois.close()
-            conf['pois'] = '/tmp/cityzones_pois.osm'
+            overpass.get_osm_from_bbox(pois_file_tmp, conf['bottom'], conf['left'], conf['top'], conf['right'], int(config['NET_TIMEOUT']))
             print('Done!')
         
+            # Filter OSM file
+            try:
+                res = subprocess.run([
+                    config['OSMFILTER_PATH'],
+                    pois_file_tmp,
+                    '--keep=highway= emergency=yes amenity=police =hospital =fire_station',
+                    f'-o={conf["pois"]}'
+                ],
+                timeout=int(config['SUBPROC_TIMEOUT']))
+            except subprocess.TimeoutExpired:
+                print("Timeout running osmfilter for the OSM file.")
+                exit(EXIT_OSMFILTER_TIMEOUT)
+
         pois, roads = osmpois.extract_pois(conf['pois'], conf['pois_types'])
         add_pois(grid, pois)
         add_roads(grid, roads)
@@ -1177,15 +1175,6 @@ if __name__ == '__main__':
                     print('Error trying to get elevation data!')
 
             # Init zones connectivity data
-            # connectivity.init_zones(grid, {
-            #     'weight': { 'S': 1, 'T': 1, 'R': 1, 'C': 1 },
-            #     1: { 'S': 0, 'T': 0, 'R': 0, 'C': 0 },
-            #     2: { 'S': 0, 'T': 0, 'R': 0, 'C': 0 },
-            #     3: { 'S': 3, 'T': 3, 'R': 3, 'C': 3 },
-            #     4: { 'S': 3, 'T': 4, 'R': 4, 'C': 3 },
-            #     5: { 'S': 4, 'T': 5, 'R': 5, 'C': 5 },
-            #     6: { 'S': 2, 'T': 4, 'R': 2, 'C': 2 },
-            # })
             connectivity.init_zones(grid, {
                 'weight': { 'S': 1, 'T': 1, 'R': 1, 'C': 1 },
                 1: { 'S': 0, 'T': 0, 'R': 0, 'C': 0 },
