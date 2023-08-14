@@ -8,9 +8,10 @@
   "M": 3,
   "edus": {
     "loose": 200,
-    "tight": 100
+    "tight": 50
   },
   "geojson": "geojson/barcelona_small.geojson",
+  "pois": "osm/barcelona_small.osm",
   "pois_types": {
     "amenity": {
       "police": {

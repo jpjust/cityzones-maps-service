@@ -88,6 +88,20 @@
             ]
         },
         {
+            "name": "Python: Risk Zones in Barcelona Big",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/cityzones/riskzones.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+            },
+            "args": [
+                "conf/barcelona_big.json"
+            ]
+        },
+        {
             "name": "Python: Risk Zones in Test Area",
             "type": "python",
             "request": "launch",

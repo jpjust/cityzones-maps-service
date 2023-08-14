@@ -7,10 +7,11 @@
   "cache_zones": true,
   "M": 3,
   "edus": {
-    "loose": 200,
+    "loose": 900,
     "tight": 100
   },
   "geojson": "geojson/barcelona_big.geojson",
+  "pois": "osm/barcelona_big.osm",
   "pois_types": {
     "amenity": {
       "police": {
