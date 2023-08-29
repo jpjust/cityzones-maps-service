@@ -11,8 +11,25 @@
             "program": "${workspaceFolder}/cityzones/riskzones.py",
             "console": "integratedTerminal",
             "justMyCode": true,
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+            },
             "args": [
                 "conf/porto.json"
+            ]
+        },
+        {
+            "name": "Python: Risk Zones in Lisboa",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/cityzones/riskzones.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+            },
+            "args": [
+                "conf/lisboa.json"
             ]
         },
         {
@@ -22,6 +39,9 @@
             "program": "${workspaceFolder}/cityzones/riskzones.py",
             "console": "integratedTerminal",
             "justMyCode": true,
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+            },
             "args": [
                 "conf/paris.json"
             ]
@@ -33,6 +53,9 @@
             "program": "${workspaceFolder}/cityzones/riskzones.py",
             "console": "integratedTerminal",
             "justMyCode": true,
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+            },
             "args": [
                 "conf/paris_island.json"
             ]
@@ -44,6 +67,9 @@
             "program": "${workspaceFolder}/cityzones/riskzones.py",
             "console": "integratedTerminal",
             "justMyCode": true,
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+            },
             "args": [
                 "conf/eiffel.json"
             ]
@@ -55,6 +81,9 @@
             "program": "${workspaceFolder}/cityzones/riskzones.py",
             "console": "integratedTerminal",
             "justMyCode": true,
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+            },
             "args": [
                 "conf/feira.json"
             ]
@@ -108,8 +137,39 @@
             "program": "${workspaceFolder}/cityzones/riskzones.py",
             "console": "integratedTerminal",
             "justMyCode": true,
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+            },
             "args": [
                 "conf/test.json"
+            ]
+        },
+        {
+            "name": "Python: Risk Zones in Rio",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/cityzones/riskzones.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+            },
+            "args": [
+                "conf/rio.json"
+            ]
+        },
+        {
+            "name": "Python: Risk Zones in Florianópolis",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/cityzones/riskzones.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+            },
+            "args": [
+                "conf/florianopolis.json"
             ]
         }
     ]

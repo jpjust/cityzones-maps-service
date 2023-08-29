@@ -1,0 +1,40 @@
+{
+    "left": -43.8203,
+    "bottom": -23.0860,
+    "right": -43.0815,
+    "top": -22.7344,
+    "zone_size": 30,
+    "cache_zones": true,
+    "M": 3,
+    "edus": {
+        "loose": 600,
+        "tight": 0
+    },
+    "geojson": "geojson/rio.geojson",
+    "pois": "osm/rio.osm",
+    "pois_types": {
+        "amenity": {
+            "hospital": {
+                "w": 10.0
+            },
+            "fire_station": {
+                "w": 5.0
+            },
+            "police": {
+                "w": 2.0
+            }
+        },
+        "railway": {
+            "station": {
+                "w": 1.0
+            }
+        }
+    },
+    "_connectivity_threshold": 0.05,
+    "edu_alg": "none",
+    "output": "csv/rio_M3.csv",
+    "output_edus": "csv/rio_edus_restricted_plus.csv",
+    "output_roads": "csv/rio_roads.csv",
+    "output_elevation": "csv/rio_elevation.csv",
+    "_output_connectivity": "csv/rio_connectivity.csv"
+}

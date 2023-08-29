@@ -6,7 +6,10 @@
     "zone_size": 10,
     "cache_zones": true,
     "M": 3,
-    "edus": 300,
+    "edus": {
+        "loose": 100,
+        "tight": 0
+    },
     "max_workers": 6,
     "geojson": "geojson/test.geojson",
     "pois": "osm/test.osm",

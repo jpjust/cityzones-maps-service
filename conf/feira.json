@@ -6,7 +6,10 @@
     "zone_size": 30,
     "cache_zones": true,
     "M": 3,
-    "edus": 300,
+    "edus": {
+        "loose": 300,
+        "tight": 0
+    },
     "geojson": "geojson/feira.geojson",
     "pois": "osm/feira.osm",
     "pois_types": {
@@ -24,10 +27,10 @@
         "railway": {}
     },
     "connectivity_threshold": 0.05,
-    "edu_alg": "restricted_plus",
+    "edu_alg": "none",
     "output": "csv/feira.csv",
     "output_edus": "csv/feira_restricted_plus.csv",
     "output_roads": "csv/feira_roads.csv",
     "output_elevation": "csv/feira_elevation.csv",
-    "output_connectivity": "csv/feira_connectivity.csv"
+    "_output_connectivity": "csv/feira_connectivity.csv"
 }

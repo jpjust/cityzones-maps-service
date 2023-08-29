@@ -549,12 +549,14 @@ def normalize_elevation(grid: dict):
     
     # Middle value
     m = (hmax - hmin) / 2 + hmin
-    m_top = hmax - m
+    m_top = hmax - m if hmax != m else 0.1
 
     # Normalization
     for id in grid['zones_inside']:
         zone = grid['zones'][id]
         zone['elevation_normalized'] = (zone['elevation'] - m) / m_top
+
+    print(f'hmax={hmax}, hmin={hmin}, m={m}, m_top={m_top}')
 
 def normalize_risks(grid: dict):
     """
@@ -989,6 +991,8 @@ def set_edus_positions_uniform_restricted_plus(grid: dict, n_edus: int, connecti
                         # Get the zone in this coordinate by its ID
                         id = grid['grid_x'] * y + x
                         zone = grid['zones'][id]
+                        if 'dpconn' not in zone.keys():
+                            zone['dpconn'] = 0
 
                         # The zone must be inside the AoI, be a road and have some connectivity, otherwise, check the next zone
                         if zone['inside'] and zone['is_road'] and zone['dpconn'] > connectivity_threshold and not zone['has_edu']:
@@ -1123,6 +1127,7 @@ if __name__ == '__main__':
         add_roads(grid, roads)
 
         # Load cache file if enabled
+        time_begin = time.perf_counter()
         cache_filename = f'{os.path.splitext(sys.argv[1])[0]}.cache'
         if conf['cache_zones'] == True and os.path.isfile(cache_filename):
             try:
@@ -1151,7 +1156,6 @@ if __name__ == '__main__':
                 add_polygon(grid, polygons)
                 print(f'{grid["pol_points"]} points form the AoI polygon.')
 
-                time_begin = time.perf_counter()
                 init_zones_by_polygon(grid)
                 if len(grid['zones_inside']) == 0:
                     print('No zones to classify!')
@@ -1169,21 +1173,27 @@ if __name__ == '__main__':
 
             # Init zones elevation data
             if 'output_elevation' in conf.keys():
-                try:
+                #try:
                     elevation.init_zones(grid)
-                except Exception:
-                    print('Error trying to get elevation data!')
+                #except Exception:
+                #    print('Error trying to get elevation data!')
+                #    for zone in grid['zones']:
+                #        zone['risk_elevation'] = 0
 
             # Init zones connectivity data
-            connectivity.init_zones(grid, {
-                'weight': { 'S': 1, 'T': 1, 'R': 1, 'C': 1 },
-                1: { 'S': 0, 'T': 0, 'R': 0, 'C': 0 },
-                2: { 'S': 0, 'T': 0, 'R': 0, 'C': 0 },
-                3: { 'S': 0, 'T': 0, 'R': 0, 'C': 0 },
-                4: { 'S': 3, 'T': 4, 'R': 4, 'C': 3 }, # Total: 8
-                5: { 'S': 0, 'T': 0, 'R': 0, 'C': 0 },
-                6: { 'S': 2, 'T': 4, 'R': 2, 'C': 2 }, # Total: 6
-            })
+            if 'output_connectivity' in conf.keys():
+                try:
+                    connectivity.init_zones(grid, {
+                        'weight': { 'S': 1, 'T': 1, 'R': 1, 'C': 1 },
+                        1: { 'S': 0, 'T': 0, 'R': 0, 'C': 0 },
+                        2: { 'S': 0, 'T': 0, 'R': 0, 'C': 0 },
+                        3: { 'S': 0, 'T': 0, 'R': 0, 'C': 0 },
+                        4: { 'S': 3, 'T': 4, 'R': 4, 'C': 3 }, # Total: 8
+                        5: { 'S': 0, 'T': 0, 'R': 0, 'C': 0 },
+                        6: { 'S': 2, 'T': 4, 'R': 2, 'C': 2 }, # Total: 6
+                    })
+                except Exception:
+                    print('Error trying to get connectivity data!')
             
             # Calculate risks regarding distance from PoIs
             calculate_risk_from_pois(grid)

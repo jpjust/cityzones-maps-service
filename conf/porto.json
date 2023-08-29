@@ -6,7 +6,10 @@
     "zone_size": 30,
     "cache_zones": true,
     "M": 3,
-    "edus": 300,
+    "edus": {
+        "loose": 300,
+        "tight": 0
+    },
     "geojson": "geojson/porto.geojson",
     "pois": "osm/porto.osm",
     "pois_types": {

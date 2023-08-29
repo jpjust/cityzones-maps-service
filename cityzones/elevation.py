@@ -40,7 +40,8 @@ if os.path.exists('.env'):
 elif os.path.exists(CONF_DEFAULT_PATH):
     config = dotenv_values(CONF_DEFAULT_PATH)
 
-API_ENDPOINT = 'https://api.open-elevation.com/api/v1/lookup'
+#API_ENDPOINT = 'https://api.open-elevation.com/api/v1/lookup'
+API_ENDPOINT = 'http://localhost:8081/api/v1/lookup'
 COORD_SET_SIZE = 500
 
 def init_zones(grid: dict):
@@ -60,8 +61,8 @@ def init_zones(grid: dict):
     for id in grid['zones_inside']:
         zone = grid['zones'][id]
         coord.append({
-            'latitude': zone['lat'],
-            'longitude': zone['lon']
+            'latitude': float(f'{zone["lat"]:.3f}'),
+            'longitude': float(f'{zone["lon"]:.3f}')
         })
 
         # If the coord list is full, append it to the set and create a new one for the next set
@@ -78,6 +79,7 @@ def init_zones(grid: dict):
         res = requests.post(API_ENDPOINT, data=json.dumps(request), headers={'Content-Type': 'application/json'}, timeout=int(config['NET_TIMEOUT']))
 
         if res.status_code != 200:
+            print(f'STATUS CODE: {res.status_code}')
             raise Exception
         
         elevations = json.loads(res.content.decode())
