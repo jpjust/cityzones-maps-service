@@ -20,3 +20,24 @@ def __calculate_distance_in_grid(grid: dict, a: dict, b: dict) -> int:
     y1 = int(a['id'] / grid['grid_x'])
     y2 = int(b['id'] / grid['grid_x'])
     return math.sqrt(abs(x2 - x1) ** 2 + abs(y2 - y1) ** 2)
+
+def __get_spiral_path(grid: dict, range_radius: int) -> list:
+    """
+    Compute a spiral path for zone search whithin a range.
+    """
+    steps = []
+    step = -1
+    max_steps = (2 * range_radius + 1) ** 2 - 1
+
+    while True:
+        step_signal = int(step / abs(step))
+        for s in range(0, step, step_signal):
+            steps.append(step_signal * grid['grid_x'])
+            if len(steps) >= max_steps: return steps
+
+        for s in range(0, step, step_signal):
+            steps.append(step_signal)
+            if len(steps) >= max_steps: return steps
+
+        step += step_signal
+        step *= -1

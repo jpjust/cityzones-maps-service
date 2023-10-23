@@ -32,6 +32,10 @@ from dotenv import dotenv_values
 import requests
 import json
 import os
+try:
+    import utils
+except ModuleNotFoundError:
+    from cityzones import utils
 
 # Load current directory .env or default configuration file
 CONF_DEFAULT_PATH='/etc/cityzones/maps-service.conf'
@@ -95,3 +99,27 @@ def init_zones(grid: dict):
         zone_start = zone_end
 
     print('Done!')
+    set_slopes(grid)
+
+def set_slopes(grid: dict):
+    """
+    Set the slope of each zone in the grid. Must have elevation set before.
+    """
+    print("Setting zones' slope... ", end='')
+    spiral_path = utils.__get_spiral_path(grid, 1)
+
+    for zone in grid['zones']:
+        slopes = [0]
+        zone_id = zone['id']
+        for step in spiral_path:
+            zone_id += step
+            try:
+                nearby_zone = grid['zones'][zone_id]
+                if utils.__calculate_distance_in_grid(grid, zone, nearby_zone) > 3: continue
+                slopes.append(abs(nearby_zone['elevation'] - zone['elevation']) / grid['zone_size'])
+            except IndexError:
+                continue
+        
+        zone['slope'] = max(slopes)
+
+    print("Done!")
