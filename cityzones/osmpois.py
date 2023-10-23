@@ -27,6 +27,7 @@ def extract_pois(file: str, pois_types: dict) -> tuple[list, list]:
     root = tree.getroot()
     pois = []
     roads = []
+    rivers = []
     nodes = {}
     ways = {}
     relations = {}
@@ -38,7 +39,8 @@ def extract_pois(file: str, pois_types: dict) -> tuple[list, list]:
         node_data = {
             'lat': float(node.get('lat')),
             'lon': float(node.get('lon')),
-            'weight': 1.0
+            'weight': 1.0,
+            'badpoi': False
         }
 
         for tag in node.iter('tag'):
@@ -51,6 +53,7 @@ def extract_pois(file: str, pois_types: dict) -> tuple[list, list]:
         for node_key in node_data.keys():
             try:
                 if node_data[node_key] in pois_types[node_key].keys():
+                    node_data['badpoi'] = ('badpoi' in pois_types[node_key][node_data[node_key]].keys() and pois_types[node_key][node_data[node_key]]['badpoi'] == 1)
                     if 'poi_weight' in node_data.keys():
                         node_data['weight'] = float(node_data['poi_weight'])
                     else:
@@ -64,12 +67,14 @@ def extract_pois(file: str, pois_types: dict) -> tuple[list, list]:
         id = int(way.get('id'))
 
         way_data = {
-            'weight': 1.0
+            'weight': 1.0,
+            'badpoi': False
         }
 
         # Ways contain a set of nodes, so we must gather them
         way_nodes = []
         way_roads = []
+        # path_nodes = []
         for node in way.iter('nd'):
             way_nodes.append(int(node.get('ref')))
 
@@ -87,11 +92,13 @@ def extract_pois(file: str, pois_types: dict) -> tuple[list, list]:
             except KeyError:
                 pass
         
-        # Check if this way is a highway (roads, streets, etc.)
+        # Check if this way is a highway (roads, streets, etc.) or a river
         for tag in way.iter('tag'):
             way_data[tag.get('k')] = tag.get('v')
             if tag.get('k') == 'highway' and tag.get('v') in ['motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'unclassified', 'residential']:
                 roads += way_roads
+            elif tag.get('k') == 'waterway' and tag.get('v') in ['river']:
+                rivers += way_roads
 
         # Get the first available node to copy its coordinates
         # (depending on the boundaries of the exported OSM file, some
@@ -104,15 +111,30 @@ def extract_pois(file: str, pois_types: dict) -> tuple[list, list]:
 
         ways[id] = way_data
 
+        # # Get the all the nodes to copy their coordinates into a path
+        # # (depending on the boundaries of the exported OSM file, some
+        # # nodes may be out of the map)
+        # for node in way_nodes:
+        #     if node in nodes and 'lat' in nodes[node].keys() and 'lon' in nodes[node].keys():
+        #         path_data = {
+        #             'weight': 1.0,
+        #             'badpoi': False
+        #         }
+        #         path_data['lat'] = float(nodes[node]['lat'])
+        #         path_data['lon'] = float(nodes[node]['lon'])
+        #         path_nodes.append(path_data)
+
         # If this way already represents the requested pois_types, just add it to
         # the list of POIs
         for way_key in way_data.keys():
             try:
                 if way_data[way_key] in pois_types[way_key].keys():
+                    way_data['badpoi'] = ('badpoi' in pois_types[way_key][way_data[way_key]].keys() and pois_types[way_key][way_data[way_key]]['badpoi'] == 1)
                     if 'poi_weight' in way_data.keys():
                         way_data['weight'] = float(way_data['poi_weight'])
                     else:
                         way_data['weight'] = pois_types[way_key][way_data[way_key]]['w']
+                    
                     pois.append(way_data)
             except KeyError:
                 pass
@@ -122,7 +144,8 @@ def extract_pois(file: str, pois_types: dict) -> tuple[list, list]:
         id = int(relation.get('id'))
 
         relation_data = {
-            'weight': 1.0
+            'weight': 1.0,
+            'badpoi': False
         }
 
         for tag in relation.iter('tag'):
@@ -150,6 +173,7 @@ def extract_pois(file: str, pois_types: dict) -> tuple[list, list]:
         for relation_key in relation_data.keys():
             try:
                 if relation_data[relation_key] in pois_types[relation_key].keys():
+                    relation_data['badpoi'] = ('badpoi' in pois_types[relation_key][relation_data[relation_key]].keys() and pois_types[relation_key][relation_data[relation_key]]['badpoi'] == 1)
                     if 'poi_weight' in relation_data.keys():
                         relation_data['weight'] = float(relation_data['poi_weight'])
                     else:
@@ -158,7 +182,7 @@ def extract_pois(file: str, pois_types: dict) -> tuple[list, list]:
             except KeyError:
                 pass
 
-    return pois, roads
+    return pois, roads, rivers
 
 '''
 Main program.

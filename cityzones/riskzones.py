@@ -499,7 +499,13 @@ def calculate_risk_of_zone(zone: dict, pois: list) -> float:
     sum = 0
 
     for poi in pois:
-        sum += poi['weight'] / (utils.__calculate_distance(zone, poi) ** 2)
+        if poi['badpoi'] == False:
+            # Good PoI. The nearer the better.
+            sum += poi['weight'] / (utils.__calculate_distance(zone, poi) ** 2)
+        else:
+            # Bad PoI. The nearer the worse.
+            sum += (utils.__calculate_distance(zone, poi) ** 2) / poi['weight']
+
 
     return (zone['id'], 1 / sum)
 
@@ -528,7 +534,7 @@ def calculate_risk_of_zone_elevation(zone: dict) -> float:
     """
     Calculate the risk perception considering the zone elevation.
     """
-    H = 1 / (math.e ** zone['elevation_normalized'])
+    H = 1 / (math.e ** (zone['elevation_normalized']) * (math.e ** zone['slope']))
     return (zone['id'], H)
 
 def normalize_elevation(grid: dict):
@@ -930,11 +936,12 @@ def set_edus_positions_uniform_restricted(grid: dict):
                 zone['has_edu'] = False
 
                 # Find another zone within the RL radius to place the EDU
-                spiral_path = get_spiral_path(grid, grid['radius'][i])
+                spiral_path = utils.__get_spiral_path(grid, grid['radius'][i])
                 for step in spiral_path:
                     zone_id += step
                     try:
                         nearby_zone = grid['zones'][zone_id]
+                        if utils.__calculate_distance_in_grid(grid, zone, nearby_zone) > grid['radius'][i] + 1: continue
                         if not nearby_zone['inside']: continue
                         if not nearby_zone['is_road']: continue
                         if nearby_zone['has_edu']: continue
@@ -1033,26 +1040,6 @@ def set_edus_positions_uniform_restricted_plus(grid: dict, n_edus: int, connecti
         
     print(f'\nPositioned {edus_total}/{n_edus} EDUs.')
 
-def get_spiral_path(grid: dict, range_radius: int) -> list:
-    """
-    Compute a spiral path for zone search whithin a range.
-    """
-    steps = []
-    step = -1
-
-    while True:
-        step_signal = int(step / abs(step))
-        for s in range(0, step, step_signal):
-            steps.append(step_signal * grid['grid_x'])
-        for s in range(0, step, step_signal):
-            steps.append(step_signal)
-        step += step_signal
-        step *= -1
-        if abs(step) > range_radius:
-            break
-
-    return steps
-
 def get_zones_in_area(grid: dict, center_id: int, radius: int) -> list:
     """
     Get all zones within a squared area.
@@ -1110,11 +1097,18 @@ if __name__ == '__main__':
             print('Done!')
         
             # Filter OSM file
+            filter = '--keep=highway= '
+            for poi_type in conf['pois_types'].keys():
+                filter += poi_type
+                for poi_spec in conf['pois_types'][poi_type].keys():
+                    filter += f'={poi_spec} '
+            filter = filter.strip()
+
             try:
                 res = subprocess.run([
                     config['OSMFILTER_PATH'],
                     pois_file_tmp,
-                    '--keep=highway= emergency=yes amenity=police =hospital =fire_station',
+                    filter,
                     f'-o={conf["pois"]}'
                 ],
                 timeout=int(config['SUBPROC_TIMEOUT']))
@@ -1122,7 +1116,7 @@ if __name__ == '__main__':
                 print("Timeout running osmfilter for the OSM file.")
                 exit(EXIT_OSMFILTER_TIMEOUT)
 
-        pois, roads = osmpois.extract_pois(conf['pois'], conf['pois_types'])
+        pois, roads, rivers = osmpois.extract_pois(conf['pois'], conf['pois_types'])
         add_pois(grid, pois)
         add_roads(grid, roads)
 
@@ -1172,7 +1166,7 @@ if __name__ == '__main__':
                 print(f'WARNING: GeoJSON file {conf["geojson"]} not found. Not filtering by AoI polygon.')
 
             # Init zones elevation data
-            if 'output_elevation' in conf.keys():
+            if any(i in conf.keys() for i in ['output_elevation', 'output_slope']):
                 #try:
                     elevation.init_zones(grid)
                 #except Exception:
@@ -1294,6 +1288,20 @@ if __name__ == '__main__':
                     row += 1
             fp.close()
 
+        # Write a CSV file with PoIs
+        if 'output_pois' in conf.keys():
+            print('- PoIs data')
+            fp = open(conf['output_pois'], 'w')
+            
+            data = 'id,lat,lon,weight\n'
+            fp.write(data)
+            row = 0
+            for poi in pois:
+                data = f'{row},{poi["lat"]},{poi["lon"]},{poi["weight"]}\n'
+                fp.write(data)
+                row += 1
+            fp.close()
+
         # Write a CSV file with forbidden zones
         if 'output_roads' in conf.keys():
             print('- Roads data')
@@ -1320,6 +1328,20 @@ if __name__ == '__main__':
             row = 0
             for id in grid['zones_inside']:
                 data = f'{row},{float(grid["zones"][id]["elevation"])},{grid["zones"][id]["lat"]},{grid["zones"][id]["lon"]}\n'
+                fp.write(data)
+                row += 1
+            fp.close()
+        
+        # Write a CSV file with slope data
+        if 'output_slope' in conf.keys():
+            print('- Slope data')
+            fp = open(conf['output_slope'], 'w')
+            
+            data = 'id,slope,lat,lon\n'
+            fp.write(data)
+            row = 0
+            for id in grid['zones_inside']:
+                data = f'{row},{float(grid["zones"][id]["slope"])},{grid["zones"][id]["lat"]},{grid["zones"][id]["lon"]}\n'
                 fp.write(data)
                 row += 1
             fp.close()
