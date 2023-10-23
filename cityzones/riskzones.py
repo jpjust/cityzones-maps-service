@@ -340,22 +340,24 @@ def add_pois(grid: dict, pois: list):
     
     print('Done!')
 
-def add_roads(grid: dict, roads: list):
+def add_path(grid: dict, path: list, path_name: str):
     """
-    Add roads to zones list.
+    Add paths to zones list.
     """
-    print('Adding roads... ', end='')
+    print(f'Adding paths of name {path_name}... ', end='')
+    path_key = f'is_{path_name}'
+    path_points = f'{path_name}_points'
 
-    for road in roads:
+    for point in path:
         # Ignore points outside the grid
-        if road['start']['lat'] < grid['bottom'] or road['start']['lat'] > grid['top'] \
-           or road['end']['lat'] < grid['bottom'] or road['end']['lat'] > grid['top'] \
-           or road['start']['lon'] < grid['left'] or road['start']['lon'] > grid['right'] \
-           or road['end']['lon'] < grid['left'] or road['end']['lon'] > grid['right']:
+        if point['start']['lat'] < grid['bottom'] or point['start']['lat'] > grid['top'] \
+           or point['end']['lat'] < grid['bottom'] or point['end']['lat'] > grid['top'] \
+           or point['start']['lon'] < grid['left'] or point['start']['lon'] > grid['right'] \
+           or point['end']['lon'] < grid['left'] or point['end']['lon'] > grid['right']:
            continue
 
-        a = coordinates_to_id(grid, road['start']['lat'], road['start']['lon'])
-        b = coordinates_to_id(grid, road['end']['lat'], road['end']['lon'])
+        a = coordinates_to_id(grid, point['start']['lat'], point['start']['lon'])
+        b = coordinates_to_id(grid, point['end']['lat'], point['end']['lon'])
 
         if a < 0 or b < 0 or a >= len(grid['zones']) or b >= len(grid['zones']):
             continue
@@ -369,12 +371,12 @@ def add_roads(grid: dict, roads: list):
         else:
             move_zones_y(grid, a, b, dist_x, dist_y)
 
-        grid['zones'][a]['is_road'] = grid['zones'][b]['is_road'] = True
+        grid['zones'][a][path_key] = grid['zones'][b][path_key] = True
     
     # Count road zones
     for zone in grid['zones']:
-        if zone['is_road']:
-            grid['roads_points'] += 1
+        if zone[path_key]:
+            grid[path_points] += 1
     
     print('Done!')
 
@@ -537,6 +539,52 @@ def calculate_risk_of_zone_elevation(zone: dict) -> float:
     H = 1 / (math.e ** (zone['elevation_normalized']) * (math.e ** zone['slope']))
     return (zone['id'], H)
 
+def calculate_risk_from_rivers(grid: dict):
+    """
+    Calculate the risk perception considering the zones distance from a river.
+    """
+    if len(grid['pois_inside']) == 0:
+        return
+
+    print(f'Calculating risk from rivers distance... ', end='')
+
+    # normalize_rivers_dist(grid)
+    with mp.Pool(processes=MP_WORKERS) as pool:
+        payload = []
+        for id in grid['zones_inside']:
+            payload.append((grid['zones'][id],))
+        risks = pool.starmap(calculate_risk_of_zone_from_rivers, payload)
+    
+    for risk in risks:
+        grid['zones'][risk[0]]['risk_river'] = risk[1]
+
+    print('Done!')
+
+def calculate_risk_of_zone_from_rivers(zone: dict) -> float:
+    """
+    Calculate the risk perception considering the proximity of a zone to a river.
+    """
+    # TODO: Need to know from what distance a zone is safe regarding a flooding river.
+    H = 1
+    return (zone['id'], H)
+
+def normalize_risks(grid: dict):
+    """
+    Normalize the risk perception values.
+    """
+    min = max = grid['zones'][grid['zones_inside'][0]]['risk']
+
+    for id in grid['zones_inside']:
+        if grid['zones'][id]['risk'] > max: max = grid['zones'][id]['risk']
+        if grid['zones'][id]['risk'] < min: min = grid['zones'][id]['risk']
+    
+    amplitude = max - min
+    if amplitude == 0:
+        amplitude = 1
+
+    for id in grid['zones_inside']:
+        grid['zones'][id]['risk'] = (grid['zones'][id]['risk'] - min) / amplitude
+
 def normalize_elevation(grid: dict):
     """
     Normalize elevation values in zones.
@@ -563,23 +611,6 @@ def normalize_elevation(grid: dict):
         zone['elevation_normalized'] = (zone['elevation'] - m) / m_top
 
     print(f'hmax={hmax}, hmin={hmin}, m={m}, m_top={m_top}')
-
-def normalize_risks(grid: dict):
-    """
-    Normalize the risk perception values.
-    """
-    min = max = grid['zones'][grid['zones_inside'][0]]['risk']
-
-    for id in grid['zones_inside']:
-        if grid['zones'][id]['risk'] > max: max = grid['zones'][id]['risk']
-        if grid['zones'][id]['risk'] < min: min = grid['zones'][id]['risk']
-    
-    amplitude = max - min
-    if amplitude == 0:
-        amplitude = 1
-
-    for id in grid['zones_inside']:
-        grid['zones'][id]['risk'] = (grid['zones'][id]['risk'] - min) / amplitude
 
 def calculate_RL(grid: dict):
     """
@@ -1118,7 +1149,8 @@ if __name__ == '__main__':
 
         pois, roads, rivers = osmpois.extract_pois(conf['pois'], conf['pois_types'])
         add_pois(grid, pois)
-        add_roads(grid, roads)
+        add_path(grid, roads, 'road')
+        add_path(grid, rivers, 'river')
 
         # Load cache file if enabled
         time_begin = time.perf_counter()
@@ -1164,6 +1196,9 @@ if __name__ == '__main__':
                 print('WARNING: No GeoJSON file specified. Not filtering by AoI polygon.')
             except FileNotFoundError:
                 print(f'WARNING: GeoJSON file {conf["geojson"]} not found. Not filtering by AoI polygon.')
+
+            # Init zones river distance data
+            rivers.init_zones(grid)
 
             # Init zones elevation data
             if any(i in conf.keys() for i in ['output_elevation', 'output_slope']):
