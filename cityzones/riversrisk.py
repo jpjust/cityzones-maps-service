@@ -24,7 +24,7 @@ the presence of rivers
 After creating a grid object, use the following functions to calculate zone
 risks:
 
-- rivers.init_zones(grid)
+- riversrisk.init_zones(grid)
 """
 
 from config import *
@@ -44,6 +44,8 @@ if os.path.exists('.env'):
 elif os.path.exists(CONF_DEFAULT_PATH):
     config = dotenv_values(CONF_DEFAULT_PATH)
 
+MP_WORKERS=None
+
 def init_zones(grid: dict):
     """
     Initialize every zone in the grid and set their distance to a river.
@@ -53,6 +55,7 @@ def init_zones(grid: dict):
     # Initialize grid structure
     for zone in grid['zones']:
         zone['river_dist'] = math.inf
+        zone['hrdiff'] = 0
 
     # Collect all zones that are marked as a river zone
     river_zones_ids = []
@@ -69,6 +72,7 @@ def init_zones(grid: dict):
     
     for res in dists:
         grid['zones'][res[0]]['river_dist'] = res[1]
+        grid['zones'][res[0]]['hrdiff'] = res[2]
 
     print('Done!')
 
@@ -77,9 +81,11 @@ def __get_distance_from_river(grid: dict, zone: dict, rivers: list):
     Get the distance of a zone from the nearest river.
     """
     distance = math.inf
+    hdiff = 0
     for id in rivers:
         zone_dist = utils.__calculate_distance_in_grid(grid, zone, grid['zones'][id])
         if zone_dist < distance:
             distance = zone_dist
+            hdiff = zone['elevation'] - grid['zones'][id]['elevation']
 
-    return (zone['id'], distance)
+    return (zone['id'], distance, hdiff)
