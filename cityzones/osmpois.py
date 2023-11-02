@@ -19,15 +19,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import xml.etree.ElementTree as ET
 
-'''
-Extract roads and PoIs of types pois_types from OSM file.
-'''
-def extract_pois(file: str, pois_types: dict) -> tuple[list, list]:
+def extract_nodes(file: str) -> tuple[dict, dict, dict]:
+    '''
+    Extract nodes, ways and relations from an OSM file.
+    '''
     tree = ET.parse(file)
     root = tree.getroot()
-    pois = []
-    roads = []
-    rivers = []
+
     nodes = {}
     ways = {}
     relations = {}
@@ -47,140 +45,156 @@ def extract_pois(file: str, pois_types: dict) -> tuple[list, list]:
             node_data[tag.get('k')] = tag.get('v')
         
         nodes[id] = node_data
-
-        # If this node already represents the requested pois_types, just add it to
-        # the list of POIs
-        for node_key in node_data.keys():
-            try:
-                if node_data[node_key] in pois_types[node_key].keys():
-                    node_data['badpoi'] = ('badpoi' in pois_types[node_key][node_data[node_key]].keys() and pois_types[node_key][node_data[node_key]]['badpoi'] == 1)
-                    if 'poi_weight' in node_data.keys():
-                        node_data['weight'] = float(node_data['poi_weight'])
-                    else:
-                        node_data['weight'] = pois_types[node_key][node_data[node_key]]['w']
-                    pois.append(node_data)
-            except KeyError:
-                pass
     
     # Collect ways from OSM
     for way in root.iter('way'):
         id = int(way.get('id'))
 
         way_data = {
-            'weight': 1.0,
-            'badpoi': False
+            'nodes': []
         }
 
-        # Ways contain a set of nodes, so we must gather them
-        way_nodes = []
-        way_roads = []
-        # path_nodes = []
-        for node in way.iter('nd'):
-            way_nodes.append(int(node.get('ref')))
-
-            # Combine nodes in a way to make roads
-            if len(way_nodes) < 2: continue
-            try:
-                road = {}
-                road['start'] = {}
-                road['end'] = {}
-                road['start']['lat'] = nodes[way_nodes[-2]]['lat']
-                road['start']['lon'] = nodes[way_nodes[-2]]['lon']
-                road['end']['lat'] = nodes[way_nodes[-1]]['lat']
-                road['end']['lon'] = nodes[way_nodes[-1]]['lon']
-                way_roads.append(road)
-            except KeyError:
-                pass
-        
-        # Check if this way is a highway (roads, streets, etc.) or a river
         for tag in way.iter('tag'):
             way_data[tag.get('k')] = tag.get('v')
-            if tag.get('k') == 'highway' and tag.get('v') in ['motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'unclassified', 'residential']:
-                roads += way_roads
-            elif tag.get('k') == 'waterway' and tag.get('v') in ['river']:
-                rivers += way_roads
-
-        # Get the first available node to copy its coordinates
-        # (depending on the boundaries of the exported OSM file, some
-        # nodes may be out of the map)
-        for node in way_nodes:
-            if node in nodes and 'lat' in nodes[node].keys() and 'lon' in nodes[node].keys():
-                way_data['lat'] = float(nodes[node]['lat'])
-                way_data['lon'] = float(nodes[node]['lon'])
-                break
+        
+        # Ways contain a set of nodes, so we must gather them
+        for node in way.iter('nd'):
+            node_id = int(node.get('ref'))
+            if node_id in nodes.keys():
+                way_data['nodes'].append(nodes[node_id])
 
         ways[id] = way_data
-
-        # # Get the all the nodes to copy their coordinates into a path
-        # # (depending on the boundaries of the exported OSM file, some
-        # # nodes may be out of the map)
-        # for node in way_nodes:
-        #     if node in nodes and 'lat' in nodes[node].keys() and 'lon' in nodes[node].keys():
-        #         path_data = {
-        #             'weight': 1.0,
-        #             'badpoi': False
-        #         }
-        #         path_data['lat'] = float(nodes[node]['lat'])
-        #         path_data['lon'] = float(nodes[node]['lon'])
-        #         path_nodes.append(path_data)
-
-        # If this way already represents the requested pois_types, just add it to
-        # the list of POIs
-        for way_key in way_data.keys():
-            try:
-                if way_data[way_key] in pois_types[way_key].keys():
-                    way_data['badpoi'] = ('badpoi' in pois_types[way_key][way_data[way_key]].keys() and pois_types[way_key][way_data[way_key]]['badpoi'] == 1)
-                    if 'poi_weight' in way_data.keys():
-                        way_data['weight'] = float(way_data['poi_weight'])
-                    else:
-                        way_data['weight'] = pois_types[way_key][way_data[way_key]]['w']
-                    
-                    pois.append(way_data)
-            except KeyError:
-                pass
 
     # Collect relations from OSM
     for relation in root.iter('relation'):
         id = int(relation.get('id'))
 
         relation_data = {
-            'weight': 1.0,
-            'badpoi': False
+            'ways': [],
+            'nodes': []
         }
 
         for tag in relation.iter('tag'):
             relation_data[tag.get('k')] = tag.get('v')
 
         # Relations contain a set of ways, so we must gather them
-        relation_ways = []
         for member in relation.iter('member'):
-            if member.get('type') == 'way':
-                relation_ways.append(int(member.get('ref')))
+            member_id = int(member.get('ref'))
+            if member.get('type') == 'way' and member_id in ways.keys():
+                relation_data['ways'].append(ways[member_id])
+                relation_data['nodes'] += ways[member_id]['nodes']
+            if member.get('type') == 'node' and member_id in nodes.keys():
+                relation_data['nodes'].append(nodes[member_id])
 
-        # Get the first available way to copy its coordinates
-        # (depending on the boundaries of the exported OSM file, some
-        # ways may be out of the map)
-        for way in relation_ways:
-            if way in ways and 'lat' in ways[way].keys() and 'lon' in ways[way].keys():
-                relation_data['lat'] = float(ways[way]['lat'])
-                relation_data['lon'] = float(ways[way]['lon'])
-                break
+    return nodes, ways, relations
 
-        relations[id] = relation_data
+def extract_pois(file: str, pois_types: dict) -> tuple[list, list, list]:
+    '''
+    Extract paths and PoIs of types pois_types from OSM file.
+    '''
+    nodes, ways, relations = extract_nodes(file)
 
-        # If this relation represents the requested pois_types, just add it to
-        # the list of POIs
-        for relation_key in relation_data.keys():
-            try:
-                if relation_data[relation_key] in pois_types[relation_key].keys():
-                    relation_data['badpoi'] = ('badpoi' in pois_types[relation_key][relation_data[relation_key]].keys() and pois_types[relation_key][relation_data[relation_key]]['badpoi'] == 1)
-                    if 'poi_weight' in relation_data.keys():
-                        relation_data['weight'] = float(relation_data['poi_weight'])
-                    else:
-                        relation_data['weight'] = pois_types[relation_key][relation_data[relation_key]]['w']
-                    pois.append(relation_data)
-            except KeyError:
-                pass
+    pois = []
+    roads = []
+    rivers = []
+
+    # Check data in nodes
+    for id in nodes.keys():
+        node = nodes[id]
+        for node_key in node.keys():
+            if node_key in pois_types and node[node_key] in pois_types[node_key].keys():
+                w = pois_types[node_key][node[node_key]]['w']
+                poi_data = {
+                    'lat': float(node.get('lat')),
+                    'lon': float(node.get('lon')),
+                    'weight': w,
+                    'badpoi': False if w >= 0 else True
+                }
+                pois.append(poi_data)
+        
+        # # Check for rivers nodes
+        # if node.get('water') == 'river' or node.get('waterway') == 'river':
+        #     river_data = {
+        #         'lat': float(node.get('lat')),
+        #         'lon': float(node.get('lon')),
+        #     }
+        #     rivers.append(river_data)
+        
+        # # Check for roads nodes
+        # if node.get('highway') in ['motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'unclassified', 'residential']:
+        #     road_data = {
+        #         'lat': float(node.get('lat')),
+        #         'lon': float(node.get('lon')),
+        #     }
+        #     roads.append(road_data)
+
+    # Check data in ways
+    for id in ways.keys():
+        way = ways[id]
+        if len(way['nodes']) == 0:
+            continue
+        first_node = way['nodes'][0]
+
+        for way_key in way.keys():
+            if way_key in pois_types and way[way_key] in pois_types[way_key].keys():
+                w = pois_types[way_key][way[way_key]]['w']
+                poi_data = {
+                    'lat': float(first_node.get('lat')),
+                    'lon': float(first_node.get('lon')),
+                    'weight': w,
+                    'badpoi': False if w >= 0 else True
+                }
+                pois.append(poi_data)
+        
+        # Check for paths (roads, rivers, ...)
+        if len(way['nodes']) >= 2:
+            for i in range(len(way['nodes']) - 1):
+                path_point = {}
+                path_point['start'] = {}
+                path_point['end'] = {}
+                path_point['start']['lat'] = way['nodes'][i]['lat']
+                path_point['start']['lon'] = way['nodes'][i]['lon']
+                path_point['end']['lat'] = way['nodes'][i + 1]['lat']
+                path_point['end']['lon'] = way['nodes'][i + 1]['lon']
+                
+                if way.get('highway') in ['motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'unclassified', 'residential']:
+                    roads.append(path_point)
+                elif way.get('water') == 'river' or way.get('waterway') == 'river':
+                    rivers.append(path_point)
+
+    # Check data in relations
+    for id in relations.keys():
+        relation = relations[id]
+        if len(relation['nodes']) == 0:
+            continue
+        first_node = relation['nodes'][0]
+
+        for relation_key in relation.keys():
+            if relation_key in pois_types and relation[relation_key] in pois_types[relation_key].keys():
+                w = pois_types[relation_key][relation[relation_key]]['w']
+                poi_data = {
+                    'lat': float(first_node.get('lat')),
+                    'lon': float(first_node.get('lon')),
+                    'weight': w,
+                    'badpoi': False if w >= 0 else True
+                }
+                pois.append(poi_data)
+        
+        # Check for paths (roads, rivers, ...)
+        if len(relation['nodes']) >= 2:
+            for i in range(len(relation['nodes']) - 1):
+                path_point = {}
+                path_point['start'] = {}
+                path_point['end'] = {}
+                path_point['start']['lat'] = relation['nodes'][i]['lat']
+                path_point['start']['lon'] = relation['nodes'][i]['lon']
+                path_point['end']['lat'] = relation['nodes'][i + 1]['lat']
+                path_point['end']['lon'] = relation['nodes'][i + 1]['lon']
+                
+                if relation.get('highway') in ['motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'unclassified', 'residential']:
+                    roads.append(path_point)
+                elif relation.get('water') == 'river' or way.get('waterway') == 'river':
+                    rivers.append(path_point)
 
     return pois, roads, rivers
 
