@@ -134,9 +134,6 @@ dmypy.json
 # Output CSV files
 csv/
 
-# Paris OSM file is too large
-paris.osm
-
 # Worker temp files directory
 /tasks
 
@@ -148,3 +145,7 @@ debian/cityzones-maps-service/debian/files
 
 # Temp
 tmp/
+*.tmp
+
+# OSM data
+*.osm
