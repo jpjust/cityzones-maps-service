@@ -37,12 +37,14 @@ try:
     import osmpois
     import overpass
     import elevation
+    import riversrisk
     import connectivity
 except ModuleNotFoundError:
     from cityzones import utils
     from cityzones import osmpois
     from cityzones import overpass
     from cityzones import elevation
+    from cityzones import riversrisk
     from cityzones import connectivity
 
 import time
@@ -130,7 +132,10 @@ def create_riskzones_grid(left: float, bottom: float, right: float, top: float, 
         'zones_inside': [],
         'pois': [],
         'pois_inside': [],
-        'roads_points': 0,
+        'roads': [],
+        'road_points': 0,
+        'rivers': [],
+        'river_points': 0,
         'polygons': []
     }
 
@@ -168,6 +173,7 @@ def init_zones(grid: dict):
                 'has_edu': False,
                 'edu_type': EDU_NONE,
                 'is_road': False,
+                'is_river': False,
                 'urban_prob': 0
             }
 
@@ -347,6 +353,7 @@ def add_path(grid: dict, path: list, path_name: str):
     print(f'Adding paths of name {path_name}... ', end='')
     path_key = f'is_{path_name}'
     path_points = f'{path_name}_points'
+    path_ids = f'{path_name}s'
 
     for point in path:
         # Ignore points outside the grid
@@ -367,16 +374,17 @@ def add_path(grid: dict, path: list, path_name: str):
         dist_y = int(b / grid['grid_x']) - int(a / grid['grid_x'])
 
         if abs(dist_x) >= abs(dist_y):
-            move_zones_x(grid, a, b, dist_x, dist_y)
+            move_zones_x(grid, a, b, dist_x, dist_y, path_key)
         else:
-            move_zones_y(grid, a, b, dist_x, dist_y)
+            move_zones_y(grid, a, b, dist_x, dist_y, path_key)
 
         grid['zones'][a][path_key] = grid['zones'][b][path_key] = True
     
-    # Count road zones
+    # Count path zones
     for zone in grid['zones']:
         if zone[path_key]:
             grid[path_points] += 1
+            grid[path_ids].append(zone['id'])
     
     print('Done!')
 
@@ -390,9 +398,9 @@ def coordinates_to_id(grid: dict, lat, lon):
     pos_y = int(prop_y * grid['grid_y'])
     return pos_y * grid['grid_x'] + pos_x
 
-def move_zones_x(grid: dict, a: dict, b: dict, dist_x: int, dist_y: int):
+def move_zones_x(grid: dict, a: dict, b: dict, dist_x: int, dist_y: int, path_key: str):
     """
-    Move through road in X axis
+    Move through path in X axis
     """
     if dist_x == 0:
         return
@@ -424,7 +432,7 @@ def move_zones_x(grid: dict, a: dict, b: dict, dist_x: int, dist_y: int):
             break
 
         try:
-            grid['zones'][id]['is_road'] = True
+            grid['zones'][id][path_key] = True
 
             # Update distance
             prev_dist = dist
@@ -432,9 +440,9 @@ def move_zones_x(grid: dict, a: dict, b: dict, dist_x: int, dist_y: int):
         except IndexError:
             break
     
-def move_zones_y(grid: dict, a: dict, b: dict, dist_x: int, dist_y: int):
+def move_zones_y(grid: dict, a: dict, b: dict, dist_x: int, dist_y: int, path_key: str):
     """
-    Move through road in Y axis
+    Move through path in Y axis
     """
     if dist_y == 0:
         return
@@ -466,7 +474,7 @@ def move_zones_y(grid: dict, a: dict, b: dict, dist_x: int, dist_y: int):
             break
 
         try:
-            grid['zones'][id]['is_road'] = True
+            grid['zones'][id][path_key] = True
 
             # Update distance
             prev_dist = dist
@@ -548,11 +556,11 @@ def calculate_risk_from_rivers(grid: dict):
 
     print(f'Calculating risk from rivers distance... ', end='')
 
-    # normalize_rivers_dist(grid)
+    normalize_rivers_dist(grid)
     with mp.Pool(processes=MP_WORKERS) as pool:
         payload = []
         for id in grid['zones_inside']:
-            payload.append((grid['zones'][id],))
+            payload.append((grid, grid['zones'][id], grid['flood_quota']))
         risks = pool.starmap(calculate_risk_of_zone_from_rivers, payload)
     
     for risk in risks:
@@ -560,13 +568,20 @@ def calculate_risk_from_rivers(grid: dict):
 
     print('Done!')
 
-def calculate_risk_of_zone_from_rivers(zone: dict) -> float:
+def calculate_risk_of_zone_from_rivers(grid: dict, zone: dict, flood_quota: float) -> float:
     """
     Calculate the risk perception considering the proximity of a zone to a river.
     """
-    # TODO: Need to know from what distance a zone is safe regarding a flooding river.
-    H = 1
-    return (zone['id'], H)
+    risk = 0
+    for id in grid['rivers']:
+        river = grid['zones'][id]
+        if zone['elevation'] - river['elevation'] > flood_quota:
+            continue
+        dist = utils.__calculate_distance(zone, river)
+        R = 1 / math.e ** (dist / grid['river_dist_max'])
+        risk = max(risk, R)
+    
+    return (zone['id'], risk)
 
 def normalize_risks(grid: dict):
     """
@@ -612,6 +627,20 @@ def normalize_elevation(grid: dict):
 
     print(f'hmax={hmax}, hmin={hmin}, m={m}, m_top={m_top}')
 
+def normalize_rivers_dist(grid: dict):
+    """
+    Normalize the distances to rivers values.
+    """
+    maxdist = grid['zones'][grid['zones_inside'][0]]['river_dist']
+
+    for id in grid['zones_inside']:
+        if grid['zones'][id]['river_dist'] > maxdist: maxdist = grid['zones'][id]['river_dist']
+    
+    for id in grid['zones_inside']:
+        grid['zones'][id]['river_dist_normalized'] = grid['zones'][id]['river_dist'] / maxdist
+    
+    grid['river_dist_max'] = maxdist
+
 def calculate_RL(grid: dict):
     """
     Calculate the RL according to risk perception.
@@ -621,8 +650,12 @@ def calculate_RL(grid: dict):
             grid['zones'][id]['RL'] = 1
         else:
             combined_risk = grid['zones'][id]['risk']
+            
             if 'risk_elevation' in grid['zones'][id].keys():
                 combined_risk *= grid['zones'][id]['risk_elevation']
+            
+            if 'risk_river' in grid['zones'][id].keys():
+                combined_risk += grid['zones'][id]['risk_river']
 
             rl = grid['M'] - min(abs(int(math.log(combined_risk))), grid['M'] - 1)
             grid['zones'][id]['RL'] = int(rl)
@@ -787,7 +820,7 @@ def reset_edus_flag(grid: dict, n_edus=None):
     
     grid['edus'] = {}
     for i in range(1, grid['M'] + 1):
-        grid['edus'][i] = []                                            # Final list of EDUs in zone i
+        grid['edus'][i] = []
 
 def reset_edus_data(grid: dict, n_edus=None, use_roads=False, connectivity_threshold: int = 0):
     """
@@ -1197,32 +1230,26 @@ if __name__ == '__main__':
             except FileNotFoundError:
                 print(f'WARNING: GeoJSON file {conf["geojson"]} not found. Not filtering by AoI polygon.')
 
-            # Init zones river distance data
-            rivers.init_zones(grid)
-
             # Init zones elevation data
             if any(i in conf.keys() for i in ['output_elevation', 'output_slope']):
-                #try:
-                    elevation.init_zones(grid)
-                #except Exception:
-                #    print('Error trying to get elevation data!')
-                #    for zone in grid['zones']:
-                #        zone['risk_elevation'] = 0
+                elevation.init_zones(grid)
+
+            # Init zones river distance data
+            if 'flood_quota' in conf.keys():
+                grid['flood_quota'] = conf['flood_quota']
+                riversrisk.init_zones(grid)
 
             # Init zones connectivity data
-            if 'output_connectivity' in conf.keys():
-                try:
-                    connectivity.init_zones(grid, {
-                        'weight': { 'S': 1, 'T': 1, 'R': 1, 'C': 1 },
-                        1: { 'S': 0, 'T': 0, 'R': 0, 'C': 0 },
-                        2: { 'S': 0, 'T': 0, 'R': 0, 'C': 0 },
-                        3: { 'S': 0, 'T': 0, 'R': 0, 'C': 0 },
-                        4: { 'S': 3, 'T': 4, 'R': 4, 'C': 3 }, # Total: 8
-                        5: { 'S': 0, 'T': 0, 'R': 0, 'C': 0 },
-                        6: { 'S': 2, 'T': 4, 'R': 2, 'C': 2 }, # Total: 6
-                    })
-                except Exception:
-                    print('Error trying to get connectivity data!')
+            if 'connectivity_threshold' in conf.keys():
+                connectivity.init_zones(grid, {
+                    'weight': { 'S': 1, 'T': 1, 'R': 1, 'C': 1 },
+                    1: { 'S': 0, 'T': 0, 'R': 0, 'C': 0 },
+                    2: { 'S': 0, 'T': 0, 'R': 0, 'C': 0 },
+                    3: { 'S': 0, 'T': 0, 'R': 0, 'C': 0 },
+                    4: { 'S': 3, 'T': 4, 'R': 4, 'C': 3 }, # Total: 8
+                    5: { 'S': 0, 'T': 0, 'R': 0, 'C': 0 },
+                    6: { 'S': 2, 'T': 4, 'R': 2, 'C': 2 }, # Total: 6
+                })
             
             # Calculate risks regarding distance from PoIs
             calculate_risk_from_pois(grid)
@@ -1230,6 +1257,10 @@ if __name__ == '__main__':
             # Calculate risks regarding elevation
             if 'output_elevation' in conf.keys():
                 calculate_risk_from_elevation(grid)
+            
+            # Calculate risks regarding distance to rivers
+            if 'flood_quota' in conf.keys():
+                calculate_risk_from_rivers(grid)
 
             # Normalize risks and finish classification
             normalize_risks(grid)
@@ -1254,7 +1285,7 @@ if __name__ == '__main__':
         else:
             connectivity_threshold = 0
 
-        print(f'{grid["roads_points"]} allowed zones.')
+        print(f'{len(grid["roads"])} allowed zones.')
 
         if conf['edu_alg'] == 'random':
             set_edus_positions_random(grid)
@@ -1297,14 +1328,22 @@ if __name__ == '__main__':
         print('- Map data')
         fp = open(conf['output'], 'w')
 
-        data = 'id,class,lat,lon\n'
-        fp.write(data)
+        list_keys = []
+        header = 'id'
+        for key in grid['zones'][0].keys():
+            list_keys.append(key)
+            header += f',{key}'
+        fp.write(f'{header}\n')
+
         grid['zones_inside'].sort()
         row = 0
         for id in grid['zones_inside']:
-            data = f'{row},{grid["zones"][id]["RL"]},{grid["zones"][id]["lat"]},{grid["zones"][id]["lon"]}\n'
-            fp.write(data)
+            data = f'{row}'
+            for key in list_keys:
+                data += f',{grid["zones"][id][key]}'
+            fp.write(f'{data}\n')
             row += 1
+
         fp.close()
         
         # Write a CSV file with EDUs positions
@@ -1337,7 +1376,7 @@ if __name__ == '__main__':
                 row += 1
             fp.close()
 
-        # Write a CSV file with forbidden zones
+        # Write a CSV file with roads zones
         if 'output_roads' in conf.keys():
             print('- Roads data')
             fp = open(conf['output_roads'], 'w')
@@ -1348,6 +1387,22 @@ if __name__ == '__main__':
             for id in grid['zones_inside']:
                 zone = grid['zones'][id]
                 if zone['is_road']:
+                    data = f'{row},{zone["lat"]},{zone["lon"]}\n'
+                    fp.write(data)
+                    row += 1
+            fp.close()
+        
+        # Write a CSV file with river zones
+        if 'output_rivers' in conf.keys():
+            print('- Rivers data')
+            fp = open(conf['output_rivers'], 'w')
+            
+            data = 'id,lat,lon\n'
+            fp.write(data)
+            row = 0
+            for id in grid['zones_inside']:
+                zone = grid['zones'][id]
+                if zone['is_river']:
                     data = f'{row},{zone["lat"]},{zone["lon"]}\n'
                     fp.write(data)
                     row += 1
