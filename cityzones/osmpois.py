@@ -112,22 +112,6 @@ def extract_pois(file: str, pois_types: dict) -> tuple[list, list, list]:
                 }
                 pois.append(poi_data)
         
-        # # Check for rivers nodes
-        # if node.get('water') == 'river' or node.get('waterway') == 'river':
-        #     river_data = {
-        #         'lat': float(node.get('lat')),
-        #         'lon': float(node.get('lon')),
-        #     }
-        #     rivers.append(river_data)
-        
-        # # Check for roads nodes
-        # if node.get('highway') in ['motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'unclassified', 'residential']:
-        #     road_data = {
-        #         'lat': float(node.get('lat')),
-        #         'lon': float(node.get('lon')),
-        #     }
-        #     roads.append(road_data)
-
     # Check data in ways
     for id in ways.keys():
         way = ways[id]
