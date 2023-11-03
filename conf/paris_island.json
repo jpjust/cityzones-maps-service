@@ -3,28 +3,35 @@
     "bottom": 48.7897,
     "right": 2.5097,
     "top": 48.9281,
-    "zone_size": 10,
-    "cache_zones": true,
+    "zone_size": 90,
+    "flood_quota": 8.62,
+    "cache_zones": false,
     "M": 3,
-    "edus": 600,
+    "edus": {
+        "loose": 300,
+        "tight": 0
+    },
     "geojson": "geojson/paris_island.geojson",
-    "pois": "osm/paris_filtered.osm",
+    "pois": "osm/paris_island.osm",
     "pois_types": {
         "amenity": {
             "hospital": {
-                "w": 10.0
+                "w": 4.0
             },
             "fire_station": {
-                "w": 5.0
+                "w": 10.0
             },
             "police": {
-                "w": 2.0
+                "w": 5.0
             }
-        },
-        "railway": {}
+        }
     },
-    "edu_alg": "restricted",
+    "edu_alg": "none",
     "output": "csv/paris_island_M3.csv",
     "output_edus": "csv/paris_island_edus_restricted.csv",
-    "output_roads": "csv/paris_island_roads.csv"
+    "output_roads": "csv/paris_island_roads.csv",
+    "output_rivers": "csv/paris_island_rivers.csv",
+    "output_pois": "csv/paris_island_pois.csv",
+    "output_elevation": "csv/paris_island_elevation.csv",
+    "output_slope": "csv/paris_island_slope.csv"
 }

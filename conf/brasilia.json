@@ -1,0 +1,35 @@
+{
+    "left": -48.3002,
+    "bottom": -16.0556,
+    "right": -47.2951,
+    "top": -15.4914,
+    "zone_size": 100,
+    "cache_zones": true,
+    "M": 3,
+    "edus": {
+        "loose": 300,
+        "tight": 0
+    },
+    "geojson": "geojson/brasilia.geojson",
+    "pois": "osm/brasilia.osm",
+    "pois_types": {
+        "amenity": {
+            "hospital": {
+                "w": 10.0
+            },
+            "fire_station": {
+                "w": 5.0
+            },
+            "police": {
+                "w": 2.0
+            }
+        }
+    },
+    "edu_alg": "none",
+    "output": "csv/brasilia_M3.csv",
+    "output_edus": "csv/brasilia_edus_restricted.csv",
+    "output_roads": "csv/brasilia_roads.csv",
+    "output_pois": "csv/brasilia_pois.csv",
+    "output_elevation": "csv/brasilia_elevation.csv",
+    "output_slope": "csv/brasilia_slope.csv"
+}

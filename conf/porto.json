@@ -4,7 +4,8 @@
     "right": -8.5405,
     "top": 41.1939,
     "zone_size": 30,
-    "cache_zones": true,
+    "flood_quota": 6,
+    "cache_zones": false,
     "M": 3,
     "edus": {
         "loose": 300,
@@ -15,26 +16,23 @@
     "pois_types": {
         "amenity": {
             "hospital": {
-                "w": 10.0
+                "w": 4.0
             },
             "fire_station": {
-                "w": 5.0
+                "w": 10.0
             },
             "police": {
-                "w": 2.0
-            }
-        },
-        "railway": {
-            "station": {
-                "w": 1.0
+                "w": 5.0
             }
         }
     },
-    "connectivity_threshold": 0.05,
-    "edu_alg": "restricted_plus",
+    "_connectivity_threshold": 0.05,
+    "edu_alg": "none",
     "output": "csv/porto_M3.csv",
-    "output_edus": "csv/porto_edus_restricted_plus.csv",
+    "output_edus": "csv/porto_edus_none.csv",
     "output_roads": "csv/porto_roads.csv",
+    "output_rivers": "csv/porto_rivers.csv",
     "output_elevation": "csv/porto_elevation.csv",
-    "output_connectivity": "csv/porto_connectivity.csv"
+    "output_slope": "csv/porto_slope.csv",
+    "_output_connectivity": "csv/porto_connectivity.csv"
 }

@@ -1,0 +1,34 @@
+{
+  "left": 1.9968,
+  "bottom": 41.5036,
+  "right": 2.2004,
+  "top": 41.5935,
+  "zone_size": 10,
+  "cache_zones": true,
+  "M": 3,
+  "edus": {
+    "loose": 200,
+    "tight": 50
+  },
+  "pois_types": {
+    "amenity": {
+      "police": {
+        "w": 2.0
+      },
+      "hospital": {
+        "w": 10.0
+      },
+      "fire_station": {
+        "w": 5.0
+      }
+    },
+    "railway": {}
+  },
+  "connectivity_threshold": 0.6,
+  "edu_alg": "restricted_plus",
+  "output": "csv/sabadell_M3.csv",
+  "output_edus": "csv/sabadell_edus_restricted_plus.csv",
+  "output_roads": "csv/sabadell_roads.csv",
+  "output_connectivity": "csv/sabadell_connectivity.csv",
+  "output_pois": "csv/sabadell_pois.csv"
+}

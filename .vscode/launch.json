@@ -131,6 +131,62 @@
             ]
         },
         {
+            "name": "Python: Risk Zones in Brasília",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/cityzones/riskzones.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+            },
+            "args": [
+                "conf/brasilia.json"
+            ]
+        },
+        {
+            "name": "Python: Risk Zones in Elizondo",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/cityzones/riskzones.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+            },
+            "args": [
+                "conf/elizondo.json"
+            ]
+        },
+        {
+            "name": "Python: Risk Zones in Sabadell",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/cityzones/riskzones.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+            },
+            "args": [
+                "conf/sabadell.json"
+            ]
+        },
+        {
+            "name": "Python: Risk Zones in Salvador",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/cityzones/riskzones.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+            },
+            "args": [
+                "conf/salvador.json"
+            ]
+        },
+        {
             "name": "Python: Risk Zones in Test Area",
             "type": "python",
             "request": "launch",

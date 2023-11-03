@@ -1,0 +1,35 @@
+{
+    "left": -38.7071,
+    "bottom": -13.0250,
+    "right": -38.3003,
+    "top": -12.7284,
+    "zone_size": 30,
+    "cache_zones": true,
+    "M": 3,
+    "edus": {
+        "loose": 300,
+        "tight": 0
+    },
+    "geojson": "geojson/salvador.geojson",
+    "pois": "osm/salvador.osm",
+    "pois_types": {
+        "amenity": {
+            "hospital": {
+                "w": 10.0
+            },
+            "fire_station": {
+                "w": 5.0
+            },
+            "police": {
+                "w": 2.0
+            }
+        }
+    },
+    "edu_alg": "none",
+    "output": "csv/salvador_M3.csv",
+    "output_edus": "csv/salvador_edus_restricted.csv",
+    "output_roads": "csv/salvador_roads.csv",
+    "output_pois": "csv/salvador_pois.csv",
+    "output_elevation": "csv/salvador_elevation.csv",
+    "output_slope": "csv/salvador_slope.csv"
+}

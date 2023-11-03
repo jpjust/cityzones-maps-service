@@ -3,7 +3,7 @@
     "bottom": 38.6769,
     "right": -9.0864,
     "top": 38.8009,
-    "zone_size": 30,
+    "zone_size": 90,
     "cache_zones": false,
     "M": 3,
     "edus": {
@@ -11,30 +11,38 @@
         "tight": 0
     },
     "geojson": "geojson/lisboa.geojson",
-    "pois": "osm/lisboa.osm",
+    "_pois": "osm/lisboa.osm",
     "pois_types": {
         "amenity": {
-            "hospital": {
-                "w": 10.0
-            },
             "fire_station": {
+                "w": 4.0
+            },
+            "emergency_service": {
                 "w": 5.0
             },
-            "police": {
+            "rescue_stations": {
+                "w": 1.0
+            }
+        },
+        "emergency": {
+            "ambulance_station": {
                 "w": 2.0
             }
         },
-        "railway": {
-            "station": {
-                "w": 1.0
+        "waterway": {
+            "river": {
+                "w": -0.1,
+                "allnodes": 1
             }
         }
     },
     "_connectivity_threshold": 0.05,
     "edu_alg": "none",
-    "output": "csv/lisboa_M3_no_elevation.csv",
+    "output": "csv/lisboa_M3.csv",
     "output_edus": "csv/lisboa_edus_restricted_plus.csv",
     "output_roads": "csv/lisboa_roads.csv",
-    "_output_elevation": "csv/lisboa_elevation.csv",
+    "output_pois": "csv/lisboa_pois.csv",
+    "output_elevation": "csv/lisboa_elevation.csv",
+    "output_slope": "csv/lisboa_slope.csv",
     "_output_connectivity": "csv/lisboa_connectivity.csv"
 }

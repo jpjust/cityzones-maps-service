@@ -1,0 +1,12 @@
+{
+    "extracts": [
+        {
+            "output": "osm/paris_island.osm",
+            "description": "Paris, France",
+            "polygon": {
+                "file_name": "paris_island.geojson",
+                "file_type": "geojson"
+            }
+        }
+    ]
+}
