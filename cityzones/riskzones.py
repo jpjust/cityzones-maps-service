@@ -1161,12 +1161,13 @@ if __name__ == '__main__':
             print('Done!')
         
             # Filter OSM file
-            filter = '--keep=highway= '
+            filter = '--keep="highway= OR water= OR waterway='
             for poi_type in conf['pois_types'].keys():
-                filter += poi_type
+                filter += f' OR {poi_type}'
                 for poi_spec in conf['pois_types'][poi_type].keys():
                     filter += f'={poi_spec} '
             filter = filter.strip()
+            filter += '"'
 
             try:
                 res = subprocess.run([
