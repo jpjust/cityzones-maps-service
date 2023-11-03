@@ -578,7 +578,7 @@ def calculate_risk_of_zone_from_rivers(grid: dict, zone: dict, flood_quota: floa
         if zone['elevation'] - river['elevation'] > flood_quota:
             continue
         dist = utils.__calculate_distance(zone, river)
-        R = 1 / math.e ** (dist / grid['river_dist_max'])
+        R = 1 / math.e ** ((math.e ** 4) * (dist / grid['river_dist_max']))
         risk = max(risk, R)
     
     return (zone['id'], risk)
@@ -587,18 +587,17 @@ def normalize_risks(grid: dict):
     """
     Normalize the risk perception values.
     """
-    min = max = grid['zones'][grid['zones_inside'][0]]['risk']
+    min_risk = max_risk = grid['zones'][grid['zones_inside'][0]]['risk']
 
     for id in grid['zones_inside']:
-        if grid['zones'][id]['risk'] > max: max = grid['zones'][id]['risk']
-        if grid['zones'][id]['risk'] < min: min = grid['zones'][id]['risk']
+        min_risk = min(min_risk, grid['zones'][id]['risk'])
+        max_risk = max(max_risk, grid['zones'][id]['risk'])
     
-    amplitude = max - min
-    if amplitude == 0:
-        amplitude = 1
+    amplitude = max_risk - min_risk
+    amplitude = 1 if amplitude == 0 else amplitude
 
     for id in grid['zones_inside']:
-        grid['zones'][id]['risk'] = (grid['zones'][id]['risk'] - min) / amplitude
+        grid['zones'][id]['risk'] = (grid['zones'][id]['risk'] - min_risk) / amplitude
 
 def normalize_elevation(grid: dict):
     """
@@ -631,15 +630,21 @@ def normalize_rivers_dist(grid: dict):
     """
     Normalize the distances to rivers values.
     """
-    maxdist = grid['zones'][grid['zones_inside'][0]]['river_dist']
+    maxdist = 0
+    maxdist_all = 0
 
     for id in grid['zones_inside']:
-        if grid['zones'][id]['river_dist'] > maxdist: maxdist = grid['zones'][id]['river_dist']
+        zone = grid['zones'][id]
+        maxdist = max(maxdist, zone['river_dist'])
+        for river_id in grid['rivers']:
+            river = grid['zones'][river_id]
+            dist = utils.__calculate_distance(zone, river)
+            maxdist_all = max(maxdist_all, dist)
     
     for id in grid['zones_inside']:
         grid['zones'][id]['river_dist_normalized'] = grid['zones'][id]['river_dist'] / maxdist
     
-    grid['river_dist_max'] = maxdist
+    grid['river_dist_max'] = maxdist_all
 
 def calculate_RL(grid: dict):
     """
@@ -657,7 +662,11 @@ def calculate_RL(grid: dict):
             if 'risk_river' in grid['zones'][id].keys():
                 combined_risk += grid['zones'][id]['risk_river']
 
-            rl = grid['M'] - min(abs(int(math.log(combined_risk))), grid['M'] - 1)
+            if combined_risk == 0:
+                rl = 1
+            else:
+                rl = grid['M'] - min(abs(int(math.log(combined_risk))), grid['M'] - 1)
+            
             grid['zones'][id]['RL'] = int(rl)
 
 def get_number_of_zones_by_RL(grid: dict) -> dict:
