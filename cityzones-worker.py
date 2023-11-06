@@ -77,7 +77,7 @@ def get_task() -> dict:
     Request a task from the web app.
     """
     try:
-        res = requests.get(f'{config["API_URL"]}/task', headers={'X-API-Key': config["API_KEY"]}, timeout=request_timeout)
+        res = requests.get(f'{config["API_URL"]}/tasks', headers={'X-API-Key': config["API_KEY"]}, timeout=request_timeout)
     except requests.exceptions.ConnectionError:
         logger(f'There was an error trying to connect to the server.')
         return None
@@ -132,17 +132,13 @@ def process_task(task: dict):
     # Extract data from Overpass API
     logger('Extracting AoI from Overpass API...')
     try:
-        osm_xml = overpass.get_osm(taskcfg["bottom"], taskcfg["left"], taskcfg["top"], taskcfg["right"], request_timeout)
+        overpass.get_osm_from_bbox(taskcfg['pois'], taskcfg["bottom"], taskcfg["left"], taskcfg["top"], taskcfg["right"], request_timeout)
     except requests.exceptions.ConnectionError:
         logger(f'There was an error trying to connect to the Overpass server.')
         return None
     except requests.exceptions.ReadTimeout:
         logger(f'Conenction timed-out while requesting data from Overpass.')
         return None
-
-    fp = open(taskcfg['pois'], 'w')
-    fp.write(osm_xml)
-    fp.close()
 
     # Run riskzones.py
     try:
@@ -162,17 +158,17 @@ def process_task(task: dict):
     # Post results to the web app
     encoder = MultipartEncoder(
         fields={
-            'map': ('map.csv', open(taskcfg['output'], 'rb'), 'text/csv'),
-            'edus': ('edus.csv', open(taskcfg['output_edus'], 'rb'), 'text/csv'),
-            'roads': ('roads.csv', open(taskcfg['output_roads'], 'rb'), 'text/csv'),
-            'res_data': ('res_data.json', open(taskcfg['res_data'], 'rb'), 'application/json'),
+            'task[data][map]': ('map.csv', open(taskcfg['output'], 'rb'), 'text/csv'),
+            'task[data][edus]': ('edus.csv', open(taskcfg['output_edus'], 'rb'), 'text/csv'),
+            'task[data][roads]': ('roads.csv', open(taskcfg['output_roads'], 'rb'), 'text/csv'),
+            'task[res_data]': ('res_data.json', open(taskcfg['res_data'], 'rb'), 'application/json'),
         }
     )
 
     logger(f'Sending data to web service...')
     try:
-        req = requests.post(
-            f'{config["API_URL"]}/result/{task["id"]}',
+        req = requests.put(
+            f'{config["API_URL"]}/tasks/{task["id"]}',
             headers={
                 'Content-type': encoder.content_type,
                 'X-API-Key': config["API_KEY"]

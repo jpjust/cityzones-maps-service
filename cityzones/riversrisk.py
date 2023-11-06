@@ -27,14 +27,15 @@ risks:
 - riversrisk.init_zones(grid)
 """
 
-from config import *
 from dotenv import dotenv_values
 import math
 import os
 import multiprocessing as mp
 try:
+    from config import *
     import utils
 except ModuleNotFoundError:
+    from cityzones.config import *
     from cityzones import utils
 
 # Load current directory .env or default configuration file

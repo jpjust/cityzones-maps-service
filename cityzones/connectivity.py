@@ -24,13 +24,17 @@ of the zones.
 After creating a grid object, use the following functions to calculate DPConn:
 """
 
-from config import *
 from dotenv import dotenv_values
 import requests
 import json
-import utils
 import os
 import multiprocessing as mp
+try:
+    from config import *
+    import utils
+except ModuleNotFoundError:
+    from cityzones.config import *
+    from cityzones import utils
 
 # Load current directory .env or default configuration file
 CONF_DEFAULT_PATH='/etc/cityzones/maps-service.conf'
