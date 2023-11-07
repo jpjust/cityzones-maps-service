@@ -871,7 +871,7 @@ def reset_edus_data(grid: dict, n_edus=None, use_roads=False, connectivity_thres
 
     grid['zones'].sort(key=lambda zone : zone['id'])
 
-def set_edus_positions_uniform(grid, mode: int, connectivity_threshold: int = 0):
+def set_edus_positions_uniform(grid: dict, mode: int, connectivity_threshold: int = 0):
     """
     Uniformly select zones for EDUs positioning.
     """
@@ -892,7 +892,7 @@ def set_edus_positions_uniform(grid, mode: int, connectivity_threshold: int = 0)
     
     print('Positioning EDUs... 100.00%')
         
-def set_edus_positions_uniform_unbalanced(grid):
+def set_edus_positions_uniform_unbalanced(grid: dict):
     """
     Unbalanced positioning mode.
     """
@@ -1075,7 +1075,7 @@ def set_edus_positions_uniform_restricted_plus(grid: dict, n_edus: int, connecti
                             zone['dpconn'] = 0
 
                         # The zone must be inside the AoI, be a road and have some connectivity, otherwise, check the next zone
-                        if zone['inside'] and zone['is_road'] and zone['dpconn'] > connectivity_threshold and not zone['has_edu']:
+                        if zone['inside'] and zone['is_road'] and zone['dpconn'] >= connectivity_threshold and not zone['has_edu']:
                             break
                         elif x >= grid['grid_x']:
                             raise OutOfBounds
