@@ -1,4 +1,11 @@
-cityzones-maps-service (1.2-0) stable; urgency=medium
+cityzones-maps-service (1.3-0) stable; urgency=medium
+
+  * Update tool for the new back-end API.
+  * Update riskzones tool.
+
+ -- João Paulo Just Peixoto <just1982@gmail.com>  Mon, 06 Nov 2023 13:52:00 -0300
+ 
+ cityzones-maps-service (1.2-0) stable; urgency=medium
 
   * Add support for Overpass API.
   * Downloading the whole PBF file is no more needed.
