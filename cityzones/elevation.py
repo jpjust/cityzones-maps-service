@@ -74,6 +74,7 @@ def init_zones(grid: dict):
         if len(coord) == COORD_SET_SIZE:
             coord_set.append(coord)
             coord = []
+    coord_set.append(coord) # Add the last set
 
     # Make a request for each set
     zone_start = 0
