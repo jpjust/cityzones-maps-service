@@ -31,6 +31,7 @@
     "output": "csv/porto_M3.csv",
     "output_edus": "csv/porto_edus_restricted_plus.csv",
     "output_roads": "csv/porto_roads.csv",
+    "output_pois": "csv/porto_pois.csv",
     "output_rivers": "csv/porto_rivers.csv",
     "output_elevation": "csv/porto_elevation.csv",
     "output_slope": "csv/porto_slope.csv",
