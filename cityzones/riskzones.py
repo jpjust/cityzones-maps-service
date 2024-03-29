@@ -39,6 +39,7 @@ try:
     import elevation
     import riversrisk
     import connectivity
+    import mapbox
 except ModuleNotFoundError:
     from cityzones import utils
     from cityzones import osmpois
@@ -46,6 +47,7 @@ except ModuleNotFoundError:
     from cityzones import elevation
     from cityzones import riversrisk
     from cityzones import connectivity
+    from cityzones import mapbox
 
 import time
 import json
@@ -221,7 +223,7 @@ def init_zones_by_polygon(grid: dict):
         payload = []
         for zone in grid['zones']:
             payload.append((zone, grid['polygons']))
-        grid['zones'] = pool.starmap(check_zone_in_polygon_set, payload)
+        grid['zones'] = pool.starmap(update_zone_inside_polygon_set, payload)
     
     for zone in grid['zones']:
         if zone['inside'] == True:
@@ -243,7 +245,7 @@ def init_pois_by_polygon(grid: dict) -> list:
         payload = []
         for poi in grid['pois']:
             payload.append((poi, grid['polygons']))
-        pois_results = pool.starmap(check_zone_in_polygon_set, payload)
+        pois_results = pool.starmap(update_zone_inside_polygon_set, payload)
     
     for poi in pois_results:
         if poi['inside'] == True:
@@ -252,17 +254,22 @@ def init_pois_by_polygon(grid: dict) -> list:
     print('Done!')
     print(f'{len(grid["pois_inside"])} of {len(grid["pois"])} PoIs inside the polygon.')
 
-def check_zone_in_polygon_set(zone: dict, polygons: dict) -> bool:
+def update_zone_inside_polygon_set(zone: dict, polygons: dict) -> bool:
     """
-    Check a zone is inside any polygon in a polygons set.
+    Update a zone information if it is inside any polygon in a polygons set.
     """
-    zone['inside'] = False
+    zone['inside'] = check_zone_in_polygons_set(zone, polygons)
+    return zone
+
+def check_zone_in_polygons_set(zone: dict, polygons: list) -> bool:
+    """
+    Check if a zone is inside any polygon in a polygons set.
+    """
     for pol in polygons:
         if check_zone_in_polygon(zone, pol):
-            zone['inside'] = True
-            break
+            return True
 
-    return zone
+    return False
 
 def check_zone_in_polygon(zone: dict, polygon: list) -> bool:
     """
@@ -482,6 +489,28 @@ def move_zones_y(grid: dict, a: dict, b: dict, dist_x: int, dist_y: int, path_ke
         except IndexError:
             break
 
+def calculate_pois_coverage_by_traveltime(grid: dict, max_time: int):
+    """
+    Calculate coverage of PoIs by taveltime.
+    """
+    print('Checking PoIs coverage by travel time... ', end='')
+
+    for poi in grid['pois_inside']:
+        polygons = mapbox.get_traveltime(poi['lat'], poi['lon'], max_time)
+        poi['coverage'] = polygons
+
+    print('Done!')
+
+def check_zone_within_poi_coverage(zone: dict, poi: dict) -> bool:
+    """
+    Check if a zone is within a PoI's coverage.
+    """
+    # Don't check if there is no coverage information
+    if 'coverage' not in poi.keys():
+        return True
+
+    return check_zone_in_polygons_set(zone, poi['coverage'])
+
 def calculate_risk_from_pois(grid: dict):
     """
     Calculate the risk perception considering all PoIs.
@@ -506,18 +535,20 @@ def calculate_risk_of_zone(zone: dict, pois: list) -> float:
     """
     Calculate the risk perception considering all PoIs.
     """
-    sum = 0
+    mitigation = 0
 
     for poi in pois:
+        if not check_zone_within_poi_coverage(zone, poi):
+            continue
+
         if poi['badpoi'] == False:
             # Good PoI. The nearer the better.
-            sum += poi['weight'] / (utils.__calculate_distance(zone, poi) ** 2)
+            mitigation += poi['weight'] / (utils.__calculate_distance(zone, poi) ** 2)
         else:
             # Bad PoI. The nearer the worse.
-            sum += (utils.__calculate_distance(zone, poi) ** 2) / poi['weight']
+            mitigation += (utils.__calculate_distance(zone, poi) ** 2) / poi['weight']
 
-
-    return (zone['id'], 1 / sum)
+    return (zone['id'], 1 / mitigation) if mitigation > 0 else (zone['id'], None)
 
 def calculate_risk_from_elevation(grid: dict):
     """
@@ -587,17 +618,33 @@ def normalize_risks(grid: dict):
     """
     Normalize the risk perception values.
     """
-    min_risk = max_risk = grid['zones'][grid['zones_inside'][0]]['risk']
+    print(f'Normalizing risks... ', end='')
+
+    min_risk = max_risk = 0
+    i = 0
+    while True:
+        if grid['zones'][grid['zones_inside'][i]]['risk'] != None:
+            min_risk = max_risk = grid['zones'][grid['zones_inside'][i]]['risk']
+            break
+        i += 1
 
     for id in grid['zones_inside']:
+        if grid['zones'][id]['risk'] == None:
+            continue
+
         min_risk = min(min_risk, grid['zones'][id]['risk'])
         max_risk = max(max_risk, grid['zones'][id]['risk'])
-    
+
     amplitude = max_risk - min_risk
     amplitude = 1 if amplitude == 0 else amplitude
 
     for id in grid['zones_inside']:
-        grid['zones'][id]['risk'] = (grid['zones'][id]['risk'] - min_risk) / amplitude
+        if grid['zones'][id]['risk'] == None:
+            grid['zones'][id]['risk'] = 1
+        else:
+            grid['zones'][id]['risk'] = (grid['zones'][id]['risk'] - min_risk) / amplitude
+
+    print('Done!')
 
 def normalize_elevation(grid: dict):
     """
@@ -1260,7 +1307,11 @@ if __name__ == '__main__':
                     5: { 'S': 0, 'T': 0, 'R': 0, 'C': 0 },
                     6: { 'S': 2, 'T': 4, 'R': 2, 'C': 2 }, # Total: 6
                 })
-            
+
+            # Calculate max traveltimes polygons from PoIs
+            if 'max_pois_traveltime' in conf.keys():
+                calculate_pois_coverage_by_traveltime(grid, conf['max_pois_traveltime'])
+
             # Calculate risks regarding distance from PoIs
             calculate_risk_from_pois(grid)
 
