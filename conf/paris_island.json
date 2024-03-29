@@ -4,9 +4,9 @@
     "right": 2.5097,
     "top": 48.9281,
     "zone_size": 90,
-    "flood_quota": 8.62,
+    "_flood_quota": 8.62,
     "cache_zones": false,
-    "M": 3,
+    "M": 5,
     "edus": {
         "loose": 300,
         "tight": 0
@@ -26,12 +26,13 @@
             }
         }
     },
+    "max_pois_traveltime": 15,
     "edu_alg": "none",
-    "output": "csv/paris_island_M3.csv",
+    "output": "csv/paris_island_M5.csv",
     "output_edus": "csv/paris_island_edus_restricted.csv",
     "output_roads": "csv/paris_island_roads.csv",
-    "output_rivers": "csv/paris_island_rivers.csv",
     "output_pois": "csv/paris_island_pois.csv",
-    "output_elevation": "csv/paris_island_elevation.csv",
-    "output_slope": "csv/paris_island_slope.csv"
+    "_output_rivers": "csv/paris_island_rivers.csv",
+    "_output_elevation": "csv/paris_island_elevation.csv",
+    "_output_slope": "csv/paris_island_slope.csv"
 }

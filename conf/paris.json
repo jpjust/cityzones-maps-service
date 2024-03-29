@@ -4,26 +4,30 @@
     "right": 2.5097,
     "top": 48.9281,
     "zone_size": 90,
-    "cache_zones": true,
+    "cache_zones": false,
     "M": 3,
-    "edus": 750,
+    "edus": {
+        "loose": 300,
+        "tight": 0
+    },
     "geojson": "geojson/paris.geojson",
     "pois": "osm/paris_filtered.osm",
     "pois_types": {
         "amenity": {
             "hospital": {
-                "w": 10.0
+                "w": 1.0
             },
             "fire_station": {
-                "w": 5.0
+                "w": 1.0
             },
             "police": {
-                "w": 2.0
+                "w": 1.0
             }
         },
         "railway": {}
     },
-    "edu_alg": "restricted",
+    "max_pois_traveltime": 5,
+    "edu_alg": "none",
     "output": "csv/paris_M3.csv",
     "output_edus": "csv/paris_edus_restricted.csv",
     "output_roads": "csv/paris_roads.csv"
