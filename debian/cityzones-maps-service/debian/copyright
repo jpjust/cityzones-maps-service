@@ -4,11 +4,11 @@ Upstream-Contact: João Paulo Just Peixoto <just1982@gmail.com>
 Source: https://github.com/jpjust/cityzones-maps-service
 
 Files: *
-Copyright: 2023 João Paulo Just Peixoto <just1982@gmail.com>
+Copyright: 2023-2024 João Paulo Just Peixoto <just1982@gmail.com>
 License: GPL-3.0+
 
 Files: debian/*
-Copyright: 2023 João Paulo Just Peixoto <just1982@gmail.com>
+Copyright: 2023-2024 João Paulo Just Peixoto <just1982@gmail.com>
 License: GPL-3.0+
 
 License: GPL-3.0+
