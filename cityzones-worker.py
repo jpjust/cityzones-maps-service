@@ -77,7 +77,7 @@ def get_task() -> dict:
     Request a task from the web app.
     """
     try:
-        res = requests.get(f'{config["API_URL"]}/tasks', headers={'X-API-Key': config["API_KEY"]}, timeout=request_timeout)
+        res = requests.get(f'{config["API_URL"]}/tasks', headers={'X-API-Key': config["API_KEY"]}, timeout=request_timeout, verify=False)
     except requests.exceptions.ConnectionError:
         logger(f'There was an error trying to connect to the server.')
         return None
@@ -180,7 +180,8 @@ def process_task(task: dict):
                 'X-API-Key': config["API_KEY"]
             },
             data=encoder,
-            timeout=request_timeout
+            timeout=request_timeout,
+            verify=False
         )
 
         if req.status_code == 201:
