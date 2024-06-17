@@ -4,9 +4,9 @@
     "right": -8.5405,
     "top": 41.1939,
     "zone_size": 90,
-    "_flood_quota": 26.3,
+    "flood_quota": 26.3,
     "cache_zones": false,
-    "M": 6,
+    "M": 3,
     "edus": {
         "loose": 300,
         "tight": 0
@@ -26,15 +26,15 @@
             }
         }
     },
-    "max_pois_traveltime": 5,
+    "_max_pois_traveltime": 15,
     "_connectivity_threshold": 0.05,
-    "edu_alg": "none",
-    "output": "csv/porto_M6.csv",
+    "edu_alg": "restricted_plus",
+    "output": "csv/porto_M3.csv",
     "output_edus": "csv/porto_edus_restricted_plus.csv",
     "output_roads": "csv/porto_roads.csv",
     "output_pois": "csv/porto_pois.csv",
     "output_rivers": "csv/porto_rivers.csv",
-    "_output_elevation": "csv/porto_elevation.csv",
-    "_output_slope": "csv/porto_slope.csv",
+    "output_elevation": "csv/porto_elevation.csv",
+    "output_slope": "csv/porto_slope.csv",
     "_output_connectivity": "csv/porto_connectivity.csv"
 }

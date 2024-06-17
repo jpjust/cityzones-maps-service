@@ -4,8 +4,9 @@
     "right": -38.8686,
     "top": -12.1316,
     "zone_size": 90,
-    "cache_zones": true,
-    "M": 3,
+    "flood_quota": 1,
+    "cache_zones": false,
+    "M": 5,
     "edus": {
         "loose": 300,
         "tight": 0
@@ -15,18 +16,18 @@
     "pois_types": {
         "amenity": {
             "hospital": {
-                "w": 10.0
+                "w": 100.0
             },
             "fire_station": {
-                "w": 5.0
+                "w": 100.0
             },
             "police": {
-                "w": 2.0
+                "w": 100.0
             }
-        },
-        "railway": {}
+        }
     },
-    "connectivity_threshold": 0.05,
+    "max_pois_traveltime": 15,
+    "_connectivity_threshold": 0.05,
     "edu_alg": "none",
     "output": "csv/feira.csv",
     "output_edus": "csv/feira_restricted_plus.csv",
