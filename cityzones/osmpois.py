@@ -108,7 +108,8 @@ def extract_pois(file: str, pois_types: dict) -> tuple[list, list, list]:
                     'lat': float(node.get('lat')),
                     'lon': float(node.get('lon')),
                     'weight': w,
-                    'badpoi': False if w >= 0 else True
+                    'badpoi': False if w >= 0 else True,
+                    'type': f'{node_key}_{node[node_key]}'
                 }
                 pois.append(poi_data)
         
@@ -126,7 +127,8 @@ def extract_pois(file: str, pois_types: dict) -> tuple[list, list, list]:
                     'lat': float(first_node.get('lat')),
                     'lon': float(first_node.get('lon')),
                     'weight': w,
-                    'badpoi': False if w >= 0 else True
+                    'badpoi': False if w >= 0 else True,
+                    'type': f'{way_key}_{way[way_key]}'
                 }
                 pois.append(poi_data)
         
@@ -160,7 +162,8 @@ def extract_pois(file: str, pois_types: dict) -> tuple[list, list, list]:
                     'lat': float(first_node.get('lat')),
                     'lon': float(first_node.get('lon')),
                     'weight': w,
-                    'badpoi': False if w >= 0 else True
+                    'badpoi': False if w >= 0 else True,
+                    'type': f'{relation_key}_{relation[relation_key]}'
                 }
                 pois.append(poi_data)
         

@@ -170,6 +170,7 @@ def init_zones(grid: dict):
                 'lat': (j / grid['grid_y'] * grid['height']) + grid['bottom'] + grid['zone_center']['y'],
                 'lon': (i / grid['grid_x'] * grid['width']) + grid['left'] + grid['zone_center']['x'],
                 'risk': 1.0,
+                'safeness_level': 0,
                 'RL': grid['M'],
                 'inside': True,
                 'has_edu': False,
@@ -549,6 +550,43 @@ def calculate_risk_of_zone(zone: dict, pois: list) -> float:
             mitigation += (utils.__calculate_distance(zone, poi) ** 2) / poi['weight']
 
     return (zone['id'], 1 / mitigation) if mitigation > 0 else (zone['id'], None)
+
+def calculate_safeness_from_pois(grid: dict):
+    """
+    Calculate the safeness level considering all PoIs.
+    """
+    if len(grid['pois_inside']) == 0:
+        return
+
+    print(f'Calculating safeness levels... ', end='')
+
+    with mp.Pool(processes=MP_WORKERS) as pool:
+        payload = []
+        for id in grid['zones_inside']:
+            payload.append((grid['zones'][id], grid['pois_inside']))
+        safeness_data = pool.starmap(calculate_safeness_of_zone, payload)
+    
+    for zone_data in safeness_data:
+        grid['zones'][zone_data[0]]['safeness_level'] = zone_data[1]
+
+    print('Done!')
+
+def calculate_safeness_of_zone(zone: dict, pois: list) -> float:
+    """
+    Calculate the safeness level of a zone regarding PoIs types.
+    """
+    types = []
+
+    for poi in pois:
+        if not check_zone_within_poi_coverage(zone, poi):
+            continue
+
+        if poi['type'] in types:
+            continue
+
+        types.append(poi['type'])
+
+    return (zone['id'], len(types))
 
 def calculate_risk_from_elevation(grid: dict):
     """
@@ -1314,6 +1352,9 @@ if __name__ == '__main__':
 
             # Calculate risks regarding distance from PoIs
             calculate_risk_from_pois(grid)
+
+            # Calculate safeness levels considering all PoIs
+            calculate_safeness_from_pois(grid)
 
             # Calculate risks regarding elevation
             if 'output_elevation' in conf.keys():
