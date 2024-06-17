@@ -114,6 +114,9 @@ def process_task(task: dict):
         taskcfg['output'] = f"{config['OUT_DIR']}/{taskcfg['output']}"
         taskcfg['output_edus'] = f"{config['OUT_DIR']}/{taskcfg['output_edus']}"
         taskcfg['output_roads'] = f"{config['OUT_DIR']}/{taskcfg['output_roads']}"
+        taskcfg['output_rivers'] = f"{config['OUT_DIR']}/{taskcfg['output_rivers']}"
+        taskcfg['output_elevation'] = f"{config['OUT_DIR']}/{taskcfg['output_elevation']}"
+        taskcfg['output_slope'] = f"{config['OUT_DIR']}/{taskcfg['output_slope']}"
         taskcfg['res_data'] = f"{config['OUT_DIR']}/{taskcfg['res_data']}"
         filename = f"{config['TASKS_DIR']}/{taskcfg['base_filename']}.json"
     except KeyError:
@@ -161,6 +164,9 @@ def process_task(task: dict):
             'task[data][map]': ('map.csv', open(taskcfg['output'], 'rb'), 'text/csv'),
             'task[data][edus]': ('edus.csv', open(taskcfg['output_edus'], 'rb'), 'text/csv'),
             'task[data][roads]': ('roads.csv', open(taskcfg['output_roads'], 'rb'), 'text/csv'),
+            'task[data][rivers]': ('rivers.csv', open(taskcfg['output_rivers'], 'rb'), 'text/csv'),
+            'task[data][elevation]': ('elevation.csv', open(taskcfg['output_elevation'], 'rb'), 'text/csv'),
+            'task[data][slope]': ('slope.csv', open(taskcfg['output_slope'], 'rb'), 'text/csv'),
             'task[res_data]': ('res_data.json', open(taskcfg['res_data'], 'rb'), 'application/json'),
         }
     )

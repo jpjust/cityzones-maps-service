@@ -45,9 +45,8 @@ if os.path.exists('.env'):
 elif os.path.exists(CONF_DEFAULT_PATH):
     config = dotenv_values(CONF_DEFAULT_PATH)
 
-#API_ENDPOINT = 'https://api.open-elevation.com/api/v1/lookup'
-API_ENDPOINT = 'http://localhost:8081/api/v1/lookup'
-COORD_SET_SIZE = 500
+API_ENDPOINT = 'https://cityzones.fe.up.pt/api/open_elevation/lookup'
+COORD_SET_SIZE = 100
 
 def init_zones(grid: dict):
     """
@@ -80,9 +79,12 @@ def init_zones(grid: dict):
     zone_start = 0
     for coord in coord_set:
         request = {
-            'locations': coord
+            'query': {
+                'locations': coord
+            }
         }
-        res = requests.post(API_ENDPOINT, data=json.dumps(request), headers={'Content-Type': 'application/json'}, timeout=int(config['NET_TIMEOUT']))
+        print(request)
+        res = requests.post(API_ENDPOINT, data=json.dumps(request), headers={'X-API-Key': config['API_KEY'], 'Content-Type': 'application/json'}, timeout=int(config['NET_TIMEOUT']), verify=False)
 
         if res.status_code != 200:
             print(f'STATUS CODE: {res.status_code}')
