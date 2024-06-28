@@ -170,6 +170,7 @@ def init_zones(grid: dict):
                 'lat': (j / grid['grid_y'] * grid['height']) + grid['bottom'] + grid['zone_center']['y'],
                 'lon': (i / grid['grid_x'] * grid['width']) + grid['left'] + grid['zone_center']['x'],
                 'risk': 1.0,
+                'risk_river': 0,
                 'RL': grid['M'],
                 'inside': True,
                 'has_edu': False,
@@ -210,6 +211,36 @@ def add_polygon(grid: dict, polygons: list):
         grid['pol_points'] += len(polygon)
     
     print('Done!')
+
+def insert_pois_into_zones(grid: dict):
+    """
+    Check every PoI and insert them into the correspondent zone.
+    """
+    print('Inserting PoIs into zones... ', end='')
+
+    for poi in grid['pois']:
+        poi['zone_id'] = None
+
+    with mp.Pool(processes=MP_WORKERS) as pool:
+        payload = []
+        for poi in grid['pois']:
+            payload.append((poi, grid['zones'], grid['zone_size']))
+        grid['pois'] = pool.starmap(update_poi_zone, payload)
+    
+    print('Done!')
+
+def update_poi_zone(poi: dict, zones: list, tolerance: int) -> int:
+    """
+    Update the zone_id of the PoI.
+    """
+    prev_dist = 9999
+    for zone in zones:
+        dist = utils.__calculate_distance(poi, zone)
+        if dist <= tolerance and (poi['zone_id'] == None or dist < prev_dist):
+            poi['zone_id'] = zone['id']
+            prev_dist = dist
+    
+    return poi
 
 def init_zones_by_polygon(grid: dict):
     """
@@ -523,15 +554,15 @@ def calculate_risk_from_pois(grid: dict):
     with mp.Pool(processes=MP_WORKERS) as pool:
         payload = []
         for id in grid['zones_inside']:
-            payload.append((grid['zones'][id], grid['pois_inside']))
+            payload.append((grid, grid['zones'][id], grid['pois_inside']))
         risks = pool.starmap(calculate_risk_of_zone, payload)
-    
+
     for risk in risks:
         grid['zones'][risk[0]]['risk'] = risk[1]
 
     print('Done!')
 
-def calculate_risk_of_zone(zone: dict, pois: list) -> float:
+def calculate_risk_of_zone(grid: dict, zone: dict, pois: list) -> float:
     """
     Calculate the risk perception considering all PoIs.
     """
@@ -539,6 +570,11 @@ def calculate_risk_of_zone(zone: dict, pois: list) -> float:
 
     for poi in pois:
         if not check_zone_within_poi_coverage(zone, poi):
+            continue
+
+        # Do not consider drought PoIs
+        if poi['zone_id'] != None and grid['zones'][poi['zone_id']]['risk_river'] > 0:
+            print(f'zona {poi["zone_id"]} tá alagada')
             continue
 
         if poi['badpoi'] == False:
@@ -620,13 +656,8 @@ def normalize_risks(grid: dict):
     """
     print(f'Normalizing risks... ', end='')
 
-    min_risk = max_risk = 0
-    i = 0
-    while True:
-        if grid['zones'][grid['zones_inside'][i]]['risk'] != None:
-            min_risk = max_risk = grid['zones'][grid['zones_inside'][i]]['risk']
-            break
-        i += 1
+    min_risk = 999999999999
+    max_risk = 0
 
     for id in grid['zones_inside']:
         if grid['zones'][id]['risk'] == None:
@@ -709,8 +740,8 @@ def calculate_RL(grid: dict):
             if 'risk_river' in grid['zones'][id].keys():
                 combined_risk += grid['zones'][id]['risk_river']
 
-            if combined_risk == 0:
-                rl = 1
+            if combined_risk <= 0:
+                rl = grid['M'] - 1
             else:
                 rl = grid['M'] - min(abs(int(math.log(combined_risk))), grid['M'] - 1)
             
@@ -1241,6 +1272,7 @@ if __name__ == '__main__':
         add_pois(grid, pois)
         add_path(grid, roads, 'road')
         add_path(grid, rivers, 'river')
+        insert_pois_into_zones(grid)
 
         # Load cache file if enabled
         time_begin = time.perf_counter()
@@ -1312,9 +1344,6 @@ if __name__ == '__main__':
             if 'max_pois_traveltime' in conf.keys():
                 calculate_pois_coverage_by_traveltime(grid, conf['max_pois_traveltime'])
 
-            # Calculate risks regarding distance from PoIs
-            calculate_risk_from_pois(grid)
-
             # Calculate risks regarding elevation
             if 'output_elevation' in conf.keys():
                 calculate_risk_from_elevation(grid)
@@ -1322,6 +1351,9 @@ if __name__ == '__main__':
             # Calculate risks regarding distance to rivers
             if 'flood_quota' in conf.keys():
                 calculate_risk_from_rivers(grid)
+
+            # Calculate risks regarding distance from PoIs
+            calculate_risk_from_pois(grid)
 
             # Normalize risks and finish classification
             normalize_risks(grid)
