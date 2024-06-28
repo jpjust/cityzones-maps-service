@@ -33,8 +33,11 @@ def get_osm_from_bbox(filename: str, bottom: float, left: float, top: float, rig
 
     res = requests.get(API_ENDPOINT, data=query, stream=True, timeout=request_timeout)
     with open(filename, 'wb') as fp:
-        for chunk in res.iter_content():
-            fp.write(chunk)
+        try:
+            for chunk in res.iter_content():
+                fp.write(chunk)
+        except Exception:
+            pass
 
     return res.status_code
 
