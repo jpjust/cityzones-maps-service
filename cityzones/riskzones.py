@@ -138,6 +138,7 @@ def create_riskzones_grid(left: float, bottom: float, right: float, top: float, 
         'road_points': 0,
         'rivers': [],
         'river_points': 0,
+        'river_dist_max': None,
         'polygons': []
     }
 
@@ -171,6 +172,8 @@ def init_zones(grid: dict):
                 'lon': (i / grid['grid_x'] * grid['width']) + grid['left'] + grid['zone_center']['x'],
                 'risk': 1.0,
                 'risk_river': 0,
+                'river_dist': None,
+                'river_dist_normalized': None,
                 'RL': grid['M'],
                 'inside': True,
                 'has_edu': False,
@@ -574,7 +577,6 @@ def calculate_risk_of_zone(grid: dict, zone: dict, pois: list) -> float:
 
         # Do not consider drought PoIs
         if poi['zone_id'] != None and grid['zones'][poi['zone_id']]['risk_river'] > 0:
-            print(f'zona {poi["zone_id"]} tá alagada')
             continue
 
         if poi['badpoi'] == False:
@@ -708,21 +710,36 @@ def normalize_rivers_dist(grid: dict):
     """
     Normalize the distances to rivers values.
     """
-    maxdist = 0
     maxdist_all = 0
 
+    # Compute distance to rivers
+    with mp.Pool(processes=MP_WORKERS) as pool:
+        payload = []
+        for id in grid['zones_inside']:
+            payload.append((grid, grid['zones'][id]))
+        dists = pool.starmap(calculate_distance_of_zone_to_river, payload)
+
+    for dist in dists:
+        grid['zones'][dist[0]]['river_dist'] = dist[1]
+
+    # Normalize distances
     for id in grid['zones_inside']:
         zone = grid['zones'][id]
-        maxdist = max(maxdist, zone['river_dist'])
-        for river_id in grid['rivers']:
-            river = grid['zones'][river_id]
-            dist = utils.__calculate_distance(zone, river)
-            maxdist_all = max(maxdist_all, dist)
-    
+        maxdist_all = max(maxdist_all, zone['river_dist'])
+
     for id in grid['zones_inside']:
-        grid['zones'][id]['river_dist_normalized'] = grid['zones'][id]['river_dist'] / maxdist
-    
+        grid['zones'][id]['river_dist_normalized'] = grid['zones'][id]['river_dist'] / maxdist_all
+
     grid['river_dist_max'] = maxdist_all
+
+def calculate_distance_of_zone_to_river(grid: dict, zone: dict) -> list:
+    maxdist = 0
+    for river_id in grid['rivers']:
+        river = grid['zones'][river_id]
+        dist = utils.__calculate_distance(zone, river)
+        maxdist = max(maxdist, dist)
+
+    return (zone['id'], dist)
 
 def calculate_RL(grid: dict):
     """
