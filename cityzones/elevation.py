@@ -46,14 +46,15 @@ elif os.path.exists(CONF_DEFAULT_PATH):
     config = dotenv_values(CONF_DEFAULT_PATH)
 
 API_ENDPOINT = 'https://cityzones.fe.up.pt/api/open_elevation/lookup'
-COORD_SET_SIZE = 100
+# API_ENDPOINT = 'http://localhost:3000/api/open_elevation/lookup'
+COORD_SET_SIZE = 50
 
 def init_zones(grid: dict):
     """
     Initialize every zone in the grid and set their elevation.
     """
     print("Setting zones' elevation... ", end='')
-    
+
     # Initialize grid structure
     for zone in grid['zones']:
         zone['elevation'] = 0
@@ -83,13 +84,13 @@ def init_zones(grid: dict):
                 'locations': coord
             }
         }
-        print(request)
+
         res = requests.post(API_ENDPOINT, data=json.dumps(request), headers={'X-API-Key': config['API_KEY'], 'Content-Type': 'application/json'}, timeout=int(config['NET_TIMEOUT']), verify=False)
 
         if res.status_code != 200:
             print(f'STATUS CODE: {res.status_code}')
             raise Exception
-        
+
         elevations = json.loads(res.content.decode())
 
         # Set the elevations
@@ -99,7 +100,7 @@ def init_zones(grid: dict):
             zone = grid['zones'][id]
             zone['elevation'] = elevations['results'][i]['elevation']
             i += 1
-        
+
         zone_start = zone_end
 
     print('Done!')
@@ -123,7 +124,7 @@ def set_slopes(grid: dict):
                 slopes.append(abs(nearby_zone['elevation'] - zone['elevation']) / grid['zone_size'])
             except IndexError:
                 continue
-        
+
         zone['slope'] = max(slopes)
 
     print("Done!")
