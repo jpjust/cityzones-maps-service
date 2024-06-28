@@ -1,6 +1,6 @@
 {
     "left": -51.3923,
-    "bottom": -30.2993,
+    "bottom": -30.4522,
     "right": -50.9770,
     "top": -29.9100,
     "zone_size": 90,
@@ -12,7 +12,7 @@
         "tight": 0
     },
     "geojson": "geojson/porto_alegre.geojson",
-    "_pois": "osm/porto_alegre.osm",
+    "pois": "osm/porto_alegre.osm",
     "pois_types": {
         "amenity": {
             "hospital": {
