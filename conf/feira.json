@@ -4,7 +4,7 @@
     "right": -38.8686,
     "top": -12.1316,
     "zone_size": 90,
-    "flood_quota": 1,
+    "flood_level": 1,
     "cache_zones": false,
     "M": 5,
     "edus": {

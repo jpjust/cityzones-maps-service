@@ -627,7 +627,7 @@ def calculate_risk_from_rivers(grid: dict):
     with mp.Pool(processes=MP_WORKERS) as pool:
         payload = []
         for id in grid['zones_inside']:
-            payload.append((grid, grid['zones'][id], grid['flood_quota']))
+            payload.append((grid, grid['zones'][id], grid['flood_level']))
         risks = pool.starmap(calculate_risk_of_zone_from_rivers, payload)
     
     for risk in risks:
@@ -635,14 +635,14 @@ def calculate_risk_from_rivers(grid: dict):
 
     print('Done!')
 
-def calculate_risk_of_zone_from_rivers(grid: dict, zone: dict, flood_quota: float) -> float:
+def calculate_risk_of_zone_from_rivers(grid: dict, zone: dict, flood_level: float) -> float:
     """
     Calculate the risk perception considering the proximity of a zone to a river.
     """
     risk = 0
     for id in grid['rivers']:
         river = grid['zones'][id]
-        if zone['elevation'] - river['elevation'] > flood_quota:
+        if zone['elevation'] - river['elevation'] > flood_level:
             continue
         dist = utils.__calculate_distance(zone, river)
         R = 1 / math.e ** ((math.e ** 4) * (dist / grid['river_dist_max']))
@@ -1324,8 +1324,8 @@ if __name__ == '__main__':
                 elevation.init_zones(grid)
 
             # Init zones river distance data
-            if 'flood_quota' in conf.keys():
-                grid['flood_quota'] = conf['flood_quota']
+            if 'flood_level' in conf.keys():
+                grid['flood_level'] = conf['flood_level']
                 riversrisk.init_zones(grid)
 
             # Init zones connectivity data
@@ -1349,7 +1349,7 @@ if __name__ == '__main__':
                 calculate_risk_from_elevation(grid)
             
             # Calculate risks regarding distance to rivers
-            if 'flood_quota' in conf.keys():
+            if 'flood_level' in conf.keys():
                 calculate_risk_from_rivers(grid)
 
             # Calculate risks regarding distance from PoIs
