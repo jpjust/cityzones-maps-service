@@ -33,30 +33,29 @@ def extract_nodes(file: str) -> tuple[dict, dict, dict]:
     # Collect nodes from OSM
     for node in root.iter('node'):
         id = int(node.get('id'))
-
-        node_data = {
-            'lat': float(node.get('lat')),
-            'lon': float(node.get('lon')),
-            'weight': 1.0,
-            'badpoi': False
-        }
+        node_data = {}
 
         for tag in node.iter('tag'):
             node_data[tag.get('k')] = tag.get('v')
-        
+
+        node_data['lat'] = float(node.get('lat'))
+        node_data['lon'] = float(node.get('lon'))
+        node_data['weight'] = 1.0
+        node_data['badpoi'] = False
+        node_data['zone_id'] = None
+
         nodes[id] = node_data
-    
+
     # Collect ways from OSM
     for way in root.iter('way'):
         id = int(way.get('id'))
-
-        way_data = {
-            'nodes': []
-        }
+        way_data = {}
 
         for tag in way.iter('tag'):
             way_data[tag.get('k')] = tag.get('v')
-        
+
+        way_data['nodes'] = []
+
         # Ways contain a set of nodes, so we must gather them
         for node in way.iter('nd'):
             node_id = int(node.get('ref'))
@@ -68,14 +67,13 @@ def extract_nodes(file: str) -> tuple[dict, dict, dict]:
     # Collect relations from OSM
     for relation in root.iter('relation'):
         id = int(relation.get('id'))
-
-        relation_data = {
-            'ways': [],
-            'nodes': []
-        }
+        relation_data = {}
 
         for tag in relation.iter('tag'):
             relation_data[tag.get('k')] = tag.get('v')
+
+        relation_data['ways'] = []
+        relation_data['nodes'] = []
 
         # Relations contain a set of ways, so we must gather them
         for member in relation.iter('member'):
@@ -85,6 +83,8 @@ def extract_nodes(file: str) -> tuple[dict, dict, dict]:
                 relation_data['nodes'] += ways[member_id]['nodes']
             if member.get('type') == 'node' and member_id in nodes.keys():
                 relation_data['nodes'].append(nodes[member_id])
+
+        relations[id] = relation_data
 
     return nodes, ways, relations
 
@@ -108,10 +108,11 @@ def extract_pois(file: str, pois_types: dict) -> tuple[list, list, list]:
                     'lat': float(node.get('lat')),
                     'lon': float(node.get('lon')),
                     'weight': w,
-                    'badpoi': False if w >= 0 else True
+                    'badpoi': False if w >= 0 else True,
+                    'zone_id': None
                 }
                 pois.append(poi_data)
-        
+
     # Check data in ways
     for id in ways.keys():
         way = ways[id]
@@ -126,10 +127,11 @@ def extract_pois(file: str, pois_types: dict) -> tuple[list, list, list]:
                     'lat': float(first_node.get('lat')),
                     'lon': float(first_node.get('lon')),
                     'weight': w,
-                    'badpoi': False if w >= 0 else True
+                    'badpoi': False if w >= 0 else True,
+                    'zone_id': None
                 }
                 pois.append(poi_data)
-        
+
         # Check for paths (roads, rivers, ...)
         if len(way['nodes']) >= 2:
             for i in range(len(way['nodes']) - 1):
@@ -140,10 +142,10 @@ def extract_pois(file: str, pois_types: dict) -> tuple[list, list, list]:
                 path_point['start']['lon'] = way['nodes'][i]['lon']
                 path_point['end']['lat'] = way['nodes'][i + 1]['lat']
                 path_point['end']['lon'] = way['nodes'][i + 1]['lon']
-                
+
                 if way.get('highway') in ['motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'unclassified', 'residential']:
                     roads.append(path_point)
-                elif way.get('water') == 'river' or way.get('waterway') == 'river':
+                elif way.get('water') == 'river' or way.get('waterway') == 'river' or way.get('water') == 'lake':
                     rivers.append(path_point)
 
     # Check data in relations
@@ -160,10 +162,11 @@ def extract_pois(file: str, pois_types: dict) -> tuple[list, list, list]:
                     'lat': float(first_node.get('lat')),
                     'lon': float(first_node.get('lon')),
                     'weight': w,
-                    'badpoi': False if w >= 0 else True
+                    'badpoi': False if w >= 0 else True,
+                    'zone_id': None
                 }
                 pois.append(poi_data)
-        
+
         # Check for paths (roads, rivers, ...)
         if len(relation['nodes']) >= 2:
             for i in range(len(relation['nodes']) - 1):
@@ -174,10 +177,10 @@ def extract_pois(file: str, pois_types: dict) -> tuple[list, list, list]:
                 path_point['start']['lon'] = relation['nodes'][i]['lon']
                 path_point['end']['lat'] = relation['nodes'][i + 1]['lat']
                 path_point['end']['lon'] = relation['nodes'][i + 1]['lon']
-                
+
                 if relation.get('highway') in ['motorway', 'trunk', 'primary', 'secondary', 'tertiary', 'unclassified', 'residential']:
                     roads.append(path_point)
-                elif relation.get('water') == 'river' or way.get('waterway') == 'river':
+                elif relation.get('water') == 'river' or relation.get('waterway') == 'river' or relation.get('water') == 'lake':
                     rivers.append(path_point)
 
     return pois, roads, rivers
@@ -189,7 +192,7 @@ if __name__ == '__main__':
     file = input('Input OSM filename: ')
     pois_type = input('Input pois type (hospital, police, fire_station): ')
     pois = extract_pois(file, {'amenity': pois_type})
-    
+
     message = f"{len(pois)} PoIs found:"
     print(f"\n{message}")
     print('-' * len(message))
