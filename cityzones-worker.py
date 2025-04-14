@@ -68,6 +68,14 @@ def delete_task_files(task: dict):
     fileslist.append(task['config']['res_data'])
     fileslist.append(task['config']['extract'])
 
+    # Flood related files
+    if 'output_rivers' in task['config'].keys():
+        fileslist.append(task['config']['output_rivers'])
+    if 'output_elevation' in task['config'].keys():
+        fileslist.append(task['config']['output_elevation'])
+    if 'output_slope' in task['config'].keys():
+        fileslist.append(task['config']['output_slope'])
+
     for file in fileslist:
         if os.path.isfile(file):
             os.remove(file)
@@ -114,11 +122,18 @@ def process_task(task: dict):
         taskcfg['output'] = f"{config['OUT_DIR']}/{taskcfg['output']}"
         taskcfg['output_edus'] = f"{config['OUT_DIR']}/{taskcfg['output_edus']}"
         taskcfg['output_roads'] = f"{config['OUT_DIR']}/{taskcfg['output_roads']}"
-        taskcfg['output_rivers'] = f"{config['OUT_DIR']}/{taskcfg['output_rivers']}"
-        taskcfg['output_elevation'] = f"{config['OUT_DIR']}/{taskcfg['output_elevation']}"
-        taskcfg['output_slope'] = f"{config['OUT_DIR']}/{taskcfg['output_slope']}"
         taskcfg['res_data'] = f"{config['OUT_DIR']}/{taskcfg['res_data']}"
         filename = f"{config['TASKS_DIR']}/{taskcfg['base_filename']}.json"
+
+        # Flood related files
+        if 'flood_level' in taskcfg.keys():
+            taskcfg['flood_level'] = int(taskcfg['flood_level'])
+        if 'output_rivers' in taskcfg.keys():
+            taskcfg['output_rivers'] = f"{config['OUT_DIR']}/{taskcfg['output_rivers']}"
+        if 'output_elevation' in taskcfg.keys():
+            taskcfg['output_elevation'] = f"{config['OUT_DIR']}/{taskcfg['output_elevation']}"
+        if 'output_slope' in taskcfg.keys():
+            taskcfg['output_slope'] = f"{config['OUT_DIR']}/{taskcfg['output_slope']}"
     except KeyError:
         logger('A key is missing in task JSON file. Aborting!')
         return
@@ -159,17 +174,20 @@ def process_task(task: dict):
         return
 
     # Post results to the web app
-    encoder = MultipartEncoder(
-        fields={
-            'task[data][map]': ('map.csv', open(taskcfg['output'], 'rb'), 'text/csv'),
-            'task[data][edus]': ('edus.csv', open(taskcfg['output_edus'], 'rb'), 'text/csv'),
-            'task[data][roads]': ('roads.csv', open(taskcfg['output_roads'], 'rb'), 'text/csv'),
-            'task[data][rivers]': ('rivers.csv', open(taskcfg['output_rivers'], 'rb'), 'text/csv'),
-            'task[data][elevation]': ('elevation.csv', open(taskcfg['output_elevation'], 'rb'), 'text/csv'),
-            'task[data][slope]': ('slope.csv', open(taskcfg['output_slope'], 'rb'), 'text/csv'),
-            'task[res_data]': ('res_data.json', open(taskcfg['res_data'], 'rb'), 'application/json'),
-        }
-    )
+    encoder_fields = {
+        'task[data][map]': ('map.csv', open(taskcfg['output'], 'rb'), 'text/csv'),
+        'task[data][edus]': ('edus.csv', open(taskcfg['output_edus'], 'rb'), 'text/csv'),
+        'task[data][roads]': ('roads.csv', open(taskcfg['output_roads'], 'rb'), 'text/csv'),
+        'task[res_data]': ('res_data.json', open(taskcfg['res_data'], 'rb'), 'application/json')
+    }
+    if 'output_rivers' in taskcfg.keys():
+        encoder_fields['task[data][rivers]'] = ('rivers.csv', open(taskcfg['output_rivers'], 'rb'), 'text/csv')
+    if 'output_elevation' in taskcfg.keys():
+        encoder_fields['task[data][elevation]'] = ('elevation.csv', open(taskcfg['output_elevation'], 'rb'), 'text/csv')
+    if 'output_slope' in taskcfg.keys():
+        encoder_fields['task[data][slope]'] = ('slope.csv', open(taskcfg['output_slope'], 'rb'), 'text/csv')
+
+    encoder = MultipartEncoder(fields=encoder_fields)
 
     logger(f'Sending data to web service...')
     try:
@@ -190,7 +208,7 @@ def process_task(task: dict):
             logger('Not authorized! Check API_KEY.')
         else:
             logger(f'The server reported an error for {taskcfg["base_filename"]} data.')
-        
+
     except requests.exceptions.ConnectionError:
         logger(f'There was an error trying to connect to the server.')
     except requests.exceptions.ReadTimeout:

@@ -1,3 +1,9 @@
+cityzones-maps-service (1.5-1) stable; urgency=high
+
+  * Fix bug that crashes worker if flood risk is not enabled.
+
+ -- João Paulo Just Peixoto <just1982@gmail.com>  Mon, 14 Apr 2025 17:27:00 -0300
+
 cityzones-maps-service (1.5-0) stable; urgency=medium
 
   * Enhance isochone risk assessment.
