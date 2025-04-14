@@ -1,0 +1,37 @@
+{
+    "left": -8.6926,
+    "bottom": 41.1352,
+    "right": -8.5405,
+    "top": 41.1939,
+    "zone_size": 90,
+    "cache_zones": false,
+    "M": 5,
+    "edus": {
+        "loose": 300,
+        "tight": 0
+    },
+    "geojson": "geojson/porto.geojson",
+    "pois": "osm/porto.osm",
+    "pois_types": {
+        "amenity": {
+            "hospital": {
+                "w": 4.0
+            },
+            "fire_station": {
+                "w": 2.0
+            },
+            "police": {
+                "w": 1.0
+            }
+        }
+    },
+    "t_good": 5,
+    "t_medium": 15,
+    "edu_alg": "none",
+    "output": "/home/just/GoogleDrive/IFBA/Artigos/2024 - 15 minutes risk assessment/porto_M5_15min.csv",
+    "output_edus": "/home/just/GoogleDrive/IFBA/Artigos/2024 - 15 minutes risk assessment/porto_edus_restricted_plus.csv",
+    "output_roads": "/home/just/GoogleDrive/IFBA/Artigos/2024 - 15 minutes risk assessment/porto_roads.csv",
+    "output_pois": "/home/just/GoogleDrive/IFBA/Artigos/2024 - 15 minutes risk assessment/porto_pois.csv",
+    "output_rivers": "/home/just/GoogleDrive/IFBA/Artigos/2024 - 15 minutes risk assessment/porto_rivers.csv",
+    "output_coverage": "/home/just/GoogleDrive/IFBA/Artigos/2024 - 15 minutes risk assessment/porto_coverage.csv"
+}

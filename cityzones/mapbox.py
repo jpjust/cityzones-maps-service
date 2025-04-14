@@ -36,13 +36,25 @@ elif os.path.exists(CONF_DEFAULT_PATH):
 
 API_ENDPOINT = 'https://api.mapbox.com/isochrone/v1'
 
+def init_zones(grid: dict):
+    """
+    Initialize every zone in the grid and set their initial coverage.
+    """
+    print("Resetting zones' coverage assessment... ", end='')
+    
+    # Initialize grid structure
+    for zone in grid['zones']:
+        zone['coverage'] = 0
+
+    print('Done!')
+
 def get_traveltime(lat: float, lon: float, maxtime: int) -> list:
     """
     Get a list of polygons and holes of the area with `maxtime` minutes
     travel time from the specified coordinates.
     """
 
-    res = requests.get(f'{API_ENDPOINT}/mapbox/driving/{lon},{lat}?contours_minutes={maxtime}&polygons=true&access_token={config["MAPBOX_API_KEY"]}', timeout=int(config['NET_TIMEOUT']))
+    res = requests.get(f'{API_ENDPOINT}/mapbox/walking/{lon},{lat}?contours_minutes={maxtime}&polygons=true&access_token={config["MAPBOX_API_KEY"]}', timeout=int(config['NET_TIMEOUT']))
 
     if res.status_code != 200:
         print(f'STATUS CODE: {res.status_code}')

@@ -6,7 +6,7 @@
     "configurations": [
         {
             "name": "Python: Risk Zones in Porto",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/cityzones/riskzones.py",
             "console": "integratedTerminal",
@@ -19,8 +19,22 @@
             ]
         },
         {
+            "name": "Python: FMC in Porto",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/cityzones/riskzones.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+            },
+            "args": [
+                "conf/porto_fmc.json"
+            ]
+        },
+        {
             "name": "Python: Risk Zones in Porto+Gaia",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/cityzones/riskzones.py",
             "console": "integratedTerminal",
@@ -34,7 +48,7 @@
         },
         {
             "name": "Python: Risk Zones in Lisboa",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/cityzones/riskzones.py",
             "console": "integratedTerminal",
@@ -48,7 +62,7 @@
         },
         {
             "name": "Python: Risk Zones in Paris",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/cityzones/riskzones.py",
             "console": "integratedTerminal",
@@ -62,7 +76,7 @@
         },
         {
             "name": "Python: Risk Zones in Paris Island",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/cityzones/riskzones.py",
             "console": "integratedTerminal",
@@ -76,7 +90,7 @@
         },
         {
             "name": "Python: Risk Zones in Eiffel AoI",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/cityzones/riskzones.py",
             "console": "integratedTerminal",
@@ -90,7 +104,7 @@
         },
         {
             "name": "Python: Risk Zones in Feira",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/cityzones/riskzones.py",
             "console": "integratedTerminal",
@@ -104,7 +118,7 @@
         },
         {
             "name": "Python: Risk Zones in Barcelona",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/cityzones/riskzones.py",
             "console": "integratedTerminal",
@@ -118,7 +132,7 @@
         },
         {
             "name": "Python: Risk Zones in Barcelona Small",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/cityzones/riskzones.py",
             "console": "integratedTerminal",
@@ -132,7 +146,7 @@
         },
         {
             "name": "Python: Risk Zones in Barcelona Big",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/cityzones/riskzones.py",
             "console": "integratedTerminal",
@@ -146,7 +160,7 @@
         },
         {
             "name": "Python: Risk Zones in Brasília",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/cityzones/riskzones.py",
             "console": "integratedTerminal",
@@ -160,7 +174,7 @@
         },
         {
             "name": "Python: Risk Zones in Elizondo",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/cityzones/riskzones.py",
             "console": "integratedTerminal",
@@ -174,7 +188,7 @@
         },
         {
             "name": "Python: Risk Zones in Sabadell",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/cityzones/riskzones.py",
             "console": "integratedTerminal",
@@ -188,7 +202,7 @@
         },
         {
             "name": "Python: Risk Zones in Salvador",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/cityzones/riskzones.py",
             "console": "integratedTerminal",
@@ -202,7 +216,7 @@
         },
         {
             "name": "Python: Risk Zones in Test Area",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/cityzones/riskzones.py",
             "console": "integratedTerminal",
@@ -216,7 +230,7 @@
         },
         {
             "name": "Python: Risk Zones in Rio",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/cityzones/riskzones.py",
             "console": "integratedTerminal",
@@ -230,7 +244,7 @@
         },
         {
             "name": "Python: Risk Zones in Florianópolis",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/cityzones/riskzones.py",
             "console": "integratedTerminal",
@@ -244,7 +258,7 @@
         },
         {
             "name": "Python: Risk Zones in Porto Alegre",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/cityzones/riskzones.py",
             "console": "integratedTerminal",

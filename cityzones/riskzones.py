@@ -171,6 +171,7 @@ def init_zones(grid: dict):
                 'lat': (j / grid['grid_y'] * grid['height']) + grid['bottom'] + grid['zone_center']['y'],
                 'lon': (i / grid['grid_x'] * grid['width']) + grid['left'] + grid['zone_center']['x'],
                 'risk': 1.0,
+                'risk_all_pois': 1.0,
                 'risk_river': 0,
                 'river_dist': None,
                 'river_dist_normalized': None,
@@ -523,27 +524,67 @@ def move_zones_y(grid: dict, a: dict, b: dict, dist_x: int, dist_y: int, path_ke
         except IndexError:
             break
 
-def calculate_pois_coverage_by_traveltime(grid: dict, max_time: int):
+def calculate_pois_coverage_by_traveltime(grid: dict, t_good: int, t_medium: int):
     """
     Calculate coverage of PoIs by taveltime.
     """
     print('Checking PoIs coverage by travel time... ', end='')
 
+    # Checking for t_good time
     for poi in grid['pois_inside']:
-        polygons = mapbox.get_traveltime(poi['lat'], poi['lon'], max_time)
-        poi['coverage'] = polygons
+        polygons = mapbox.get_traveltime(poi['lat'], poi['lon'], t_good)
+        poi['coverage_t_good'] = polygons
+
+    # Checking fot t_medium time
+    for poi in grid['pois_inside']:
+        polygons = mapbox.get_traveltime(poi['lat'], poi['lon'], t_medium)
+        poi['coverage_t_medium'] = polygons
 
     print('Done!')
+
+def perform_coverage_assessment(grid: dict):
+    """
+    Perform coverage assessment based on PoIs coverage.
+    """
+    if len(grid['pois_inside']) == 0:
+        return
+
+    print(f'Calculating coverage of zones... ', end='')
+
+    with mp.Pool(processes=MP_WORKERS) as pool:
+        payload = []
+        for id in grid['zones_inside']:
+            payload.append((grid['zones'][id], grid['pois_inside']))
+        coverages = pool.starmap(assess_coverage_of_zone, payload)
+    
+    for coverage in coverages:
+        grid['zones'][coverage[0]]['coverage'] = coverage[1]
+
+    print('Done!')
+
+def assess_coverage_of_zone(zone: dict, pois: list) -> float:
+    """
+    Calculate the coverage of a zone.
+    """
+    coverage = 99
+    for poi in pois:
+        coverage = min(coverage, check_zone_within_poi_coverage(zone, poi))
+    return (zone['id'], coverage)
 
 def check_zone_within_poi_coverage(zone: dict, poi: dict) -> bool:
     """
     Check if a zone is within a PoI's coverage.
     """
     # Don't check if there is no coverage information
-    if 'coverage' not in poi.keys():
-        return True
+    if 'coverage_t_good' not in poi.keys():
+        return 1
 
-    return check_zone_in_polygons_set(zone, poi['coverage'])
+    if check_zone_in_polygons_set(zone, poi['coverage_t_good']):
+        return 1
+    elif check_zone_in_polygons_set(zone, poi['coverage_t_medium']):
+        return 2
+    else:
+        return 99
 
 def calculate_risk_from_pois(grid: dict):
     """
@@ -562,31 +603,51 @@ def calculate_risk_from_pois(grid: dict):
 
     for risk in risks:
         grid['zones'][risk[0]]['risk'] = risk[1]
+        grid['zones'][risk[0]]['risk_all_pois'] = risk[2]
 
     print('Done!')
 
 def calculate_risk_of_zone(grid: dict, zone: dict, pois: list) -> float:
     """
     Calculate the risk perception considering all PoIs.
+
+    We need to calculate two mitiagion levels: normal and all_pois.
+    The normal mitigation level will consider only allowed PoIs (inside isochone polygons if
+    t_good and t_medium is set AND not drought PoIs if risk_river is greather than zero).
+    The all_pois mitigation will consider every PoI. This is done to perform a correct
+    normalization and allow to compare results with different parameters for the same Area of
+    Interest.
     """
     mitigation = 0
+    mitigation_all_pois = 0
 
     for poi in pois:
-        if not check_zone_within_poi_coverage(zone, poi):
+        computed_mitigation = 0
+
+        if poi['badpoi'] == False:
+            # Good PoI. The nearer the better.
+            computed_mitigation = poi['weight'] / (utils.__calculate_distance(zone, poi) ** 2)
+        else:
+            # Bad PoI. The nearer the worse.
+            computed_mitigation = (utils.__calculate_distance(zone, poi) ** 2) / poi['weight']
+
+        mitigation_all_pois += computed_mitigation
+
+        # Do not consider PoIs out of reach (too far to reach considering coverage)
+        coverage = check_zone_within_poi_coverage(zone, poi)
+        if coverage == 99:
             continue
 
         # Do not consider drought PoIs
         if poi['zone_id'] != None and grid['zones'][poi['zone_id']]['risk_river'] > 0:
             continue
 
-        if poi['badpoi'] == False:
-            # Good PoI. The nearer the better.
-            mitigation += poi['weight'] / (utils.__calculate_distance(zone, poi) ** 2)
-        else:
-            # Bad PoI. The nearer the worse.
-            mitigation += (utils.__calculate_distance(zone, poi) ** 2) / poi['weight']
+        mitigation += computed_mitigation
 
-    return (zone['id'], 1 / mitigation) if mitigation > 0 else (zone['id'], None)
+    risk = (1 / mitigation) if (mitigation > 0) else None
+    risk_all_pois = (1 / mitigation_all_pois) if (mitigation_all_pois > 0) else None
+
+    return (zone['id'], risk, risk_all_pois)
 
 def calculate_risk_from_elevation(grid: dict):
     """
@@ -658,15 +719,13 @@ def normalize_risks(grid: dict):
     """
     print(f'Normalizing risks... ', end='')
 
-    min_risk = 999999999999
+    inf = 999999999999
+    min_risk = inf
     max_risk = 0
 
     for id in grid['zones_inside']:
-        if grid['zones'][id]['risk'] == None:
-            continue
-
-        min_risk = min(min_risk, grid['zones'][id]['risk'])
-        max_risk = max(max_risk, grid['zones'][id]['risk'])
+        min_risk = min(min_risk, grid['zones'][id]['risk'] if grid['zones'][id]['risk'] != None else inf, grid['zones'][id]['risk_all_pois'] if grid['zones'][id]['risk_all_pois'] != None else inf)
+        max_risk = max(max_risk, grid['zones'][id]['risk'] if grid['zones'][id]['risk'] != None else 0,   grid['zones'][id]['risk_all_pois'] if grid['zones'][id]['risk_all_pois'] != None else 0)
 
     amplitude = max_risk - min_risk
     amplitude = 1 if amplitude == 0 else amplitude
@@ -1358,13 +1417,15 @@ if __name__ == '__main__':
                 })
 
             # Calculate max traveltimes polygons from PoIs
-            if 'max_pois_traveltime' in conf.keys():
-                calculate_pois_coverage_by_traveltime(grid, conf['max_pois_traveltime'])
+            if 't_good' in conf.keys() and 't_medium' in conf.keys():
+                mapbox.init_zones(grid)
+                calculate_pois_coverage_by_traveltime(grid, conf['t_good'], conf['t_medium'])
+                perform_coverage_assessment(grid)
 
             # Calculate risks regarding elevation
             if 'output_elevation' in conf.keys():
                 calculate_risk_from_elevation(grid)
-            
+
             # Calculate risks regarding distance to rivers
             if 'flood_level' in conf.keys():
                 calculate_risk_from_rivers(grid)
@@ -1556,6 +1617,20 @@ if __name__ == '__main__':
             row = 0
             for id in grid['zones_inside']:
                 data = f'{row},{float(grid["zones"][id]["dpconn"])},\"{grid["zones"][id]["dpconn_nets"]}\",{grid["zones"][id]["lat"]},{grid["zones"][id]["lon"]}\n'
+                fp.write(data)
+                row += 1
+            fp.close()
+
+        # Write a CSV file with coverage data
+        if 'output_coverage' in conf.keys():
+            print('- Coverage data')
+            fp = open(conf['output_coverage'], 'w')
+            
+            data = 'id,coverage,lat,lon\n'
+            fp.write(data)
+            row = 0
+            for id in grid['zones_inside']:
+                data = f'{row},{float(grid["zones"][id]["coverage"])},{grid["zones"][id]["lat"]},{grid["zones"][id]["lon"]}\n'
                 fp.write(data)
                 row += 1
             fp.close()
