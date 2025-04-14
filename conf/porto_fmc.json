@@ -32,6 +32,6 @@
     "output_edus": "/home/just/GoogleDrive/IFBA/Artigos/2024 - 15 minutes risk assessment/porto_edus_restricted_plus.csv",
     "output_roads": "/home/just/GoogleDrive/IFBA/Artigos/2024 - 15 minutes risk assessment/porto_roads.csv",
     "output_pois": "/home/just/GoogleDrive/IFBA/Artigos/2024 - 15 minutes risk assessment/porto_pois.csv",
-    "output_rivers": "/home/just/GoogleDrive/IFBA/Artigos/2024 - 15 minutes risk assessment/porto_rivers.csv",
+    "_output_rivers": "/home/just/GoogleDrive/IFBA/Artigos/2024 - 15 minutes risk assessment/porto_rivers.csv",
     "output_coverage": "/home/just/GoogleDrive/IFBA/Artigos/2024 - 15 minutes risk assessment/porto_coverage.csv"
 }
