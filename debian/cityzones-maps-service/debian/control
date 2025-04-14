@@ -4,13 +4,13 @@ Priority: optional
 Maintainer: João Paulo Just Peixoto <just1982@gmail.com>
 Build-Depends: debhelper-compat (= 13)
 Standards-Version: 4.6.0
-Homepage: https://cityzones.just.pro.br
+Homepage: https://cityzones.fe.up.pt
 #Vcs-Browser: https://salsa.debian.org/debian/cityzones-maps-service
 #Vcs-Git: https://salsa.debian.org/debian/cityzones-maps-service.git
 Rules-Requires-Root: no
 
 Package: cityzones-maps-service
-Version: 1.4-3
+Version: 1.5-0
 Architecture: amd64
 Depends: python3, python3-dotenv, python3-geojson, python3-requests, python3-requests-toolbelt, osmium-tool, ${misc:Depends}
 Description: CityZones Maps-service
