@@ -14,7 +14,7 @@ If you don't have a GeoJSON file for the city you are working on, you can conver
 
 The output properties of the configuration file specifies two output files: the main output which will contain the zones and its classes of risk and an EDUs output which will contain the position of the EDUs on the region.
 
-To plot a map of the risk zones and the EDUs, run the script in `gee_riskzones.js` on Google Earch Engine (you will need to upload your output CSV files as assets on GEE) or use the web interface at http://cityzones.just.pro.br.
+To plot a map of the risk zones and the EDUs, run the script in `gee_riskzones.js` on Google Earch Engine (you will need to upload your output CSV files as assets on GEE) or use the web interface at http://cityzones.fe.up.pt.
 
 ## Worker
 
@@ -36,7 +36,7 @@ To avoid memory issues `riskzones.py` sets a memory limit. Edit `.env` in the ro
 
 ## CityZones Web: online interface
 
-There is a online web interface for CityZones: http://cityzones.just.pro.br
+There is a online web interface for CityZones: http://cityzones.fe.up.pt
 
 This web application provides a GUI to request an AoI classification with RiskZones algorithm. All requests are processed by a remote worker and sent back to the online service. Visit the CityZones Web site to get more help.
 
