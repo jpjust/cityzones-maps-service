@@ -1,0 +1,40 @@
+{
+    "left": 12.4497,
+    "bottom": 55.6074,
+    "right": 12.6700,
+    "top": 55.7337,
+    "zone_size": 90,
+    "_flood_level": 0,
+    "cache_zones": false,
+    "M": 5,
+    "edus": {
+        "loose": 300,
+        "tight": 0
+    },
+    "geojson": "geojson/copenhagen.geojson",
+    "_pois": "osm/paris_island.osm",
+    "pois_types": {
+        "amenity": {
+            "hospital": {
+                "w": 4.0
+            },
+            "fire_station": {
+                "w": 10.0
+            },
+            "police": {
+                "w": 5.0
+            }
+        }
+    },
+    "t_good": 5,
+    "t_medium": 15,
+    "edu_alg": "none",
+    "output": "/home/just/GoogleDrive/IFBA/Artigos/2024 - 15 minutes risk assessment/copenhagen_M5_15min.csv",
+    "output_edus": "/home/just/GoogleDrive/IFBA/Artigos/2024 - 15 minutes risk assessment/copenhagen_edus_restricted.csv",
+    "output_roads": "/home/just/GoogleDrive/IFBA/Artigos/2024 - 15 minutes risk assessment/copenhagen_roads.csv",
+    "output_pois": "/home/just/GoogleDrive/IFBA/Artigos/2024 - 15 minutes risk assessment/copenhagen_pois.csv",
+    "_output_rivers": "/home/just/GoogleDrive/IFBA/Artigos/2024 - 15 minutes risk assessment/copenhagen_rivers.csv",
+    "_output_elevation": "/home/just/GoogleDrive/IFBA/Artigos/2024 - 15 minutes risk assessment/copenhagen_elevation.csv",
+    "_output_slope": "/home/just/GoogleDrive/IFBA/Artigos/2024 - 15 minutes risk assessment/copenhagen_slope.csv",
+    "output_coverage": "/home/just/GoogleDrive/IFBA/Artigos/2024 - 15 minutes risk assessment/copenhagen_coverage.csv"
+}

@@ -19,6 +19,20 @@
             ]
         },
         {
+            "name": "Python: Risk Zones in Porto (No PoIs)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/cityzones/riskzones.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+            },
+            "args": [
+                "conf/porto_no_poi.json"
+            ]
+        },
+        {
             "name": "Python: FMC in Porto",
             "type": "debugpy",
             "request": "launch",
@@ -61,6 +75,20 @@
             ]
         },
         {
+            "name": "Python: Risk Zones in Lisboa (No PoIs)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/cityzones/riskzones.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+            },
+            "args": [
+                "conf/lisboa_no_poi.json"
+            ]
+        },
+        {
             "name": "Python: Risk Zones in Paris",
             "type": "debugpy",
             "request": "launch",
@@ -75,7 +103,7 @@
             ]
         },
         {
-            "name": "Python: FMC in Paris Island",
+            "name": "Python: FMC in Paris Metropolitan Area",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/cityzones/riskzones.py",
@@ -85,7 +113,7 @@
                 "PYDEVD_DISABLE_FILE_VALIDATION": "1",
             },
             "args": [
-                "conf/paris_island_fmc.json"
+                "conf/paris_metropolis_fmc.json"
             ]
         },
         {
@@ -114,6 +142,20 @@
             },
             "args": [
                 "conf/eiffel.json"
+            ]
+        },
+        {
+            "name": "Python: FMC in Copenhagen",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/cityzones/riskzones.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+            },
+            "args": [
+                "conf/copenhagen.json"
             ]
         },
         {

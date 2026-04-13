@@ -1,0 +1,49 @@
+{
+    "left": -9.2429,
+    "bottom": 38.6769,
+    "right": -9.0864,
+    "top": 38.8009,
+    "zone_size": 90,
+    "cache_zones": false,
+    "M": 3,
+    "edus": {
+        "loose": 300,
+        "tight": 0
+    },
+    "geojson": "geojson/lisboa.geojson",
+    "_pois": "osm/lisboa.osm",
+    "ignore_pois": true,
+    "pois_types": {
+        "amenity": {
+            "fire_station": {
+                "w": 1.0
+            },
+            "emergency_service": {
+                "w": 1.0
+            },
+            "rescue_stations": {
+                "w": 1.0
+            }
+        },
+        "emergency": {
+            "ambulance_station": {
+                "w": 1.0
+            }
+        },
+        "waterway": {
+            "river": {
+                "w": -0.1,
+                "allnodes": 1
+            }
+        }
+    },
+    "_connectivity_threshold": 0.05,
+    "edu_alg": "none",
+    "output": "/home/just/GoogleDrive/Pesquisa/Joao-Risco_elevation/lisboa_M3.csv",
+    "output_edus": "/home/just/GoogleDrive/Pesquisa/Joao-Risco_elevation/lisboa_edus_restricted_plus.csv",
+    "output_roads": "/home/just/GoogleDrive/Pesquisa/Joao-Risco_elevation/lisboa_roads.csv",
+    "output_pois": "/home/just/GoogleDrive/Pesquisa/Joao-Risco_elevation/lisboa_pois.csv",
+    "output_elevation": "/home/just/GoogleDrive/Pesquisa/Joao-Risco_elevation/lisboa_elevation.csv",
+    "output_slope": "/home/just/GoogleDrive/Pesquisa/Joao-Risco_elevation/lisboa_slope.csv",
+    "_output_connectivity": "/home/just/GoogleDrive/Pesquisa/Joao-Risco_elevation/lisboa_connectivity.csv"
+}

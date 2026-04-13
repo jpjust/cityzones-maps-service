@@ -26,6 +26,7 @@
             }
         }
     },
+    "ignore_pois": true,
     "_max_pois_traveltime": 15,
     "_connectivity_threshold": 0.05,
     "edu_alg": "restricted_plus",

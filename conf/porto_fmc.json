@@ -28,10 +28,10 @@
     "t_good": 5,
     "t_medium": 15,
     "edu_alg": "none",
-    "output": "/home/just/GoogleDrive/IFBA/Artigos/2024 - 15 minutes risk assessment/porto_M5_15min.csv",
-    "output_edus": "/home/just/GoogleDrive/IFBA/Artigos/2024 - 15 minutes risk assessment/porto_edus_restricted_plus.csv",
-    "output_roads": "/home/just/GoogleDrive/IFBA/Artigos/2024 - 15 minutes risk assessment/porto_roads.csv",
-    "output_pois": "/home/just/GoogleDrive/IFBA/Artigos/2024 - 15 minutes risk assessment/porto_pois.csv",
-    "_output_rivers": "/home/just/GoogleDrive/IFBA/Artigos/2024 - 15 minutes risk assessment/porto_rivers.csv",
-    "output_coverage": "/home/just/GoogleDrive/IFBA/Artigos/2024 - 15 minutes risk assessment/porto_coverage.csv"
+    "output": "/home/just/GoogleDrive/IFBA/Artigos/2025 - 15 minutes risk assessment/porto_M5_15min.csv",
+    "output_edus": "/home/just/GoogleDrive/IFBA/Artigos/2025 - 15 minutes risk assessment/porto_edus_restricted_plus.csv",
+    "output_roads": "/home/just/GoogleDrive/IFBA/Artigos/2025 - 15 minutes risk assessment/porto_roads.csv",
+    "output_pois": "/home/just/GoogleDrive/IFBA/Artigos/2025 - 15 minutes risk assessment/porto_pois.csv",
+    "_output_rivers": "/home/just/GoogleDrive/IFBA/Artigos/2025 - 15 minutes risk assessment/porto_rivers.csv",
+    "output_coverage": "/home/just/GoogleDrive/IFBA/Artigos/2025 - 15 minutes risk assessment/porto_coverage.csv"
 }

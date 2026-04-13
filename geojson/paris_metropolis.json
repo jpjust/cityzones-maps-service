@@ -1,0 +1,12 @@
+{
+    "extracts": [
+        {
+            "output": "osm/paris_metropolis.osm",
+            "description": "Paris Metropolitan Area, France",
+            "polygon": {
+                "file_name": "paris_metropolis.geojson",
+                "file_type": "geojson"
+            }
+        }
+    ]
+}
