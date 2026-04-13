@@ -19,7 +19,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import requests
 
-API_ENDPOINT = 'https://overpass-api.de/api/interpreter'
+API_ENDPOINT = 'https://overpass.private.coffee/api/interpreter'
 
 def get_osm_from_bbox(filename: str, bottom: float, left: float, top: float, right: float, request_timeout: int) -> str:
     """
