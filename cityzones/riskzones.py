@@ -170,9 +170,11 @@ def init_zones(grid: dict):
                 'id': j * grid['grid_x'] + i,
                 'lat': (j / grid['grid_y'] * grid['height']) + grid['bottom'] + grid['zone_center']['y'],
                 'lon': (i / grid['grid_x'] * grid['width']) + grid['left'] + grid['zone_center']['x'],
+                'combined_risk': 1.0,
                 'risk': 1.0,
                 'risk_all_pois': 1.0,
                 'risk_river': 0,
+                'risk_elevation': 0,
                 'river_dist': None,
                 'river_dist_normalized': None,
                 'RL': grid['M'],
@@ -586,6 +588,21 @@ def check_zone_within_poi_coverage(zone: dict, poi: dict) -> bool:
     else:
         return 99
 
+def ignore_risk_from_pois(grid: dict):
+    """
+    Calculate the risk perception considering all PoIs.
+    """
+    if len(grid['pois_inside']) == 0:
+        return
+
+    print(f'Ignoring risk perception... ', end='')
+
+    for id in grid['zones_inside']:
+        grid['zones'][id]['risk'] = 1
+        grid['zones'][id]['risk_all_pois'] = 1
+
+    print('Done!')
+
 def calculate_risk_from_pois(grid: dict):
     """
     Calculate the risk perception considering all PoIs.
@@ -821,6 +838,7 @@ def calculate_RL(grid: dict):
             else:
                 rl = grid['M'] - min(abs(int(math.log(combined_risk))), grid['M'] - 1)
             
+            grid['zones'][id]['combined_risk'] = float(combined_risk)
             grid['zones'][id]['RL'] = int(rl)
 
 def get_number_of_zones_by_RL(grid: dict) -> dict:
@@ -1431,10 +1449,13 @@ if __name__ == '__main__':
                 calculate_risk_from_rivers(grid)
 
             # Calculate risks regarding distance from PoIs
-            calculate_risk_from_pois(grid)
+            if 'ignore_pois' in conf.keys() and conf['ignore_pois'] == True:
+                ignore_risk_from_pois(grid)
+            else:
+                calculate_risk_from_pois(grid)
+                normalize_risks(grid)
 
-            # Normalize risks and finish classification
-            normalize_risks(grid)
+            # Compute final Risk Level
             calculate_RL(grid)
 
             # Output elapsed time
