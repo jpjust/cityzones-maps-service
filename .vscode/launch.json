@@ -325,6 +325,20 @@
             "args": [
                 "conf/porto_alegre.json"
             ]
+        },
+        {
+            "name": "Python: Risk Zones in Madrid",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/cityzones/riskzones.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "env": {
+                "PYDEVD_DISABLE_FILE_VALIDATION": "1",
+            },
+            "args": [
+                "conf/madrid.json"
+            ]
         }
     ]
 }

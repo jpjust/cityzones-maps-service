@@ -1,0 +1,29 @@
+{
+  "left": -3.9260698080062864,
+  "bottom": 40.27904930114752,
+  "right": -3.4809681653976434,
+  "top": 40.6768871307373,
+  "zone_size": 300,
+  "cache_zones": false,
+  "M": 3,
+  "edus": {
+    "loose": 300,
+    "tight": 0
+  },
+  "geojson": "geojson/madrid.geojson",
+  "pois": "osm/madrid.osm",
+  "lai": "lai/madrid_lai.csv",
+  "pois_types": {
+    "amenity": {
+      "fire_station": {
+        "w": 1.0
+      }
+    }
+  },
+  "edu_alg": "none",
+  "output": "output/madrid_map.csv",
+  "output_edus": "output/madrid_edus.csv",
+  "output_roads": "output/madrid_roads.csv",
+  "output_pois": "output/madrid_pois.csv",
+  "res_data": "output/madrid_res_data.json"
+}
