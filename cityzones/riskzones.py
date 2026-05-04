@@ -40,6 +40,7 @@ try:
     import riversrisk
     import connectivity
     import mapbox
+    import lai_parser
 except ModuleNotFoundError:
     from cityzones import utils
     from cityzones import osmpois
@@ -48,6 +49,7 @@ except ModuleNotFoundError:
     from cityzones import riversrisk
     from cityzones import connectivity
     from cityzones import mapbox
+    from cityzones import lai_parser
 
 import time
 import json
@@ -188,7 +190,7 @@ def init_zones(grid: dict):
 
             grid['zones'].append(zone)
             grid['zones_inside'].append(zone['id'])
-    
+
     print('Done!')
 
 def load_zones(grid: dict, zones: list):
@@ -215,7 +217,7 @@ def add_polygon(grid: dict, polygons: list):
     for polygon in polygons:
         grid['polygons'].append(polygon)
         grid['pol_points'] += len(polygon)
-    
+
     print('Done!')
 
 def insert_pois_into_zones(grid: dict):
@@ -232,7 +234,7 @@ def insert_pois_into_zones(grid: dict):
         for poi in grid['pois']:
             payload.append((poi, grid['zones'], grid['zone_size']))
         grid['pois'] = pool.starmap(update_poi_zone, payload)
-    
+
     print('Done!')
 
 def update_poi_zone(poi: dict, zones: list, tolerance: int) -> int:
@@ -245,7 +247,7 @@ def update_poi_zone(poi: dict, zones: list, tolerance: int) -> int:
         if dist <= tolerance and (poi['zone_id'] == None or dist < prev_dist):
             poi['zone_id'] = zone['id']
             prev_dist = dist
-    
+
     return poi
 
 def init_zones_by_polygon(grid: dict):
@@ -255,13 +257,13 @@ def init_zones_by_polygon(grid: dict):
     print('Checking zones inside the polygon... ', end='')
 
     grid['zones_inside'].clear()
-    
+
     with mp.Pool(processes=MP_WORKERS) as pool:
         payload = []
         for zone in grid['zones']:
             payload.append((zone, grid['polygons']))
         grid['zones'] = pool.starmap(update_zone_inside_polygon_set, payload)
-    
+
     for zone in grid['zones']:
         if zone['inside'] == True:
             grid['zones_inside'].append(zone['id'])
@@ -277,13 +279,13 @@ def init_pois_by_polygon(grid: dict) -> list:
 
     pois_results = []
     grid['pois_inside'].clear()
-    
+
     with mp.Pool(processes=MP_WORKERS) as pool:
         payload = []
         for poi in grid['pois']:
             payload.append((poi, grid['polygons']))
         pois_results = pool.starmap(update_zone_inside_polygon_set, payload)
-    
+
     for poi in pois_results:
         if poi['inside'] == True:
             grid['pois_inside'].append(poi)
@@ -342,7 +344,7 @@ def check_zone_in_polygon(zone: dict, polygon: list) -> bool:
             ((line2['p1']['lat'] <= zone['lat'] <= line2['p2']['lat']) or ((line2['p2']['lat'] <= zone['lat'] <= line2['p1']['lat']))):
             if check_intersection(line1, line2):
                 intersec += 1
-    
+
     return intersec % 2 == 1
 
 def sign(x: float) -> int:
@@ -368,7 +370,7 @@ def check_intersection(line1: dict, line2: dict) -> bool:
     b2 = -1
     c1 = line1['p1']['lat']
     c2 = line2['p1']['lat'] - a2 * line2['p1']['lon']
-    
+
     f1_1 = sign(b1 * line2['p1']['lat'] + c1)
     f1_2 = sign(b1 * line2['p2']['lat'] + c1)
     f2_1 = sign(a2 * line1['p1']['lon'] + b2 * line1['p1']['lat'] + c2)
@@ -383,11 +385,11 @@ def add_pois(grid: dict, pois: list):
     print('Adding PoIs... ', end='')
     grid['pois'].clear()
     grid['pois_inside'].clear()
-    
+
     for poi in pois:
         grid['pois'].append(poi)
         grid['pois_inside'].append(poi)
-    
+
     print('Done!')
 
 def add_path(grid: dict, path: list, path_name: str):
@@ -412,7 +414,7 @@ def add_path(grid: dict, path: list, path_name: str):
 
         if a < 0 or b < 0 or a >= len(grid['zones']) or b >= len(grid['zones']):
             continue
-        
+
         # Select the movement approach
         dist_x = b % grid['grid_x'] - a % grid['grid_x']
         dist_y = int(b / grid['grid_x']) - int(a / grid['grid_x'])
@@ -423,13 +425,13 @@ def add_path(grid: dict, path: list, path_name: str):
             move_zones_y(grid, a, b, dist_x, dist_y, path_key)
 
         grid['zones'][a][path_key] = grid['zones'][b][path_key] = True
-    
+
     # Count path zones
     for zone in grid['zones']:
         if zone[path_key]:
             grid[path_points] += 1
             grid[path_ids].append(zone['id'])
-    
+
     print('Done!')
 
 def coordinates_to_id(grid: dict, lat, lon):
@@ -461,7 +463,7 @@ def move_zones_x(grid: dict, a: dict, b: dict, dist_x: int, dist_y: int, path_ke
         num_y = grid['grid_x'] * (int(dist_y / abs(dist_y)))
     else:
         num_y = 0
-    
+
     # While getting near to the destination zone, keep moving.
     # If we start to get far, stop!
     prev_dist = dist = utils.__calculate_distance(grid['zones'][id], grid['zones'][b])
@@ -483,7 +485,7 @@ def move_zones_x(grid: dict, a: dict, b: dict, dist_x: int, dist_y: int, path_ke
             dist = utils.__calculate_distance(grid['zones'][id], grid['zones'][b])
         except IndexError:
             break
-    
+
 def move_zones_y(grid: dict, a: dict, b: dict, dist_x: int, dist_y: int, path_key: str):
     """
     Move through path in Y axis
@@ -513,7 +515,7 @@ def move_zones_y(grid: dict, a: dict, b: dict, dist_x: int, dist_y: int, path_ke
         if abs(delta_x) >= 1:
             id += num_x
             delta_x -= int(delta_x / abs(delta_x))
-        
+
         if id < 0 or id > len(grid['zones']):
             break
 
@@ -558,7 +560,7 @@ def perform_coverage_assessment(grid: dict):
         for id in grid['zones_inside']:
             payload.append((grid['zones'][id], grid['pois_inside']))
         coverages = pool.starmap(assess_coverage_of_zone, payload)
-    
+
     for coverage in coverages:
         grid['zones'][coverage[0]]['coverage'] = coverage[1]
 
@@ -681,7 +683,7 @@ def calculate_risk_from_elevation(grid: dict):
         for id in grid['zones_inside']:
             payload.append((grid['zones'][id],))
         risks = pool.starmap(calculate_risk_of_zone_elevation, payload)
-    
+
     for risk in risks:
         grid['zones'][risk[0]]['risk_elevation'] = risk[1]
 
@@ -709,7 +711,7 @@ def calculate_risk_from_rivers(grid: dict):
         for id in grid['zones_inside']:
             payload.append((grid, grid['zones'][id], grid['flood_level']))
         risks = pool.starmap(calculate_risk_of_zone_from_rivers, payload)
-    
+
     for risk in risks:
         grid['zones'][risk[0]]['risk_river'] = risk[1]
 
@@ -727,7 +729,7 @@ def calculate_risk_of_zone_from_rivers(grid: dict, zone: dict, flood_level: floa
         dist = utils.__calculate_distance(zone, river)
         R = 1 / math.e ** ((math.e ** 4) * (dist / grid['river_dist_max']))
         risk = max(risk, R)
-    
+
     return (zone['id'], risk)
 
 def normalize_risks(grid: dict):
@@ -770,7 +772,7 @@ def normalize_elevation(grid: dict):
 
         if zone['elevation'] < hmin:
             hmin = zone['elevation']
-    
+
     # Middle value
     m = (hmax - hmin) / 2 + hmin
     m_top = hmax - m if hmax != m else 0.1
@@ -826,10 +828,10 @@ def calculate_RL(grid: dict):
             grid['zones'][id]['RL'] = 1
         else:
             combined_risk = grid['zones'][id]['risk']
-            
+
             if 'risk_elevation' in grid['zones'][id].keys():
                 combined_risk *= grid['zones'][id]['risk_elevation']
-            
+
             if 'risk_river' in grid['zones'][id].keys():
                 combined_risk += grid['zones'][id]['risk_river']
 
@@ -837,7 +839,7 @@ def calculate_RL(grid: dict):
                 rl = grid['M'] - 1
             else:
                 rl = grid['M'] - min(abs(int(math.log(combined_risk))), grid['M'] - 1)
-            
+
             grid['zones'][id]['combined_risk'] = float(combined_risk)
             grid['zones'][id]['RL'] = int(rl)
 
@@ -848,10 +850,10 @@ def get_number_of_zones_by_RL(grid: dict) -> dict:
     nzones = {}
     for i in range(1, grid['M'] + 1):
         nzones[i] = 0
-    
+
     for id in grid['zones_inside']:
         nzones[grid['zones'][id]['RL']] += 1
-    
+
     return nzones
 
 def get_number_of_roads_by_RL(grid: dict, connectivity_threshold: int = 0) -> dict:
@@ -861,11 +863,11 @@ def get_number_of_roads_by_RL(grid: dict, connectivity_threshold: int = 0) -> di
     nzones = {}
     for i in range(1, grid['M'] + 1):
         nzones[i] = 0
-    
+
     for id in grid['zones_inside']:
         if grid['zones'][id]['is_road']:
             nzones[grid['zones'][id]['RL']] += 1
-    
+
     return nzones
 
 def get_urban_area_by_RL(grid: dict) -> dict:
@@ -875,11 +877,11 @@ def get_urban_area_by_RL(grid: dict) -> dict:
     nzones = {}
     for i in range(1, grid['M'] + 1):
         nzones[i] = 0
-    
+
     for id in grid['zones_inside']:
         if grid['zones'][id]['urban_prob'] >= 0.5:
             nzones[grid['zones'][id]['RL']] += 1
-    
+
     return nzones
 
 def get_number_of_edus_by_RL(grid: dict, n_edus: int, use_roads=False, connectivity_threshold: int = 0) -> dict:
@@ -890,7 +892,7 @@ def get_number_of_edus_by_RL(grid: dict, n_edus: int, use_roads=False, connectiv
         nzones = get_number_of_roads_by_RL(grid, connectivity_threshold=connectivity_threshold)
     else:
         nzones = get_number_of_zones_by_RL(grid)
-    
+
     sum = 0
     for i in range(1, grid['M'] + 1):
         sum += i * nzones[i]
@@ -912,7 +914,7 @@ def get_zones_by_RL(grid: dict) -> dict:
 
     for id in grid['zones_inside']:
         zones_by_RL[grid['zones'][id]['RL']].append(grid['zones'][id])
-    
+
     return zones_by_RL
 
 def get_roads_by_RL(grid: dict) -> dict:
@@ -926,7 +928,7 @@ def get_roads_by_RL(grid: dict) -> dict:
     for id in grid['zones_inside']:
         if grid['zones'][id]['is_road']:
             roads_by_RL[grid['zones'][id]['RL']].append(grid['zones'][id])
-    
+
     return roads_by_RL
 
 def set_area_urban_probability(grid: dict):
@@ -935,7 +937,7 @@ def set_area_urban_probability(grid: dict):
     """
     for zone in grid['zones']:
         zone['urban_prob'] = 0
-    
+
     # The reducing_factor defines how much % the next zone will loose in urban probability
     # comparing to the preivous zone. Considering quarters of an 100 meters wide average,
     # the reducing_factor will be of 0.5% per meter.
@@ -975,7 +977,7 @@ def set_zone_urban_probability(zone: dict, prob: float, reducing_factor: float):
     """
     if zone['is_road']:
         prob = 1
-    
+
     zone['urban_prob'] = max(zone['urban_prob'], prob)
     return max(prob - reducing_factor, 0)  # Can't have negative probabilities
 
@@ -987,7 +989,7 @@ def set_edus_positions_random(grid: dict):
     zones_by_RL = get_zones_by_RL(grid)
     grid['edus'] = {}
     edus = get_number_of_edus_by_RL(grid, grid['n_edus_loose'] + grid['n_edus_tight'])
-    
+
     for i in range(1, grid['M'] + 1):
         grid['edus'][i] = random.choices(zones_by_RL[i], k=edus[i])
 
@@ -998,7 +1000,7 @@ def reset_edus_flag(grid: dict, n_edus=None):
     for zone in grid['zones']:
         zone['has_edu'] = False
         zone['edu_type'] = EDU_NONE
-    
+
     grid['edus'] = {}
     for i in range(1, grid['M'] + 1):
         grid['edus'][i] = []
@@ -1036,7 +1038,7 @@ def reset_edus_data(grid: dict, n_edus=None, use_roads=False, connectivity_thres
     grid['smallest_radius'] = grid['radius'][grid['M']]                 # Radius of the highest level
     grid['highest_radius'] = grid['radius'][1]                          # Radius of the lowest level
     grid['search_range'] = -int(math.ceil(2 * grid['grid_x'] / grid['smallest_radius']))
-    
+
     # Make sure there are no 0 radius
     if grid['smallest_radius'] == 0: grid['smallest_radius'] = 1
     if grid['highest_radius'] == 0: grid['highest_radius'] = 1
@@ -1049,7 +1051,7 @@ def set_edus_positions_uniform(grid: dict, mode: int, connectivity_threshold: in
     """
     reset_edus_flag(grid)
     reset_edus_data(grid)
-    
+
     print('Positioning EDUs...', end='\r')
 
     if mode == UNBALANCED:
@@ -1061,9 +1063,9 @@ def set_edus_positions_uniform(grid: dict, mode: int, connectivity_threshold: in
     elif mode == RESTRICTED_PLUS:
         set_edus_positions_uniform_restricted_plus(grid, grid['n_edus_tight'], connectivity_threshold, EDU_TIGHT)
         set_edus_positions_uniform_restricted_plus(grid, grid['n_edus_loose'], 0, EDU_LOOSE)
-    
+
     print('Positioning EDUs... 100.00%')
-        
+
 def set_edus_positions_uniform_unbalanced(grid: dict):
     """
     Unbalanced positioning mode.
@@ -1090,12 +1092,12 @@ def set_edus_positions_uniform_unbalanced(grid: dict):
 
                 if grid['step_x'][i] % grid['step'][i] == 0 and grid['step_y'][i] % grid['step'][i] == 0:
                     grid['edus'][i].append(zone)
-                    
+
                 grid['step_x'][i] += 1
 
                 prog = (id / len(grid['zones'])) * 100
                 print(f'Positioning EDUs... {prog:.2f}%', end='\r')
-    
+
 def set_edus_positions_uniform_balanced(grid: dict):
     """
     Balanced positioning mode.
@@ -1130,10 +1132,10 @@ def set_edus_positions_uniform_balanced(grid: dict):
                     zone['has_edu'] = True
                     grid['edus'][zone['RL']].append(zone)
                     x += int(grid['smallest_radius'] * 2)
-                
+
                 except SkipZone:
                     x += 1
-            
+
                 prog = (id / len(grid['zones'])) * 100
                 print(f'Positioning EDUs... {prog:.2f}%', end='\r')
 
@@ -1141,7 +1143,7 @@ def set_edus_positions_uniform_balanced(grid: dict):
             pass
         except OutOfBounds:
             pass
-        
+
         y += 1
 
 def set_edus_positions_uniform_restricted(grid: dict):
@@ -1197,11 +1199,11 @@ def set_edus_positions_uniform_restricted(grid: dict):
                         break
                     except IndexError:
                         continue
-        
+
             # Remove from grid['edus'] all zones that have been marked for removal
             for zone in zones_removal:
                 grid['edus'][i].remove(zone)
-            
+
         # Move all the positioned EDUs to the final structure
         for i in range(1, grid['M'] + 1):
             final_edus[i].extend(grid['edus'][i])
@@ -1212,7 +1214,7 @@ def set_edus_positions_uniform_restricted(grid: dict):
         for i in range(1, grid['M'] + 1):
             edus_total += len(final_edus[i])
         edus_remaining = grid['n_edus_loose'] + grid['n_edus_tight'] - edus_total
-    
+
     # Positioning finished. Move final_edus to grid
     for i in range(1, grid['M'] + 1):
         grid['edus'][i] = [*final_edus[i]]
@@ -1269,10 +1271,10 @@ def set_edus_positions_uniform_restricted_plus(grid: dict, n_edus: int, connecti
                         edus_remaining -= 1
                         edus_total += 1
                         x += int(grid['smallest_radius'] * 2)
-                    
+
                     except SkipZone:
                         x += 1
-                
+
                     prog = (id / len(grid['zones'])) * 100
                     print(f'Positioning EDUs... {prog:.2f}%', end='\r')
 
@@ -1280,9 +1282,9 @@ def set_edus_positions_uniform_restricted_plus(grid: dict, n_edus: int, connecti
                 pass
             except OutOfBounds:
                 pass
-            
+
             y += 1
-        
+
     print(f'\nPositioned {edus_total}/{n_edus} EDUs.')
 
 def get_zones_in_area(grid: dict, center_id: int, radius: int) -> list:
@@ -1302,7 +1304,7 @@ def get_zones_in_area(grid: dict, center_id: int, radius: int) -> list:
             if j >= grid['grid_x']: break
 
             zones.append(grid['zones'][i * grid['grid_x'] + j])
-    
+
     zones.sort(key=lambda zone : zone['id'])
     return zones
 
@@ -1336,11 +1338,11 @@ if __name__ == '__main__':
             pois_file_tmp = '/tmp/cityzones_pois-unfiltered.osm'
             if 'pois' not in conf.keys():
                 conf['pois'] = '/tmp/cityzones_pois.osm'
-                
+
             print('Getting PoIs from Overpass... ', end='')
             overpass.get_osm_from_bbox(pois_file_tmp, conf['bottom'], conf['left'], conf['top'], conf['right'], int(config['NET_TIMEOUT']))
             print('Done!')
-        
+
             # Filter OSM file
             filter = '--keep="highway= OR water= OR waterway='
             for poi_type in conf['pois_types'].keys():
@@ -1405,7 +1407,7 @@ if __name__ == '__main__':
 
                 if not conf.get('pois_use_all'):
                     init_pois_by_polygon(grid)
-                
+
                 if len(grid['pois_inside']) == 0:
                     print('No PoIs inside the AoI!')
             except KeyError:
@@ -1421,6 +1423,10 @@ if __name__ == '__main__':
             if 'flood_level' in conf.keys():
                 grid['flood_level'] = conf['flood_level']
                 riversrisk.init_zones(grid)
+
+            # Init zones Leaf Area Index data
+            if 'lai' in conf.keys():
+                lai_parser.init_zones(grid, conf['lai'])
 
             # Init zones connectivity data
             if 'connectivity_threshold' in conf.keys():
@@ -1537,7 +1543,7 @@ if __name__ == '__main__':
             row += 1
 
         fp.close()
-        
+
         # Write a CSV file with EDUs positions
         if 'output_edus' in conf.keys():
             print('- EDUs data')
@@ -1558,7 +1564,7 @@ if __name__ == '__main__':
         if 'output_pois' in conf.keys():
             print('- PoIs data')
             fp = open(conf['output_pois'], 'w')
-            
+
             data = 'id,lat,lon,weight\n'
             fp.write(data)
             row = 0
@@ -1572,7 +1578,7 @@ if __name__ == '__main__':
         if 'output_roads' in conf.keys():
             print('- Roads data')
             fp = open(conf['output_roads'], 'w')
-            
+
             data = 'id,lat,lon\n'
             fp.write(data)
             row = 0
@@ -1583,12 +1589,12 @@ if __name__ == '__main__':
                     fp.write(data)
                     row += 1
             fp.close()
-        
+
         # Write a CSV file with river zones
         if 'output_rivers' in conf.keys():
             print('- Rivers data')
             fp = open(conf['output_rivers'], 'w')
-            
+
             data = 'id,lat,lon\n'
             fp.write(data)
             row = 0
@@ -1599,12 +1605,12 @@ if __name__ == '__main__':
                     fp.write(data)
                     row += 1
             fp.close()
-        
+
         # Write a CSV file with elevation data
         if 'output_elevation' in conf.keys():
             print('- Elevation data')
             fp = open(conf['output_elevation'], 'w')
-            
+
             data = 'id,elevation,lat,lon\n'
             fp.write(data)
             row = 0
@@ -1613,12 +1619,12 @@ if __name__ == '__main__':
                 fp.write(data)
                 row += 1
             fp.close()
-        
+
         # Write a CSV file with slope data
         if 'output_slope' in conf.keys():
             print('- Slope data')
             fp = open(conf['output_slope'], 'w')
-            
+
             data = 'id,slope,lat,lon\n'
             fp.write(data)
             row = 0
@@ -1627,12 +1633,12 @@ if __name__ == '__main__':
                 fp.write(data)
                 row += 1
             fp.close()
-        
+
         # Write a CSV file with connectivity data
         if 'output_connectivity' in conf.keys():
             print('- Connectivity data')
             fp = open(conf['output_connectivity'], 'w')
-            
+
             data = 'id,connectivity,nets,lat,lon\n'
             fp.write(data)
             row = 0
@@ -1646,7 +1652,7 @@ if __name__ == '__main__':
         if 'output_coverage' in conf.keys():
             print('- Coverage data')
             fp = open(conf['output_coverage'], 'w')
-            
+
             data = 'id,coverage,lat,lon\n'
             fp.write(data)
             row = 0
