@@ -175,8 +175,8 @@ def init_zones(grid: dict):
                 'combined_risk': 1.0,
                 'risk': 1.0,
                 'risk_all_pois': 1.0,
-                'risk_river': 0,
-                'risk_elevation': 0,
+                'risk_river': None,
+                'risk_elevation': None,
                 'river_dist': None,
                 'river_dist_normalized': None,
                 'RL': grid['M'],
@@ -658,7 +658,7 @@ def calculate_risk_of_zone(grid: dict, zone: dict, pois: list) -> float:
             continue
 
         # Do not consider drought PoIs
-        if poi['zone_id'] != None and grid['zones'][poi['zone_id']]['risk_river'] > 0:
+        if poi['zone_id'] != None and grid['zones'][poi['zone_id']]['risk_river'] != None and grid['zones'][poi['zone_id']]['risk_river'] > 0:
             continue
 
         mitigation += computed_mitigation
@@ -829,10 +829,10 @@ def calculate_RL(grid: dict):
         else:
             combined_risk = grid['zones'][id]['risk']
 
-            if 'risk_elevation' in grid['zones'][id].keys():
+            if 'risk_elevation' in grid['zones'][id].keys() and grid['zones'][id]['risk_elevation'] != None:
                 combined_risk *= grid['zones'][id]['risk_elevation']
 
-            if 'risk_river' in grid['zones'][id].keys():
+            if 'risk_river' in grid['zones'][id].keys() and grid['zones'][id]['risk_river'] != None:
                 combined_risk += grid['zones'][id]['risk_river']
 
             if combined_risk <= 0:
