@@ -1,0 +1,8 @@
+geojson
+python-dotenv
+requests
+requests-toolbelt
+scipy
+
+# Used by test_ee.py
+earthengine-api
