@@ -4,7 +4,7 @@
     "right": -8.5405,
     "top": 41.1939,
     "zone_size": 90,
-    "flood_level": 26.3,
+    "_flood_level": 26.3,
     "cache_zones": false,
     "M": 3,
     "edus": {
@@ -29,12 +29,12 @@
     "_max_pois_traveltime": 15,
     "_connectivity_threshold": 0.05,
     "edu_alg": "restricted_plus",
-    "output": "/home/just/GoogleDrive/Pesquisa/Joao-Risco_elevation/porto_M3.csv",
-    "output_edus": "/home/just/GoogleDrive/Pesquisa/Joao-Risco_elevation/porto_edus_restricted_plus.csv",
-    "output_roads": "/home/just/GoogleDrive/Pesquisa/Joao-Risco_elevation/porto_roads.csv",
-    "output_pois": "/home/just/GoogleDrive/Pesquisa/Joao-Risco_elevation/porto_pois.csv",
-    "output_rivers": "/home/just/GoogleDrive/Pesquisa/Joao-Risco_elevation/porto_rivers.csv",
-    "output_elevation": "/home/just/GoogleDrive/Pesquisa/Joao-Risco_elevation/porto_elevation.csv",
-    "output_slope": "/home/just/GoogleDrive/Pesquisa/Joao-Risco_elevation/porto_slope.csv",
-    "_output_connectivity": "/home/just/GoogleDrive/Pesquisa/Joao-Risco_elevation/porto_connectivity.csv"
+    "output": "output/porto_M3.csv",
+    "output_edus": "output/porto_edus_restricted_plus.csv",
+    "output_roads": "output/porto_roads.csv",
+    "output_pois": "output/porto_pois.csv",
+    "output_rivers": "output/porto_rivers.csv",
+    "output_elevation": "output/porto_elevation.csv",
+    "output_slope": "output/porto_slope.csv",
+    "_output_connectivity": "output/porto_connectivity.csv"
 }
